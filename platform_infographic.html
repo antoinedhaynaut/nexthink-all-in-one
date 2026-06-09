@@ -1,0 +1,2145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Platform · data → outcomes</title>
+<style>
+  :root{
+    --bg-0:#0A0F25; --bg-1:#0E1530; --bg-2:#0B1020;
+    --ink:#E6ECFF; --ink-2:#C7D0F0; --ink-3:#9FB0E6; --ink-4:#7E8AB8;
+    --line:rgba(255,255,255,0.08); --line-2:rgba(255,255,255,0.14);
+    --card:rgba(255,255,255,0.05); --card-h:rgba(255,255,255,0.09);
+    --c-collect:#22D3EE; --c-correlate:#A78BFA; --c-act:#34D399; --c-govern:#FBBF24;
+    --c-source:#67E8F9;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg-0);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(1200px 600px at 15% 0%, rgba(99,102,241,0.18), transparent 60%),
+      radial-gradient(900px 500px at 90% 100%, rgba(34,211,238,0.18), transparent 60%),
+      linear-gradient(160deg, var(--bg-0) 0%, var(--bg-1) 50%, var(--bg-2) 100%);
+  }
+  .app{position:relative; padding:22px 28px 40px; max-width:2500px; margin:0 auto;}
+  header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;}
+  .crumb{display:inline-flex; align-items:center; gap:8px; font-size:11px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--ink-3);}
+  .crumb .led{width:8px;height:8px;border-radius:50%; background:#22D3EE; box-shadow:0 0 12px #22D3EE;}
+  h1{margin:6px 0 4px; font-size:26px; line-height:1.15; font-weight:700;
+    background:linear-gradient(90deg,#fff,#A5B4FC 60%,#67E8F9);
+    -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .lede{font-size:13px; color:var(--ink-3); max-width:680px;}
+  .controls{display:flex; gap:8px; flex-wrap:wrap;}
+  .btn{font:500 12px/1 inherit; color:var(--ink-2); padding:8px 12px; border-radius:999px;
+    background:rgba(255,255,255,0.04); border:1px solid var(--line); cursor:pointer; transition:.15s;}
+  .btn:hover{background:rgba(255,255,255,0.08);}
+  .btn.active{background:linear-gradient(90deg, rgba(99,102,241,.35), rgba(34,211,238,.35));
+    border-color:rgba(165,180,252,.5); color:#fff;}
+  .btn .pillc{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:middle;}
+
+  .grid{position:relative;}
+  .col-title{display:flex; align-items:center; gap:8px; font-size:11px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--ink-2); margin: 4px 4px 12px;}
+  .dot{width:8px;height:8px;border-radius:50%; box-shadow:0 0 10px currentColor;}
+
+  /* Data sources block (styled like hub) */
+  .src-block-wrap{position:relative; width:100%;}
+  .src-block{position:relative; padding:16px 20px 14px; border-radius:18px;
+    background:linear-gradient(180deg, rgba(103,232,249,0.10), rgba(15,22,46,0.55));
+    border:1px solid rgba(103,232,249,0.30);
+    box-shadow:0 16px 40px rgba(34,211,238,0.12), inset 0 0 40px rgba(103,232,249,0.04);
+    backdrop-filter:blur(10px);}
+  .src-block .hub-head{margin-bottom:12px;}
+  /* Data sources — single line when space allows, wraps to 2 rows otherwise */
+  .sources{display:flex; flex-wrap:wrap; gap:8px;}
+  .sources .src{flex:1 1 160px;}
+  .src{display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    border:1px solid var(--line); transition:.2s; cursor:default;}
+  .src:hover{border-color:rgba(103,232,249,0.45); transform:translateY(-2px);}
+  .src .ic{width:32px; height:32px; border-radius:9px; display:grid; place-items:center;
+    background:rgba(103,232,249,0.10); border:1px solid rgba(103,232,249,0.30); color:#67E8F9;}
+  .src .nm{font-size:13px; font-weight:600;}
+  .src .sub{font-size:11px; color:var(--ink-3);}
+
+  /* Center stage */
+  .stage{position:relative; min-height:980px;}
+  .stage svg.links{position:absolute; inset:0; width:100%; height:100%; pointer-events:none;}
+
+  /* Hub — full width */
+  .hub-wrap{position:relative; margin: 40px 0; width:100%;}
+  .hub{position:relative; padding:18px 22px 14px; border-radius:18px;
+    background: linear-gradient(180deg, rgba(99,102,241,0.16), rgba(15,22,46,0.55));
+    border:1px solid rgba(165,180,252,0.30);
+    box-shadow:0 24px 60px rgba(99,102,241,0.18), inset 0 0 60px rgba(34,211,238,0.06);
+    backdrop-filter: blur(10px);
+  }
+  .hub-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
+  .hub-title{font-size:15px; font-weight:700; letter-spacing:.02em;}
+  .hub-sub{font-size:11px; color:var(--ink-3); letter-spacing:.14em; text-transform:uppercase;}
+  .feat-grid{display:grid; gap:8px;} /* column count set dynamically by JS */
+  .feat-col{display:flex; flex-direction:column; gap:8px; min-width:0;}
+  .feat-group{font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-4);
+    margin:2px 4px 4px;}
+  .feat{display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:10px;
+    border:1px solid var(--line); background:rgba(255,255,255,0.03);
+    transition:.2s; cursor:default; min-width:0;}
+  .feat .ic{width:26px; height:26px; border-radius:7px; display:grid; place-items:center; flex-shrink:0;
+    background:rgba(255,255,255,0.04); border:1px solid var(--line);}
+  .feat .nm{font-size:12px; font-weight:600; color:#fff; line-height:1.15;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .feat[data-group="collect"]   .ic{color:var(--c-collect);   border-color:rgba(34,211,238,0.35);  background:rgba(34,211,238,0.10);}
+  .feat[data-group="correlate"] .ic{color:var(--c-correlate); border-color:rgba(167,139,250,0.35); background:rgba(167,139,250,0.10);}
+  .feat[data-group="act"]       .ic{color:var(--c-act);       border-color:rgba(52,211,153,0.35);  background:rgba(52,211,153,0.10);}
+  .feat[data-group="govern"]    .ic{color:var(--c-govern);    border-color:rgba(251,191,36,0.35);  background:rgba(251,191,36,0.10);}
+  .feat.dim{opacity:.18;}
+  .feat.hi{
+    border-color:rgba(165,180,252,0.6);
+    background:linear-gradient(180deg, rgba(99,102,241,0.20), rgba(34,211,238,0.06));
+    box-shadow:0 0 0 1px rgba(165,180,252,0.45) inset, 0 0 22px rgba(99,102,241,0.35);
+    transform: translateY(-1px);
+  }
+
+  /* Value categories */
+  .vc-row{display:grid; grid-template-columns: repeat(6, 1fr); gap:10px; margin: 22px 0 10px;}
+  .vc{padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    text-align:center; transition:.2s; cursor:default;}
+  .vc .nm{font-size:12.5px; font-weight:700; color:#fff;}
+  .vc .tg{font-size:11px; color:var(--ink-3); margin-top:2px;}
+  .vc .bar{height:3px; border-radius:3px; margin-top:8px; opacity:.85;}
+  .vc.dim{opacity:.25;}
+
+  .uc-cols{display:grid; grid-template-columns: repeat(6, 1fr); gap:10px; align-items:start;}
+  .uc-stack{display:flex; flex-direction:column; gap:8px;}
+  .uc{padding:10px 12px; border-radius:11px; border:1px solid var(--line);
+    background:rgba(255,255,255,0.04); cursor:pointer; transition:.18s; position:relative;}
+  .uc:hover{transform:translateY(-2px); border-color:rgba(165,180,252,0.5);
+    background:linear-gradient(180deg, rgba(99,102,241,0.18), rgba(255,255,255,0.03));}
+  .uc.selected{border-color:rgba(165,180,252,0.85);
+    background:linear-gradient(180deg, rgba(99,102,241,0.30), rgba(34,211,238,0.10));
+    box-shadow:0 0 0 1px rgba(165,180,252,0.6) inset, 0 8px 20px rgba(99,102,241,0.30);}
+  .uc.dim{opacity:.25;}
+  .uc .nm{font-size:12.5px; font-weight:600; color:#fff; line-height:1.2;}
+  .uc .px{font-size:11px; color:var(--ink-3); margin-top:4px; line-height:1.35;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+
+  /* Top row: benefits + personas, equal size, centered */
+  .top-row{display:flex; gap:18px; justify-content:center; align-items:stretch; margin-bottom:22px;}
+  .benefits-wrap{flex:0 0 480px; margin:0 !important;}
+  .personas-col{flex:0 0 480px; display:flex; flex-direction:column;}
+  .personas-col .col-title{margin:0 0 10px 4px;}
+  /* Personas band */
+  .personas{display:grid; gap:8px; grid-template-columns:1fr;}
+  .per{display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border:1px solid var(--line); transition:.2s;}
+  .per:hover{transform:translateY(-1px); border-color:rgba(244,114,182,0.45);}
+  .per.dim{opacity:.25;}
+  .per.hi{border-color:rgba(244,114,182,0.7);
+    background:linear-gradient(180deg, rgba(244,114,182,0.18), rgba(167,139,250,0.06));}
+  .per .ic{width:30px;height:30px;border-radius:8px; display:grid; place-items:center;
+    background:rgba(244,114,182,0.10); border:1px solid rgba(244,114,182,0.28); color:#FBCFE8;}
+  .per .nm{font-size:12.5px; font-weight:600;}
+  .per .ro{font-size:10.5px; color:var(--ink-3);}
+
+  /* Drawer */
+  .drawer{position:fixed; top:0; right:-560px; width:520px; max-width:96vw; height:100vh;
+    background:linear-gradient(180deg, rgba(15,22,46,0.96), rgba(10,15,37,0.96));
+    border-left:1px solid var(--line-2); box-shadow:-30px 0 80px rgba(0,0,0,0.5);
+    transition:right .35s cubic-bezier(.5,.05,.2,1); z-index:50; padding:22px 26px; overflow-y:auto;
+    backdrop-filter: blur(14px);}
+  .drawer.open{right:0;}
+  .drawer .close{position:absolute; top:14px; right:14px; width:32px; height:32px; border-radius:8px;
+    border:1px solid var(--line); background:rgba(255,255,255,0.05); color:var(--ink-2);
+    display:grid; place-items:center; cursor:pointer;}
+  .drawer .close:hover{background:rgba(255,255,255,0.10);}
+  .drawer .vcat{font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-3);}
+  .drawer h2{margin:6px 0 4px; font-size:22px; line-height:1.2;}
+  .drawer .pitch{color:var(--ink-2); font-size:13.5px; line-height:1.5; margin-bottom:14px;}
+  .section{margin: 16px 0;}
+  .section h3{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3);
+    margin:0 0 8px; display:flex; align-items:center; gap:8px;}
+  .section h3 .dot{width:6px;height:6px;border-radius:50%; background:currentColor;}
+  .kv{padding:10px 12px; border-radius:10px; background:rgba(255,255,255,0.04);
+    border:1px solid var(--line); margin-bottom:6px;}
+  .kv .lbl{font-size:11px; color:var(--ink-3);}
+  .kv .val{font-size:13.5px; color:#fff; margin-top:2px;}
+  .story-link{display:block; padding:11px 14px; border-radius:12px;
+    background:linear-gradient(180deg, rgba(34,211,238,0.07), rgba(99,102,241,0.05));
+    border:1px solid rgba(165,180,252,0.25); text-decoration:none; margin-bottom:8px;
+    transition:background 0.15s, border-color 0.15s; cursor:pointer;}
+  .story-link:last-child{margin-bottom:0;}
+  .story-link:hover{background:linear-gradient(180deg, rgba(34,211,238,0.14), rgba(99,102,241,0.10));
+    border-color:rgba(103,232,249,0.45);}
+  .story-link .who{font-size:12px; color:var(--ink-2); font-weight:600;}
+  .story-link .ind{font-size:11px; color:var(--ink-3); margin-left:6px;}
+  .story-link .stitle{font-size:13px; color:#67E8F9; margin-top:5px; line-height:1.4;}
+  .story-link .stitle::after{content:" ↗"; font-size:11px; opacity:0.7;}
+  .chips{display:flex; flex-wrap:wrap; gap:6px;}
+  .chip{padding:5px 10px; border-radius:999px; font-size:11.5px;
+    background:rgba(244,114,182,0.10); border:1px solid rgba(244,114,182,0.35); color:#FBCFE8;}
+  .chip.feat{background:rgba(34,211,238,0.10); border-color:rgba(34,211,238,0.35); color:#67E8F9;}
+
+  /* IT & Business Benefits block (top) */
+  .benefits-wrap{position:relative;}
+  .benefits-block{position:relative; padding:16px 20px 14px; border-radius:18px;
+    background:linear-gradient(180deg, rgba(52,211,153,0.10), rgba(15,22,46,0.55));
+    border:1px solid rgba(52,211,153,0.30);
+    box-shadow:0 16px 40px rgba(52,211,153,0.12), inset 0 0 40px rgba(52,211,153,0.04);
+    backdrop-filter:blur(10px);}
+  .benefit-pills{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
+  .benefit-pill{padding:7px 14px; border-radius:999px; font-size:12px; font-weight:600;
+    background:rgba(52,211,153,0.10); border:1px solid rgba(52,211,153,0.30); color:#A7F3D0;
+    transition:.2s; cursor:default;}
+  .benefit-pill.dim{opacity:.15;}
+  .benefit-pill.hi{background:rgba(52,211,153,0.22); border-color:rgba(52,211,153,0.7);
+    color:#6EE7B7; box-shadow:0 0 18px rgba(52,211,153,0.25);}
+
+  .chip.benefit{background:rgba(52,211,153,0.10); border-color:rgba(52,211,153,0.35); color:#A7F3D0;}
+
+  /* Hint when nothing selected */
+  .hint{position:fixed; bottom:18px; right:18px; font-size:12px; color:var(--ink-3);
+    padding:8px 12px; border-radius:999px; background:rgba(15,22,46,0.7); border:1px solid var(--line);
+    backdrop-filter: blur(10px); z-index:40;}
+
+  @media (max-width: 1100px){
+    .feat-grid{grid-template-columns: repeat(2, 1fr);}
+    .vc-row, .uc-cols, .personas{grid-template-columns: repeat(2, 1fr);}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <div>
+      <div class="crumb"><span class="led"></span> SaaS platform · interactive map</div>
+      <h1>From every device, to every team — one platform.</h1>
+      <div class="lede">Every data source feeds a unified platform. Foundation features power 6 categories of value, broken down into focused use cases. Click a use case to see how it's built.</div>
+    </div>
+  </header>
+
+  <div class="grid">
+    <section class="stage" id="stage">
+      <svg class="links" id="links" preserveAspectRatio="none"></svg>
+
+      <!-- Top row: IT & Business Benefits + Personas side-by-side -->
+      <div class="top-row">
+        <div class="benefits-wrap">
+          <div class="benefits-block" id="benefits-block">
+            <div class="hub-head">
+              <div>
+                <div class="hub-sub">IT &amp; Business benefits</div>
+                <div class="hub-title">Value delivered</div>
+              </div>
+            </div>
+            <div class="benefit-pills" id="benefit-pills"></div>
+          </div>
+        </div>
+
+        <!-- Personas (right of benefits) -->
+        <div class="personas-col">
+          <div class="col-title"><span class="dot" style="color:#F472B6"></span>Personas served</div>
+          <div class="personas" id="personas"></div>
+        </div>
+      </div>
+
+      <!-- Value categories -->
+      <div class="vc-row" id="vcrow"></div>
+
+      <!-- Use cases columns under each vc -->
+      <div class="uc-cols" id="uccols"></div>
+
+      <!-- Hub (platform) — full width -->
+      <div class="hub-wrap">
+        <div class="hub" id="hub">
+          <div class="hub-head">
+            <div>
+              <div class="hub-sub">The platform</div>
+              <div class="hub-title">Foundation features</div>
+            </div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end">
+              <span class="btn" style="cursor:default"><span class="pillc" style="background:var(--c-collect)"></span>Collect</span>
+              <span class="btn" style="cursor:default"><span class="pillc" style="background:var(--c-correlate)"></span>Correlate</span>
+              <span class="btn" style="cursor:default"><span class="pillc" style="background:var(--c-act)"></span>Act</span>
+              <span class="btn" style="cursor:default"><span class="pillc" style="background:var(--c-govern)"></span>Govern</span>
+            </div>
+          </div>
+          <div class="feat-grid" id="features"></div>
+        </div>
+      </div>
+
+      <!-- Data sources block (bottom — input) -->
+      <div class="src-block-wrap" style="margin-top:22px;">
+        <div class="src-block" id="src-block">
+          <div class="hub-head">
+            <div>
+              <div class="hub-sub">Data sources</div>
+              <div class="hub-title">Connected endpoints &amp; systems</div>
+            </div>
+          </div>
+          <div class="sources" id="sources"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Drawer -->
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <button class="close" id="drawerClose" aria-label="Close">✕</button>
+  <div id="drawerContent"></div>
+</aside>
+
+<div class="hint" id="hint">Tip: click any use case → see its features and value</div>
+
+<!-- BUNDLED DATA (auto-rewritten by xlsx_to_json.py). Keep the markers intact. -->
+<script id="bundled-data" type="application/json">
+/*BUNDLED_DATA_START*/
+{
+  "dataSources": [
+    {
+      "id": "src_vdi",
+      "name": "Virtual sessions",
+      "category": "virtual",
+      "icon": "vdi",
+      "description": "Citrix, VMware, Azure Virtual Desktop, Cloud PCs...",
+      "order": 10
+    },
+    {
+      "id": "src_laptop",
+      "name": "Laptops",
+      "category": "endpoint",
+      "icon": "laptop",
+      "description": "Windows, macOS — full hardware/software/network telemetry.",
+      "order": 20
+    },
+    {
+      "id": "src_desktop",
+      "name": "Desktops",
+      "category": "endpoint",
+      "icon": "desktop",
+      "description": "Office and shop-floor workstations and kiosks.",
+      "order": 30
+    },
+    {
+      "id": "src_mobile",
+      "name": "Mobile devices",
+      "category": "mobile",
+      "icon": "mobile",
+      "description": "iOS, Android phones and tablets — connectivity & app health.",
+      "order": 40
+    },
+    {
+      "id": "src_external",
+      "name": "External systems",
+      "category": "external",
+      "icon": "plug",
+      "description": "ITSM, IdP, MDM, network, SaaS apps — connectors enrich device truth.",
+      "order": 50
+    },
+    {
+      "id": "src_sentiment",
+      "name": "User sentiment",
+      "category": "external",
+      "icon": "smile",
+      "description": "In-context surveys correlating how users feel with what we measure.",
+      "order": 60
+    }
+  ],
+  "foundationFeatures": [
+    {
+      "id": "f_collect_endpoint",
+      "name": "Endpoint telemetry",
+      "group": "collect",
+      "description": "The Nexthink Collector is a lightweight agent implemented as a kernel-mode driver with accompanying user-space service modules, installed on Windows and macOS endpoints. On Windows the kernel component is signed with a Microsoft-issued certificate; on macOS the agent holds an Apple Developer ID and passes Apple notarisation. The driver intercepts OS-level events directly at the kernel layer, capturing network connections made by applications that use kernel-mode networking — traffic invisible to user-space monitors. Each functional concern is handled by a dedicated module: device performance monitoring, network connectivity tracking, user session recording, software inventory, employee engagement delivery, and remote action execution. The Collector samples device state every 20–30 seconds and aggregates readings into 5- or 15-minute time slices before transmitting them to Nexthink's cloud infrastructure over an encrypted TCP channel. If connectivity is lost, the agent buffers up to 15 minutes of event packets (capped at 2,500 packets) in memory and retries; for persistent telemetry such as software inventory events, local disk persistence guarantees delivery for up to 7 days. Configuration changes and version updates are applied without an OS restart and without interrupting end-user sessions. The agent operates with negligible CPU and memory overhead, transmitting aggregated structured payloads rather than raw packet captures.",
+      "order": 10
+    },
+    {
+      "id": "f_network",
+      "name": "Network data",
+      "group": "collect",
+      "description": "Network data collection in Nexthink is performed by the Collector kernel driver running on each endpoint. Because the driver operates at the kernel layer, it observes both user-space and kernel-mode network activity, capturing outgoing TCP connections and UDP datagrams invisible to user-space tools. For each connection, the Collector records the destination IP address, port, protocol, bytes transferred, and owning process. DNS resolution is tracked at the OS resolver level: when an application calls the OS DNS API, the Collector correlates the resolved domain name with subsequent connections, attaching the human-readable hostname to each connection event. If an application bypasses the OS resolver, the domain is not reported unless it can be retrieved from the TLS Server Name Indication (SNI) field. All captured data is stored in the NQL connection.events table, enabling queries across TCP initiation times, durations, volumes, and error codes. The Collector sampling cycle runs every 20–30 seconds and aggregates connection activity into 5-minute or 15-minute time slices before transmitting them to the Nexthink cloud backend. A change in network interface — such as switching from Wi-Fi to Ethernet — does not interrupt collection; the Collector adapts transparently. Network data is correlated server-side with application and device telemetry, enabling queries that link network errors directly to specific processes, users, and device configurations.",
+      "order": 11
+    },
+    {
+      "id": "f_collabex",
+      "name": "Collaboration Experience",
+      "group": "collect",
+      "description": "Nexthink Collaboration Experience collects call-quality data by connecting to the Microsoft Teams and Zoom vendor APIs via dedicated inbound connectors configured in the Nexthink administration console. For Microsoft Teams, the connector is granted the application permission CallRecords.Read.All against the Microsoft Graph API, pulling the full callRecord object for every completed call or online meeting across the tenant. For Zoom, the connector is scoped to meeting:read:admin and dashboard_meetings:read:admin, retrieving per-participant statistics including audio jitter, packet loss, latency, and video and screen-share quality scores from two Zoom API endpoints. Nexthink ingests this vendor telemetry and stores it in the NQL data model under the collaboration namespace, joined server-side with endpoint telemetry collected by the Collector on each participant's device — including CPU load, memory pressure, network interface state, and driver events recorded during the same time window. A unified call.quality metric is computed from the combined signal set, classifying each participant session as good, poor, or unclassified. Collaboration Experience dashboards surface call quality trends at organisational, group, device, and individual call levels. A correlations view groups users experiencing poor quality by location, device model, hardware peripheral, or network profile, enabling IT teams to identify whether a quality issue is systemic or isolated.",
+      "order": 12
+    },
+    {
+      "id": "f_collect_sentiment",
+      "name": "Employee sentiment surveys",
+      "group": "collect",
+      "description": "Nexthink Engage delivers in-context employee surveys — called Campaigns — through the Collector agent already running on the endpoint. The Collector's engagement module renders lightweight survey prompts directly on the employee's desktop as native or web-based notification popups, without requiring a separate application. Campaign triggers are evaluated on a schedule, based on a detected device or application event, or via an external HTTP API call from a third-party system. Event-based triggers are evaluated against NQL conditions: a campaign fires when the Collector reports that a device boot time has exceeded a threshold, or when a specific application crash event is recorded. When the trigger condition is met, the backend dispatches the campaign payload to the corresponding Collector agents. The payload can include dynamic parameters derived from the triggering event, making each prompt contextually specific to the recipient's situation. Employees respond to one or more questions — rating scales, multiple choice, or free text — within the desktop notification. Responses are transmitted back to the Nexthink cloud in real time and stored alongside the technical telemetry record that triggered the campaign. In the analytics layer, response data is correlated with device performance metrics, enabling cross-reference of subjective experience ratings with objective indicators such as crash frequency, application load time, or network error rates.",
+      "order": 30
+    },
+    {
+      "id": "f_collect_external",
+      "name": "External connectors",
+      "group": "collect",
+      "description": "Nexthink integrates with third-party IT systems through a two-directional connector framework consisting of inbound connectors, outbound connectors, and connector Thinklets. Inbound connectors pull data from external platforms into the Nexthink data model on a scheduled or event-driven basis. The Microsoft Entra ID connector authenticates via OAuth 2.0 against the Microsoft Graph API and imports identity attributes — department, manager, job title, group membership — mapped onto device and user records in NQL. The Microsoft Intune connector uses the Graph API to retrieve device compliance state, enrollment status, and policy assignments. The ServiceNow Incidents inbound connector synchronises incident records, enabling correlation of open tickets with device health data. Outbound connectors push Nexthink data to external systems. The webhook engine evaluates NQL alert conditions continuously; when a condition is met, it constructs an HTTP POST payload and delivers it to a configured REST endpoint — automatically opening a ServiceNow incident or updating a Jira ticket. The HTTP API Exporter extends this with scheduled bulk exports: administrators define NQL queries that select device, user, software, or connection records, and the exporter serialises results to external REST APIs, including the ServiceNow CMDB. Connector credentials are stored centrally in the Nexthink administration console and referenced by name in connector and webhook configurations.",
+      "order": 40
+    },
+    {
+      "id": "f_corr_ai",
+      "name": "AI insights & anomaly",
+      "group": "correlate",
+      "description": "Nexthink AI Insights operates as an analysis layer built on top of the telemetry platform, using large language models deployed within an AWS-hosted environment in the customer's geographical region — no data crosses that regional boundary. When a user opens an AI Insights surface, the platform executes a multi-step pipeline. In the data collection step, relevant telemetry slices are assembled: device performance metrics, application crash records, VDI session statistics, network error logs, and employee sentiment scores for the target scope and time window. In the AI processing step, this structured context is passed to the LLM along with a task-specific prompt that instructs the model to identify trends, classify topic clusters, detect anomalies, or rank contributing factors. The model's output is post-processed into structured summaries, anomaly flags, and ranked recommendations rendered in the Nexthink UI. For anomaly detection, Nexthink cross-references endpoint telemetry against anonymised aggregated signals drawn from over 15 million endpoints under management globally, enabling statistical outlier detection that compares a customer's observed metric distributions against the broader Nexthink fleet baseline. Specific anomaly types include latency spikes and slow login sequences in VDI sessions, CPU and memory anomalies correlated with binary versions or configurations, and application crash rate deviations. All LLM inference occurs entirely within the customer's regional AWS environment.",
+      "order": 60
+    },
+    {
+      "id": "f_corr_dex_score",
+      "name": "DEX score",
+      "group": "govern",
+      "description": "The DEX Score is a composite metric computed daily by the Nexthink platform to quantify the overall digital experience of employees. It is structured as a weighted combination of two top-level scores: a Technology score and a Sentiment score. The Technology score is itself composed of three subscores — Endpoint, Applications, and Collaboration — each derived from hard metrics collected by the Collector agent on employee devices. The Endpoint subscore reflects device reliability and performance, measuring indicators such as system boot times, crash frequencies, and OS stability. The Applications subscore captures the smoothness and response times of business applications. The Collaboration subscore measures the quality of tools such as Microsoft Teams and Zoom. Each subscore is calculated once per day at 00:00 UTC based on data aggregated over a rolling seven-day window, producing a value between 0 and 100. The Sentiment score is collected through a dedicated DEX campaign delivered to employees via the Collector, using only replies received within the last 30 days. The platform maps all final scores to three experience bands: Frustrating (0–30), Average (31–70), and Good (71–100). Score values are surfaced in the Infinity portal through the Digital Experience Overview dashboard and are queryable via NQL from the dedicated DEX score tables, enabling filtering and segmentation by device, user, location, or organisational unit.",
+      "order": 70
+    },
+    {
+      "id": "f_act_dashboards",
+      "name": "Live dashboards",
+      "group": "correlate",
+      "description": "Nexthink Live Dashboards is a drag-and-drop dashboard builder embedded in the Infinity portal that constructs custom data visualisations using Nexthink Query Language (NQL) as the data retrieval layer. Each widget is backed by an NQL query that executes against the platform data store at render time, returning aggregated or raw records from any namespace — devices, users, applications, connections, alerts, and more. The builder supports multiple widget types including tables, bar charts, line charts, pie charts, scorecards, and geographic maps. Dashboards are classified into two modes: operational dashboards, which query high-resolution event data with retention of up to eight days, and reporting dashboards, which query trend data aggregated into one-day or seven-day samples stored for up to 13 months. Trend data is first defined through a separate Custom Trend NQL definition that stores aggregations in the platform, then a widget-level NQL definition surfaces that stored data — separating collection from presentation to reduce compute overhead. Newly created dashboards are private by default and can be shared with specific users or roles. Dashboards can be imported and exported as JSON packages, and pre-built dashboards ship with Library Packs. Operators can apply NQL-based filters at the dashboard level to scope all widgets simultaneously, and individual widgets support click-through drill-down that launches an Investigation scoped to the selected data point.",
+      "order": 80
+    },
+    {
+      "id": "f_investigations",
+      "name": "Investigations",
+      "group": "correlate",
+      "description": "Investigations in Nexthink Infinity is an ad hoc query interface powered by the Nexthink Query Language (NQL), a purpose-built read-only query language operating against the platform's central data store. NQL uses a namespace-and-table data model that mirrors the structure of data collected by the Collector: primary namespaces include device, user, application, connection, execution, alert, campaign, and agent, each containing typed fields. The Collector continuously captures hardware inventory, software installation events, process executions, network connections, crashes, logon events, and performance counters, streaming this telemetry to the cloud-hosted data platform. Every NQL query begins with a FROM-style table declaration, followed by optional filter, aggregation, grouping, and ordering clauses, with a maximum query length of 16,000 characters. High-resolution event tables such as execution.events and connection.events retain data for up to eight days; entity and aggregated tables retain data for 30 days; trend tables hold up to 13 months. Queries execute in the NQL editor within the Investigations module and return results in near real time. Tables can be joined to correlate data across namespaces — for example, linking device performance data with user identity and application usage in a single query. NQL also underpins widget definitions in Live Dashboards, campaign audience targeting, alert monitor conditions, and data exporter payloads, making it the unified query layer across the entire platform.",
+      "order": 81
+    },
+    {
+      "id": "f_act_remediation",
+      "name": "Remote Actions & Workflows",
+      "group": "act",
+      "description": "Remote Actions allows IT teams to execute scripts on managed endpoints through the Collector agent without requiring direct network access or physical presence. Scripts are authored in PowerShell on Windows and Shell or Python on macOS, and must be signed with either a Nexthink-issued certificate or a company certificate listed in the device's Trusted Publishers store before the Collector will execute them. When a remote action is triggered, the platform pushes the signed script payload to the Collector on the targeted device; the Collector validates the signature and runs the script according to the device's PowerShell execution policy, then captures declared output variables and writes them back to the Nexthink data layer, where they become queryable via NQL and visible on dashboards. Remote actions can be triggered manually from the Investigations or device detail views, on a scheduled basis defined by an NQL query, via the Nexthink public REST API, or as a Thinklet within an automated Workflow. The Remote Action Thinklet in Workflows supports parameterised execution, allowing dynamic values from the workflow context to be passed as script inputs. Workflows chain multiple Thinklets — including remote actions, campaigns, and conditional logic — into multi-step automated remediation pipelines triggered by alerts or external events.",
+      "order": 90
+    },
+    {
+      "id": "f_act_campaign",
+      "name": "In-App guidance",
+      "group": "act",
+      "description": "Nexthink Campaigns is a bidirectional communication system that delivers interactive notifications to employees via the Collector agent on their devices. When a campaign is published, the platform evaluates an NQL-defined target audience query to identify the set of users or user-device pairs that should receive it — starting from the users table for global targeting across all devices, or from the devices table to target users on specific devices with performance issues. The campaign payload is pushed from the platform to the Collector on each targeted device, which renders the notification in the bottom-right corner on Windows and top-right on macOS. Campaigns support multiple question types including opinion scales, multiple choice, and free text, and employees respond directly within the notification UI. Responses flow back to the platform and are stored in the campaign.responses table, queryable via NQL. Trigger models include Manual, Scheduled, Workflow-embedded, and API-triggered; the Scheduled trigger re-evaluates the NQL audience query every 24 hours so only employees who have not yet responded continue to receive the campaign. Urgent campaigns bypass focus protection and rate-limiting rules to ensure time-sensitive delivery. The Workflow trigger integrates campaigns as a Thinklet within automated remediation pipelines, enabling the platform to inform users of an ongoing action before or after a remote action executes. Campaign delivery and response data are also accessible programmatically through the Nexthink Campaigns REST API.",
+      "order": 100
+    },
+    {
+      "id": "f_act_api",
+      "name": "APIs, Data Exporter & webhooks",
+      "group": "govern",
+      "description": "Nexthink exposes its data and capabilities to external systems through three integration mechanisms: a REST API, the HTTP API Exporter, and Webhooks. The Nexthink public REST API allows external applications to read platform data, trigger remote actions, fire campaigns, and query NQL programmatically over HTTPS using OAuth 2.0 bearer token authentication; this API is used to integrate Nexthink with ITSM platforms and chatbot frameworks. The HTTP API Exporter is a scheduled push mechanism that executes a configured NQL query on a defined interval and sends the resulting dataset to a target HTTP endpoint in batched JSON payloads; when a query returns more than 1,000 records, the platform segments results into batches of 1,000 and dispatches them sequentially, up to one million records per run. A built-in throttling mechanism limits throughput to 3.33 batches per second to protect downstream systems from overload. Supported target systems include SIEMs such as Splunk, CMDB platforms, AIOps tools, monitoring pipelines, and Azure Event Hubs. Webhooks are event-driven outbound connectors that fire an HTTP POST to a configured URL whenever a specified Nexthink event occurs, such as an alert threshold breach or a campaign response. Each webhook is configured with an HTTP method, a resource path, and a JSON payload template. Credentials for all outbound connectors are managed centrally through the Connector Credentials store.",
+      "order": 110
+    },
+    {
+      "id": "f_gov_rbac",
+      "name": "RBAC & data residency",
+      "group": "govern",
+      "description": "Nexthink Infinity implements role-based access control through a layered permission model administered from Account Management. Each role carries two distinct configurations: a permissions set and a view domain. The permissions set defines what a user can do at both feature and content levels, including viewing dashboards, editing NQL investigations, triggering remote actions, managing campaigns, and accessing administrative functions such as creating connectors or managing licences. The view domain defines the data scope a role can see — scoped to specific entities, regions, or departments, or granting full access. Administrator accounts retain rights to create and manage users, assign roles, configure the platform, and manage the licence. The audit trail captures all administrative actions performed within the platform. Each auditable event is assigned a standardised code covering user creation, modification, deletion, role assignment, permission grant, and revocation. Audit log data is queryable directly via NQL and can be exported to third-party SIEM and IT Ops systems via the HTTP API Exporter, which supports batched delivery at up to 3.33 batches per second. The platform is hosted on AWS across multiple geographic regions, including EU, UK, US, UAE, Switzerland, and Australia. Customers select a single region at deployment time to satisfy data residency requirements. All AI model processing via Nexthink Assist is also confined to the AWS region aligned with the customer deployment. Data at rest is encrypted using AES-256 with an additional unique encryption key layer applied by Nexthink.",
+      "order": 130
+    },
+    {
+      "id": "f_ai_tools",
+      "name": "AI tools",
+      "group": "govern",
+      "description": "Nexthink AI Tools monitoring collects and aggregates AI application usage data from three complementary sources, surfacing the combined dataset through dedicated dashboards in the Infinity platform. The first source is the Collector agent at version 25.5.1 or later, which captures focus_time telemetry indicating when an employee is actively interacting with a foreground desktop application; for desktop-based AI tools, focus_time is used to estimate AI-engaged time. The second source is the Nexthink browser extension at version 25.8.1 or newer, which tracks web-based AI tool usage in supported browsers. The third source is a purpose-built inbound connector for Microsoft Copilot, which ingests usage event data for Copilot across Microsoft 365 applications. The Microsoft Entra ID connector runs in parallel to retrieve user licence data and tag each Copilot interaction as originating from a free or licensed account. AI-engaged time is computed in 15-minute intervals: any number of interactions within a single 15-minute bucket counts as exactly 15 minutes. The system aggregates data weekly and segments employees into four behavioural quadrants based on engagement time and frequency: Champions, Deep Divers, Regulars, and Explorers. Dashboards display week-over-week trends, a heatmap of engagement by department and application, tool adoption rates, and sentiment feedback collected via built-in Collector campaigns. Administrators configure which AI tools to track through the AI Tools configuration interface.",
+      "order": 140
+    },
+    {
+      "id": "f_spark",
+      "name": "Spark",
+      "group": "act",
+      "description": "Nexthink Spark is an agentic AI resolution engine embedded within the Infinity platform that enables employees to resolve IT issues autonomously through natural language interaction. Employees interact with Spark through a chat interface accessible directly on their endpoint device. When an employee submits a problem description, Spark interprets the intent using an AI language model and maps it to a resolution workflow. The engine queries live DEX telemetry from the Nexthink platform — including real-time device configuration, application performance data, and endpoint state — to evaluate the most likely root cause. Based on this diagnosis, Spark selects from a library of IT-approved actions in two categories: diagnostic actions, which collect real-time information about device state, and remediation actions, which apply direct fixes such as resetting application settings or clearing caches. All actions are pre-approved and governed by IT administrators who configure which actions Spark is permitted to execute. Spark stores a contextId and taskId per conversation to maintain session continuity across multi-turn interactions. IT teams can integrate Spark into existing conversational platforms such as ServiceNow or Microsoft Teams using the Agent-to-Agent API, which uses an OAuth client credential flow against the Spark A2A REST API endpoint, or the Spark Handoff API for non-A2A-capable chatbots. NQL-based data model tables store Spark-user interaction logs, making conversation and resolution data queryable for IT analytics. Each user is identified by their userPrincipalName passed in API request metadata.",
+      "order": 150
+    },
+    {
+      "id": "f_mobile",
+      "name": "Mobile Experience",
+      "group": "collect",
+      "description": "Nexthink Mobile Experience extends the Infinity platform's monitoring capabilities to iOS and Android devices through a lightweight native mobile application and integration with Unified Endpoint Management solutions. The Nexthink Mobile app is distributed via the Apple App Store and Google Play Store, or deployed silently through a UEM tool using managed app configuration. Once installed, the app runs continuously in the background and collects telemetry at regular intervals, transmitting updates to the Nexthink Infinity backend approximately every 15 minutes. The app captures device-level metrics including battery health, network connectivity stability, operating system version, storage state, and application performance data. This telemetry is sent directly to the customer's regional Nexthink cloud instance. In parallel, the Microsoft Intune connector for Mobile Devices optionally pulls compliance and enrollment data, including data from BYOD devices on which the Nexthink app cannot be installed. The combined dataset from the app and UEM connectors is stored in dedicated NQL data model tables containing fields for hardware specifications, OS details, network state, application data, and MDM supervision status. IT administrators query this data using NQL in any investigation-enabled surface within Infinity. A dedicated Mobile Device Monitoring dashboard aggregates the collected metrics and provides visualisations of fleet health, OS adoption, battery degradation, and connectivity issues, with full customisation to surface the metrics most relevant to the organisation.",
+      "order": 160
+    },
+    {
+      "id": "f_workspace",
+      "name": "Workspace",
+      "group": "govern",
+      "description": "Nexthink Workspace is the conversational AI interface for IT operators within the Infinity platform, powered by the Nexthink Assist AI model. It provides a persistent, context-aware chat environment through which IT teams can investigate environment conditions, retrieve device and user data, analyse application performance, and initiate platform actions using natural language prompts. When a user submits a query, Nexthink Assist interprets the request using an AWS-hosted AI model, then selects one or more tools to fulfil the request: running NQL queries against the data platform, consulting indexed Nexthink documentation, generating campaigns, or retrieving configuration objects. When a visualisation is requested, the system automatically constructs and executes the appropriate NQL investigation, retrieves the resulting data, and renders a chart with contextual annotations. The AI model infrastructure runs on AWS Bedrock within the customer's geographic region, using a combination of off-the-shelf and fine-tuned large language models including Anthropic Claude, Meta CodeLlama, and other AWS Bedrock models. Conversations are stateful: Workspace retains the full thread of the ongoing session so follow-up questions are resolved in context. Sessions are automatically persisted for 30 days from the last activity. The system is scoped to the permissions of the authenticated user, meaning NQL queries and data returned through Workspace respect the view domain configured on the user's assigned roles.",
+      "order": 170
+    },
+    {
+      "id": "f_exp_central",
+      "name": "Experience Central",
+      "group": "govern",
+      "description": "Experience Central is the strategic analytics module within Nexthink Infinity that aggregates and presents the Digital Employee Experience score alongside industry benchmarking data. At its core is the DEX score, a composite metric computed daily from two sub-scores: the Technology score and the Sentiment score. The Technology score is derived from Collector telemetry across three dimensions: Endpoint metrics covering hardware performance and OS health, Application metrics covering crashes, freezes, and responsiveness, and Collaboration tool metrics covering tools such as Microsoft Teams. The Sentiment score is produced from employee satisfaction survey responses collected via Nexthink Campaigns. The two sub-scores are merged into the overall DEX score surfaced in the Overview dashboard, with breakdowns by hardware model, OS version, department, and geographic entity. DEX score metrics are separated by device type to distinguish physical endpoints from VDI sessions, removing metrics irrelevant to virtual environments. The Benchmark dashboard provides industry comparison by querying a continuously maintained dataset of anonymised aggregated DEX metrics from the broader Nexthink customer base, refreshed weekly. Benchmark metrics are computed as mean values per device for most indicators and as median values per customer for Application Crashes and Freezes. The system assigns each organisation metric a label: Leading indicates performance more than 5 percent better than the selected industry cohort, Lagging more than 5 percent worse, and Normal falls within the plus-or-minus 5 percent band.",
+      "order": 171
+    },
+    {
+      "id": "f_amplify",
+      "name": "Amplify",
+      "group": "act",
+      "description": "Nexthink Amplify is a browser extension that embeds a contextual Nexthink intelligence widget directly inside any web-based IT service management tool, including ServiceNow Agent Workspace, ServiceNow Operations Workspace, and Jira. When an agent opens a ticket, Amplify uses configurable field selectors and URL pattern matching to extract device and user identifiers from the ITSM page DOM. Those identifiers are forwarded to the Nexthink backend, which returns real-time endpoint telemetry — hardware health, software events, network performance, and recent remote action history — rendered inside the Amplify sidebar panel without the agent leaving the ITSM interface. The inbound data flow is driven by the extension connecting to the Nexthink Infinity API using OAuth 2.0 connector credentials (Access token URL, Client ID, Client secret, and Scope). The outbound data flow is achieved through webhook configuration: after a support agent triggers a remote action or workflow from within the Amplify panel, Nexthink fires a configured webhook upon execution start and again upon completion, automatically appending result details to the ServiceNow incident ticket log or Jira comment thread. The webhook payload is structured to match the target ITSM object schema and is sent via HTTPS POST using the same connector credential. Administrators configure field selectors per web application URL pattern, enabling Amplify to support multiple ITSM instances and custom portals simultaneously.",
+      "order": 180
+    },
+    {
+      "id": "f_library",
+      "name": "Content library",
+      "group": "correlate",
+      "description": "The Nexthink Content Library is an online repository integrated into the Infinity platform from which administrators browse, install, and manage pre-built content packs called library packs. Each library pack is a versioned, self-describing bundle grouping related content items by use case — for example, a Citrix CVAD Essentials pack or a Wi-Fi Diagnostics pack. Content items within a pack can be of several types: NQL-based dashboards, monitors (alert definitions), remote actions (PowerShell or Bash scripts), campaigns (employee engagement surveys), and custom fields. Library packs expose metadata including description, version number, and inter-item dependencies, allowing the platform to validate that all prerequisites are present before installation. When an administrator clicks Install, the platform resolves dependencies and provisions all required objects into the tenant, making them immediately available for use. Role-based access control gates installation: deploying a pack containing remote actions requires the Manage all remote actions permission, while dashboards require Manage all dashboards. The library is maintained by Nexthink and updated independently of the core platform release cycle, meaning new packs and updated versions become available without a platform upgrade. Once installed, individual content items can be customised — for instance, editing monitor thresholds or modifying NQL queries — while retaining traceability to the original pack version, separating the delivery of operational knowledge from platform code.",
+      "order": 190
+    },
+    {
+      "id": "f_appex",
+      "name": "Application Experience",
+      "group": "collect",
+      "description": "Nexthink Application Experience performs real-user monitoring of both web and desktop applications by collecting telemetry from the endpoint through the Collector agent and, for browser-based applications, through companion browser extensions installed on managed devices. For web applications, the browser extension instruments HTTP/HTTPS traffic and DOM events to capture page load timing, transaction durations, and reliability signals (error rates, failed requests) without requiring changes to application code or servers. Page loads measure the time from navigation initiation to the page being interactive, while transactions capture state changes within single-page applications that do not trigger a full navigation event. For desktop applications, the Collector observes process-level performance data including CPU usage, memory consumption, crashes, and hangs at the application binary level. All collected metrics are timestamped at the endpoint and streamed to the Nexthink cloud, stored in the NQL data model under objects such as web.page_views and web.events. The platform aggregates these events into three monitoring dimensions — page loads, transactions, and reliability — and refreshes application overview dashboards every five minutes, reranking application groups based on the latest computed values. NQL-based dashboards expose predefined drill-downs, and the system calculates a time-lost metric that converts raw performance degradation figures into estimated minutes of lost user productivity, combining page load delays, transaction slowdowns, and reliability failures into a single impact score.",
+      "order": 200
+    },
+    {
+      "id": "f_vdi",
+      "name": "VDI Experience",
+      "group": "collect",
+      "description": "Nexthink VDI Experience monitors virtual desktop sessions across Citrix Virtual Apps and Desktops (CVAD), Citrix DaaS, VMware Horizon, and Microsoft Azure Virtual Desktop (AVD) by deploying lightweight agents at two points in the session topology: on the virtual machine and on the client endpoint. On the VM side, the standard Nexthink Collector is installed and collects resource utilisation metrics — CPU, memory, disk I/O — as well as session-level events from the guest OS. On the client side, administrators deploy either the full Collector for company-managed devices or the VDI Client Extension, designed for personal or unmanaged endpoints. The VDI Client Extension communicates with the Collector running on the VM using a Dynamic Virtual Channel (DVC), a multiplexed sub-channel embedded within the existing remote display protocol session — ICA/HDX for Citrix, Blast or PCoIP for VMware Horizon, and RDP for AVD. No additional network ports or firewall rules are required; all VDI telemetry is tunnelled inside the already-established session protocol. The data collected via DVC includes client-side metrics such as endpoint hardware health, local network latency, and peripheral responsiveness, correlated server-side with VM-level metrics. For Citrix environments, an inbound connector queries the Citrix Monitoring API via the Director service and PowerShell SDK, retrieving broker-level session metadata including logon duration breakdowns. All session data is stored with 30-second time-bucket granularity for the most recent 48 hours.",
+      "order": 220
+    },
+    {
+      "id": "f_alert",
+      "name": "Real-time alerts",
+      "group": "correlate",
+      "description": "Nexthink Alerts are driven by monitors, which are scheduled evaluation rules that run NQL queries against collected endpoint and application telemetry at configurable intervals ranging from 15 minutes to 7 days. Each monitor defines an NQL query that must include at least one computed or aggregated metric using a compute or summarize clause; the resulting numeric output is evaluated against a trigger condition. Three trigger detection modes are supported. Metric threshold fires when a metric value crosses a static user-defined bound. Metric change fires when the current value deviates from a rolling 7-day global average by more than a configured percentage, providing relative anomaly detection without requiring knowledge of absolute normal values. Metric seasonal change fires when the current value falls outside a time-of-day-aware baseline derived from the same hourly slot across the prior seven days, with sensitivity governed by a standard deviation band — making the system aware of daily and weekly usage patterns such as Monday morning login surges. Built-in monitors additionally support an Events detection method that triggers in real time on raw event streams. When a monitor condition is met, the platform generates an alert record and can dispatch notifications via email or outbound webhook to external systems such as ServiceNow or Slack. Alert impact analysis augments each triggered alert using an LLM that evaluates affected device count, entity scope, and breached metric, producing a categorised impact assessment covering employee productivity, business operations, and IT workload.",
+      "order": 250
+    },
+    {
+      "id": "f_diagnostic",
+      "name": "Automated diagnostics",
+      "group": "correlate",
+      "description": "When Nexthink triggers an alert, the platform automatically generates a Diagnostics page co-located with the alert record, providing a first-level root cause analysis without requiring manual investigation steps by the IT engineer. The Diagnostics page is composed of several auto-populated sections. At the top it displays the monitor name, the specific context entity that breached the threshold, and the primary monitored condition. A timeline panel visualises the metric trend around the alert event, enabling engineers to see whether the issue is isolated or part of a longer degradation pattern. The core of the automated analysis is a statistical insights engine that applies Bayesian inference to identify which device attributes — such as OS version, hardware model, installed software versions, network segment, or geographic location — are statistically over-represented among the affected devices compared to the unaffected population within the same tenant. The algorithm quantifies a likelihood score for each candidate attribute, ranking them from most to least probable contributor, so the first item in the insights list represents the strongest statistical differentiator. The engine supplements tenant-specific inference with anonymised cross-customer benchmarking data aggregated from Nexthink's cloud customer base, helping distinguish issues idiosyncratic to a specific environment from those following broader industry patterns. Engineers can apply filters by technical property, geographic location, or organisational entity directly on the Diagnostics page to narrow scope and validate hypotheses.",
+      "order": 260
+    }
+  ],
+  "valueCategories": [
+    {
+      "id": "vc_service_mgmt",
+      "name": "Service Management",
+      "color": "5B7FFF",
+      "tagline": "Reduce reactive workload and prevent disruptions",
+      "order": 10
+    },
+    {
+      "id": "vc_security",
+      "name": "Compliance",
+      "color": "0EA5E9",
+      "tagline": "Maintain posture, enforce standards, manage risk",
+      "order": 20
+    },
+    {
+      "id": "vc_workplace",
+      "name": "Asset Management",
+      "color": "F97316",
+      "tagline": "Right-size, optimize and rationalize IT assets",
+      "order": 30
+    },
+    {
+      "id": "vc_sustain",
+      "name": "Sustainability",
+      "color": "34D399",
+      "tagline": "Reduce carbon, energy and hardware procurement",
+      "order": 40
+    },
+    {
+      "id": "vc_dex",
+      "name": "Strategy",
+      "color": "A855F7",
+      "tagline": "Improve experience, revenue and talent retention",
+      "order": 50
+    },
+    {
+      "id": "vc_change",
+      "name": "Change & Transformation",
+      "color": "3B82F6",
+      "tagline": "De-risk migrations, adoptions and M&A activity",
+      "order": 60
+    }
+  ],
+  "personas": [
+    {
+      "id": "p_cio",
+      "name": "CIO / IT leadership",
+      "role": "Strategy & outcomes",
+      "icon": "leader",
+      "order": 10
+    },
+    {
+      "id": "p_workplace",
+      "name": "Workplace engineering",
+      "role": "Build & run",
+      "icon": "engineer",
+      "order": 20
+    },
+    {
+      "id": "p_servicedesk",
+      "name": "Service desk",
+      "role": "Resolve faster",
+      "icon": "support",
+      "order": 30
+    },
+    {
+      "id": "p_security",
+      "name": "Security & risk",
+      "role": "Posture & response",
+      "icon": "shield",
+      "order": 40
+    },
+    {
+      "id": "p_hr",
+      "name": "HR & People",
+      "role": "Employee experience",
+      "icon": "people",
+      "order": 50
+    },
+    {
+      "id": "p_finance",
+      "name": "Finance & procurement",
+      "role": "Spend & assets",
+      "icon": "coin",
+      "order": 60
+    }
+  ],
+  "useCases": [
+    {
+      "id": "uc_ct_budget",
+      "name": "Budgeting and planning",
+      "valueCategoryId": "vc_change",
+      "shortPitch": "Use real device and usage data to plan IT budgets with confidence.",
+      "valueDescription": "Nexthink provides IT leaders with the endpoint data they need to build credible, evidence-based IT budgets. Hardware age, performance degradation curves, application usage trends and support cost patterns all feed into more accurate refresh planning, license forecasting and infrastructure investment decisions — reducing variance and improving stakeholder confidence in IT spending.",
+      "benefitTypes": [
+        "IT time saved",
+        "Business costs saved"
+      ],
+      "customerStories": [
+        {
+          "title": "Honeywell: Running a Cost-Efficient Workplace",
+          "url": "https://nexthink.com/resource/honeywell-cost-efficient-workplace",
+          "customer": "Honeywell",
+          "industry": "Manufacturing",
+          "order": 1
+        },
+        {
+          "title": "German Manufacturer Saves $1.6M on Windows Migration",
+          "url": "https://nexthink.com/blog/migration-savings/",
+          "customer": "Anonymous",
+          "industry": "Manufacturing",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_act_dashboards",
+        "f_act_api",
+        "f_investigations"
+      ],
+      "personaIds": [
+        "p_cio",
+        "p_finance"
+      ],
+      "order": 10
+    },
+    {
+      "id": "uc_ct_transform",
+      "name": "Accelerate Transformation",
+      "valueCategoryId": "vc_change",
+      "shortPitch": "Track rollout velocity, adoption and experience impact for every transformation programme.",
+      "valueDescription": "When rolling out new technology — whether a cloud migration, desktop OS upgrade or collaboration platform switch — Nexthink provides real-time visibility into adoption velocity, experience impact and support demand. IT can run controlled pilots, measure the actual experience delta, and course-correct before full deployment, de-risking transformation programmes.",
+      "benefitTypes": [
+        "IT time saved",
+        "Business productivity"
+      ],
+      "customerStories": [
+        {
+          "title": "German Manufacturer Saves $1.6M on Windows Migration",
+          "url": "https://nexthink.com/blog/migration-savings/",
+          "customer": "Anonymous",
+          "industry": "Manufacturing",
+          "order": 1
+        },
+        {
+          "title": "Leidos Builds a Proactive IT Strategy with Nexthink",
+          "url": "https://nexthink.com/resource/leidos-builds-a-proactive-it-strategy-with-nexthink",
+          "customer": "Leidos",
+          "industry": "Defense & Technology",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_corr_ai",
+        "f_act_campaign",
+        "f_act_dashboards",
+        "f_library"
+      ],
+      "personaIds": [
+        "p_cio",
+        "p_workplace"
+      ],
+      "order": 20
+    },
+    {
+      "id": "uc_ct_ai_adopt",
+      "name": "AI & Digital Adoption",
+      "valueCategoryId": "vc_change",
+      "shortPitch": "Measure and boost adoption of AI tools and new digital capabilities.",
+      "valueDescription": "Deploying AI tools is only valuable if employees use them effectively. Nexthink tracks AI adoption at the individual, team and organisational level — identifying adoption barriers, running targeted enablement campaigns for low-usage cohorts, and measuring the productivity impact of AI tools to maximise the return on AI investments.",
+      "benefitTypes": [
+        "Business productivity",
+        "IT time saved"
+      ],
+      "customerStories": [
+        {
+          "title": "Secure AI Adoption at Scale with Nexthink Adopt",
+          "url": "https://nexthink.com/resource/empower-smarter-safer-ai-adoption-across-your-enterprise",
+          "customer": "Anonymous",
+          "industry": "Utilities",
+          "order": 1
+        },
+        {
+          "title": "How Leidos Is Building a Proactive, AI-Enabled IT Organization",
+          "url": "https://nexthink.com/resource/how-leidos-is-building-a-proactive-ai-enabled-it-organization",
+          "customer": "Leidos",
+          "industry": "Defense & Technology",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_ai_tools",
+        "f_collect_endpoint",
+        "f_act_campaign",
+        "f_act_dashboards"
+      ],
+      "personaIds": [
+        "p_cio",
+        "p_workplace"
+      ],
+      "order": 30
+    },
+    {
+      "id": "uc_ct_mna",
+      "name": "M&A Activity",
+      "valueCategoryId": "vc_change",
+      "shortPitch": "Accelerate IT integration after mergers and acquisitions with full estate visibility.",
+      "valueDescription": "During mergers and acquisitions, IT integration is a critical path item. Nexthink provides immediate visibility into the acquired organisation's technology estate — hardware inventory, software usage, performance baselines and compliance posture — enabling IT to plan integration, identify rationalisation opportunities, and execute the transition without disrupting business operations.",
+      "benefitTypes": [
+        "IT time saved",
+        "Business productivity",
+        "IT costs saved"
+      ],
+      "customerStories": [
+        {
+          "title": "How Honeywell Achieved M&A Efficiency with DEX Solutions",
+          "url": "https://nexthink.com/blog/how-honeywell-has-achieved-manda-efficiency-with-dex-solutions",
+          "customer": "Honeywell",
+          "industry": "Manufacturing",
+          "order": 1
+        },
+        {
+          "title": "German Manufacturer Saves $1.6M on Windows Migration",
+          "url": "https://nexthink.com/blog/migration-savings/",
+          "customer": "Anonymous",
+          "industry": "Manufacturing",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_collect_external",
+        "f_corr_ai",
+        "f_act_dashboards",
+        "f_act_api"
+      ],
+      "personaIds": [
+        "p_cio",
+        "p_finance"
+      ],
+      "order": 40
+    },
+    {
+      "id": "uc_str_experience",
+      "name": "Improve employee & customer Experience",
+      "valueCategoryId": "vc_dex",
+      "shortPitch": "Measure and improve the digital experience of every employee with a unified DEX score.",
+      "valueDescription": "Nexthink's DEX Score aggregates thousands of endpoint signals — performance, application reliability, connectivity quality and employee sentiment — into a single actionable measure of digital experience. IT leaders can track experience trends across the enterprise, segment by persona, location or device type, and correlate DEX improvements with business outcomes.",
+      "benefitTypes": [
+        "Overall employee experience",
+        "Business productivity",
+        "Company reputation"
+      ],
+      "customerStories": [
+        {
+          "title": "How Campbell's Transforms its Digital Workplace with DEX Score",
+          "url": "https://nexthink.com/blog/how-to-measure-digital-employee-experience",
+          "customer": "Campbell's",
+          "industry": "Consumer Goods",
+          "order": 1
+        },
+        {
+          "title": "Johnson & Johnson: A Frictionless IT Experience",
+          "url": "https://nexthink.com/resource/johnson-johnson-a-frictionless-it-experience",
+          "customer": "Johnson & Johnson",
+          "industry": "Healthcare",
+          "order": 2
+        },
+        {
+          "title": "Fortune 500 Healthcare Cracks Their IT Problems Once and For All",
+          "url": "https://nexthink.com/resource/fortune-500-healthcare-case-study",
+          "customer": "Anonymous",
+          "industry": "Healthcare",
+          "order": 3
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_collect_sentiment",
+        "f_corr_dex_score",
+        "f_exp_central",
+        "f_act_dashboards"
+      ],
+      "personaIds": [
+        "p_cio",
+        "p_hr"
+      ],
+      "order": 10
+    },
+    {
+      "id": "uc_str_revenue",
+      "name": "Increase Revenue",
+      "valueCategoryId": "vc_dex",
+      "shortPitch": "Link employee digital experience to business productivity and revenue outcomes.",
+      "valueDescription": "Research consistently shows that employees with better digital experiences are more productive and more engaged. Nexthink enables organisations to quantify this link — correlating DEX scores with productivity metrics, output quality and revenue per employee — building the business case for IT investment in terms that resonate with the CFO and CEO.",
+      "benefitTypes": [
+        "Business productivity",
+        "Business costs saved"
+      ],
+      "customerStories": [
+        {
+          "title": "Honeywell: Running a Cost-Efficient Workplace",
+          "url": "https://nexthink.com/resource/honeywell-cost-efficient-workplace",
+          "customer": "Honeywell",
+          "industry": "Manufacturing",
+          "order": 1
+        },
+        {
+          "title": "A Year in the Life of a Nexthink Customer",
+          "url": "https://nexthink.com/en/resource/a-year-in-the-life-of-a-nexthink-customer",
+          "customer": "Anonymous",
+          "industry": "Financial Services",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_corr_ai",
+        "f_act_dashboards",
+        "f_act_api"
+      ],
+      "personaIds": [
+        "p_cio",
+        "p_finance"
+      ],
+      "order": 20
+    },
+    {
+      "id": "uc_str_data",
+      "name": "Become Data Driven",
+      "valueCategoryId": "vc_dex",
+      "shortPitch": "Build a data platform for IT decisions that eliminates guesswork and opinion.",
+      "valueDescription": "Nexthink transforms IT from a cost centre into a data-driven business partner by providing contextual, real-time data on the digital workplace. By integrating endpoint intelligence with ITSM, HR and business systems, IT leaders can make strategic decisions about technology investments, workforce productivity and operational risk based on evidence rather than opinion.",
+      "benefitTypes": [
+        "Business productivity",
+        "IT time saved"
+      ],
+      "customerStories": [
+        {
+          "title": "AXA Unlocks the Power of Enterprise IT Visibility",
+          "url": "https://nexthink.com/en/resource/axa-unlocks-the-power-of-enterprise-it-visibility",
+          "customer": "AXA",
+          "industry": "Insurance",
+          "order": 1
+        },
+        {
+          "title": "A Year in the Life of a Nexthink Customer",
+          "url": "https://nexthink.com/en/resource/a-year-in-the-life-of-a-nexthink-customer",
+          "customer": "Anonymous",
+          "industry": "Financial Services",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_act_dashboards",
+        "f_act_api",
+        "f_investigations"
+      ],
+      "personaIds": [
+        "p_cio",
+        "p_workplace"
+      ],
+      "order": 30
+    },
+    {
+      "id": "uc_str_talent",
+      "name": "Attract & Retain Talent",
+      "valueCategoryId": "vc_dex",
+      "shortPitch": "Use digital experience as a talent differentiator to reduce attrition.",
+      "valueDescription": "Digital experience is increasingly a talent differentiator — employees cite poor technology as a top reason for leaving. Nexthink enables IT to measure, track and improve the employee technology experience at scale, giving HR and leadership teams a credible story for employer branding, onboarding quality and reducing IT-related attrition.",
+      "benefitTypes": [
+        "Overall employee experience",
+        "Company reputation"
+      ],
+      "customerStories": [
+        {
+          "title": "Johnson & Johnson: A Frictionless IT Experience",
+          "url": "https://nexthink.com/resource/johnson-johnson-a-frictionless-it-experience",
+          "customer": "Johnson & Johnson",
+          "industry": "Healthcare",
+          "order": 1
+        },
+        {
+          "title": "Fortune 500 Healthcare Cracks Their IT Problems Once and For All",
+          "url": "https://nexthink.com/resource/fortune-500-healthcare-case-study",
+          "customer": "Anonymous",
+          "industry": "Healthcare",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_sentiment",
+        "f_corr_dex_score",
+        "f_exp_central",
+        "f_act_campaign"
+      ],
+      "personaIds": [
+        "p_hr",
+        "p_cio"
+      ],
+      "order": 40
+    },
+    {
+      "id": "uc_str_xla",
+      "name": "XLA Methodology",
+      "valueCategoryId": "vc_dex",
+      "shortPitch": "Shift from SLA compliance to experience-level agreements that measure what users actually feel.",
+      "valueDescription": "Experience Level Agreements shift IT's accountability from measuring response times to measuring the quality of experience employees actually have. Nexthink provides the continuous observability layer that makes XLAs operational — combining performance telemetry, sentiment data and proactive issue detection to give IT teams a real-time view of whether they are delivering on experience commitments.",
+      "benefitTypes": [
+        "Overall employee experience",
+        "Business productivity"
+      ],
+      "customerStories": [
+        {
+          "title": "How Campbell's Transforms its Digital Workplace with DEX Score",
+          "url": "https://nexthink.com/blog/how-to-measure-digital-employee-experience",
+          "customer": "Campbell's",
+          "industry": "Consumer Goods",
+          "order": 1
+        },
+        {
+          "title": "A Year in the Life of a Nexthink Customer",
+          "url": "https://nexthink.com/en/resource/a-year-in-the-life-of-a-nexthink-customer",
+          "customer": "Anonymous",
+          "industry": "Financial Services",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_collect_sentiment",
+        "f_corr_dex_score",
+        "f_exp_central",
+        "f_act_dashboards"
+      ],
+      "personaIds": [
+        "p_cio",
+        "p_hr",
+        "p_workplace"
+      ],
+      "order": 50
+    },
+    {
+      "id": "uc_comp_sec_posture",
+      "name": "Improve security posture",
+      "valueCategoryId": "vc_security",
+      "shortPitch": "Continuously assess and harden endpoint security across the entire fleet.",
+      "valueDescription": "Nexthink provides continuous, real-time visibility into the security posture of every managed endpoint. By surfacing configuration gaps, missing patches, and policy drift across the fleet, IT security teams can proactively identify and close vulnerabilities before they are exploited — dramatically reducing audit preparation time and improving overall compliance scores.",
+      "benefitTypes": [
+        "Risk avoidance",
+        "IT costs saved",
+        "Company reputation"
+      ],
+      "customerStories": [
+        {
+          "title": "AXA Unlocks the Power of Enterprise IT Visibility",
+          "url": "https://nexthink.com/en/resource/axa-unlocks-the-power-of-enterprise-it-visibility",
+          "customer": "AXA",
+          "industry": "Insurance",
+          "order": 1
+        },
+        {
+          "title": "Leidos Builds a Proactive IT Strategy with Nexthink",
+          "url": "https://nexthink.com/resource/leidos-builds-a-proactive-it-strategy-with-nexthink",
+          "customer": "Leidos",
+          "industry": "Defense & Technology",
+          "order": 2
+        },
+        {
+          "title": "Fortune 500 Healthcare Cracks Their IT Problems Once and For All",
+          "url": "https://nexthink.com/resource/fortune-500-healthcare-case-study",
+          "customer": "Anonymous",
+          "industry": "Healthcare",
+          "order": 3
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_corr_ai",
+        "f_act_dashboards",
+        "f_act_remediation",
+        "f_act_api"
+      ],
+      "personaIds": [
+        "p_security",
+        "p_workplace"
+      ],
+      "order": 10
+    },
+    {
+      "id": "uc_comp_standards",
+      "name": "Enforce corporate standards",
+      "valueCategoryId": "vc_security",
+      "shortPitch": "Detect and auto-remediate policy drift the moment it occurs.",
+      "valueDescription": "Nexthink continuously monitors endpoint configurations against corporate SOE standards and automatically remediates deviations at scale. When a device drifts from policy — through a user action, software update, or OS change — Nexthink detects it instantly and can trigger a self-healing action or alert the relevant team, maintaining compliance without manual intervention.",
+      "benefitTypes": [
+        "Risk avoidance",
+        "IT costs saved"
+      ],
+      "customerStories": [
+        {
+          "title": "AXA Unlocks the Power of Enterprise IT Visibility",
+          "url": "https://nexthink.com/en/resource/axa-unlocks-the-power-of-enterprise-it-visibility",
+          "customer": "AXA",
+          "industry": "Insurance",
+          "order": 1
+        },
+        {
+          "title": "How Leidos Is Building a Proactive, AI-Enabled IT Organization",
+          "url": "https://nexthink.com/resource/how-leidos-is-building-a-proactive-ai-enabled-it-organization",
+          "customer": "Leidos",
+          "industry": "Defense & Technology",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_act_remediation",
+        "f_act_dashboards",
+        "f_gov_rbac"
+      ],
+      "personaIds": [
+        "p_security",
+        "p_workplace"
+      ],
+      "order": 20
+    },
+    {
+      "id": "uc_comp_human_risk",
+      "name": "Manage Human Risk",
+      "valueCategoryId": "vc_security",
+      "shortPitch": "Identify risky user behaviours and intervene with targeted in-app guidance.",
+      "valueDescription": "Nexthink monitors employee behaviours that introduce security risk — from shadow IT tool adoption to unsafe browsing and policy bypasses. When risky patterns are detected, IT can deploy targeted in-app campaigns to educate and redirect employees in the moment, reducing human-caused security incidents without heavy-handed enforcement.",
+      "benefitTypes": [
+        "Risk avoidance",
+        "Company reputation"
+      ],
+      "customerStories": [
+        {
+          "title": "AXA Unlocks the Power of Enterprise IT Visibility",
+          "url": "https://nexthink.com/en/resource/axa-unlocks-the-power-of-enterprise-it-visibility",
+          "customer": "AXA",
+          "industry": "Insurance",
+          "order": 1
+        },
+        {
+          "title": "Leidos Builds a Proactive IT Strategy with Nexthink",
+          "url": "https://nexthink.com/resource/leidos-builds-a-proactive-it-strategy-with-nexthink",
+          "customer": "Leidos",
+          "industry": "Defense & Technology",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_corr_ai",
+        "f_act_dashboards",
+        "f_collect_sentiment"
+      ],
+      "personaIds": [
+        "p_security",
+        "p_hr"
+      ],
+      "order": 30
+    },
+    {
+      "id": "uc_comp_data",
+      "name": "Data Integrity & Compliance",
+      "valueCategoryId": "vc_security",
+      "shortPitch": "Ensure data governance and integrity across all managed devices and systems.",
+      "valueDescription": "Nexthink tracks data flows, access patterns and application usage across managed devices to support GDPR, HIPAA and other data governance frameworks. By correlating endpoint telemetry with data classification policies, IT can identify where sensitive data is being handled outside approved processes and trigger remediation before a breach occurs.",
+      "benefitTypes": [
+        "Risk avoidance",
+        "IT costs saved",
+        "Company reputation"
+      ],
+      "customerStories": [
+        {
+          "title": "AXA Unlocks the Power of Enterprise IT Visibility",
+          "url": "https://nexthink.com/en/resource/axa-unlocks-the-power-of-enterprise-it-visibility",
+          "customer": "AXA",
+          "industry": "Insurance",
+          "order": 1
+        },
+        {
+          "title": "Fortune 500 Healthcare Cracks Their IT Problems Once and For All",
+          "url": "https://nexthink.com/resource/fortune-500-healthcare-case-study",
+          "customer": "Anonymous",
+          "industry": "Healthcare",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_act_api",
+        "f_gov_rbac",
+        "f_act_dashboards"
+      ],
+      "personaIds": [
+        "p_security",
+        "p_workplace",
+        "p_cio"
+      ],
+      "order": 40
+    },
+    {
+      "id": "uc_comp_ai",
+      "name": "AI Compliance",
+      "valueCategoryId": "vc_security",
+      "shortPitch": "Govern shadow AI tool usage and enforce AI policies across the workforce.",
+      "valueDescription": "As AI tool adoption accelerates, Nexthink provides full visibility into which AI applications employees are using — including unsanctioned tools. IT and security teams can monitor AI usage patterns, enforce governance policies, and run adoption campaigns for approved AI tools, ensuring responsible AI use across the workforce.",
+      "benefitTypes": [
+        "Risk avoidance",
+        "Company reputation"
+      ],
+      "customerStories": [
+        {
+          "title": "Secure AI Adoption at Scale with Nexthink Adopt",
+          "url": "https://nexthink.com/resource/empower-smarter-safer-ai-adoption-across-your-enterprise",
+          "customer": "Anonymous",
+          "industry": "Utilities",
+          "order": 1
+        },
+        {
+          "title": "How Leidos Is Building a Proactive, AI-Enabled IT Organization",
+          "url": "https://nexthink.com/resource/how-leidos-is-building-a-proactive-ai-enabled-it-organization",
+          "customer": "Leidos",
+          "industry": "Defense & Technology",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_ai_tools",
+        "f_collect_endpoint",
+        "f_act_dashboards",
+        "f_gov_rbac"
+      ],
+      "personaIds": [
+        "p_security",
+        "p_cio"
+      ],
+      "order": 50
+    },
+    {
+      "id": "uc_sm_reactive",
+      "name": "Reduce reactive workload",
+      "valueCategoryId": "vc_service_mgmt",
+      "shortPitch": "Shift from firefighting to prevention with AI-powered issue detection and auto-remediation.",
+      "valueDescription": "Nexthink gives IT full visibility to see, diagnose and fix issues before employees even notice them. By detecting recurring problems across the fleet — from crashes and connectivity drops to application freezes — IT can shift from reactive firefighting to proactive resolution, reducing inbound ticket volumes and shortening mean time to resolution.",
+      "benefitTypes": [
+        "IT time saved",
+        "IT costs saved",
+        "Business productivity"
+      ],
+      "customerStories": [
+        {
+          "title": "Western Union: From Reactive to Proactive",
+          "url": "https://nexthink.com/en/resource/western-union-testimonial",
+          "customer": "Western Union",
+          "industry": "Financial Services",
+          "order": 1
+        },
+        {
+          "title": "Fortune 500 Healthcare Cracks Their IT Problems Once and For All",
+          "url": "https://nexthink.com/resource/fortune-500-healthcare-case-study",
+          "customer": "Anonymous",
+          "industry": "Healthcare",
+          "order": 2
+        },
+        {
+          "title": "How Leidos Is Building a Proactive, AI-Enabled IT Organization",
+          "url": "https://nexthink.com/resource/how-leidos-is-building-a-proactive-ai-enabled-it-organization",
+          "customer": "Leidos",
+          "industry": "Defense & Technology",
+          "order": 3
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_corr_ai",
+        "f_act_dashboards",
+        "f_alert",
+        "f_diagnostic"
+      ],
+      "personaIds": [
+        "p_servicedesk",
+        "p_workplace"
+      ],
+      "order": 10
+    },
+    {
+      "id": "uc_sm_automation",
+      "name": "Proactive Automation",
+      "valueCategoryId": "vc_service_mgmt",
+      "shortPitch": "Automate repetitive IT tasks and runbooks to free agents for high-value work.",
+      "valueDescription": "Nexthink automates the detection and resolution of recurring issues and problems at scale, utilizing self-help and self-heal capabilities. Shifting to proactive IT improves operational efficiency and reduces the cost of delivering IT services, freeing up service desk resources for higher-value work.",
+      "benefitTypes": [
+        "IT time saved",
+        "IT costs saved",
+        "Business productivity"
+      ],
+      "customerStories": [
+        {
+          "title": "Leidos Builds a Proactive IT Strategy with Nexthink",
+          "url": "https://nexthink.com/resource/leidos-builds-a-proactive-it-strategy-with-nexthink",
+          "customer": "Leidos",
+          "industry": "Defense & Technology",
+          "order": 1
+        },
+        {
+          "title": "How One Company Saved with a Single Self-Help Automation",
+          "url": "https://nexthink.com/blog/it-self-help-reduce-tickets/",
+          "customer": "Anonymous",
+          "industry": "Manufacturing",
+          "order": 2
+        },
+        {
+          "title": "5 Times Nexthink Helped Customers Reduce IT Costs",
+          "url": "https://nexthink.com/blog/5-times-nexthink-helped-customers-reduce-it-costs",
+          "customer": "Multiple Customers",
+          "industry": "Various",
+          "order": 3
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_corr_ai",
+        "f_act_remediation",
+        "f_act_campaign",
+        "f_library"
+      ],
+      "personaIds": [
+        "p_servicedesk",
+        "p_workplace"
+      ],
+      "order": 20
+    },
+    {
+      "id": "uc_sm_efficiency",
+      "name": "Improve IT efficiency",
+      "valueCategoryId": "vc_service_mgmt",
+      "shortPitch": "Measure and benchmark IT operations to eliminate waste and accelerate resolution.",
+      "valueDescription": "Nexthink data integrated with ITSM tooling reduces the time employees spend on the phone with IT, while enhanced visibility enables IT to fix non-reported issues across the enterprise. Enhancing ITIL service and business processes with DEX data drives measurable operational efficiency gains.",
+      "benefitTypes": [
+        "IT time saved",
+        "IT costs saved"
+      ],
+      "customerStories": [
+        {
+          "title": "A Year in the Life of a Nexthink Customer",
+          "url": "https://nexthink.com/en/resource/a-year-in-the-life-of-a-nexthink-customer",
+          "customer": "Anonymous",
+          "industry": "Financial Services",
+          "order": 1
+        },
+        {
+          "title": "Johnson & Johnson: A Frictionless IT Experience",
+          "url": "https://nexthink.com/resource/johnson-johnson-a-frictionless-it-experience",
+          "customer": "Johnson & Johnson",
+          "industry": "Healthcare",
+          "order": 2
+        },
+        {
+          "title": "Fortune 500 Healthcare Cracks Their IT Problems Once and For All",
+          "url": "https://nexthink.com/resource/fortune-500-healthcare-case-study",
+          "customer": "Anonymous",
+          "industry": "Healthcare",
+          "order": 3
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_corr_ai",
+        "f_act_dashboards",
+        "f_investigations",
+        "f_act_api"
+      ],
+      "personaIds": [
+        "p_servicedesk",
+        "p_workplace",
+        "p_cio"
+      ],
+      "order": 30
+    },
+    {
+      "id": "uc_sm_prevention",
+      "name": "Prevent technology disruptions",
+      "valueCategoryId": "vc_service_mgmt",
+      "shortPitch": "Detect performance regressions and hardware failures before they cause downtime.",
+      "valueDescription": "Proactive management of SaaS and collaboration tools, combined with real-time fleet monitoring, enables IT to prevent technology disruptions before they impact employees. Nexthink continuously monitors device health, application performance and network connectivity to identify degradation patterns and trigger automated fixes.",
+      "benefitTypes": [
+        "IT costs saved",
+        "Business productivity",
+        "Risk avoidance"
+      ],
+      "customerStories": [
+        {
+          "title": "Western Union: From Reactive to Proactive",
+          "url": "https://nexthink.com/en/resource/western-union-testimonial",
+          "customer": "Western Union",
+          "industry": "Financial Services",
+          "order": 1
+        },
+        {
+          "title": "How Leidos Is Building a Proactive, AI-Enabled IT Organization",
+          "url": "https://nexthink.com/resource/how-leidos-is-building-a-proactive-ai-enabled-it-organization",
+          "customer": "Leidos",
+          "industry": "Defense & Technology",
+          "order": 2
+        },
+        {
+          "title": "Fortune 500 Healthcare Cracks Their IT Problems Once and For All",
+          "url": "https://nexthink.com/resource/fortune-500-healthcare-case-study",
+          "customer": "Anonymous",
+          "industry": "Healthcare",
+          "order": 3
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_corr_ai",
+        "f_act_dashboards",
+        "f_alert",
+        "f_act_remediation"
+      ],
+      "personaIds": [
+        "p_workplace",
+        "p_servicedesk"
+      ],
+      "order": 40
+    },
+    {
+      "id": "uc_sm_onboarding",
+      "name": "Employee Onboarding",
+      "valueCategoryId": "vc_service_mgmt",
+      "shortPitch": "Automate device setup and guided onboarding so new hires are productive on day one.",
+      "valueDescription": "Nexthink improves the employee onboarding process from device provisioning to application enablement. By monitoring the digital experience of new joiners, IT can ensure devices are correctly configured, applications are accessible, and onboarding campaigns guide employees through key tools and processes at the right moment.",
+      "benefitTypes": [
+        "IT time saved",
+        "Overall employee experience",
+        "Business productivity"
+      ],
+      "customerStories": [
+        {
+          "title": "Fortune 500 Healthcare Cracks Their IT Problems Once and For All",
+          "url": "https://nexthink.com/resource/fortune-500-healthcare-case-study",
+          "customer": "Anonymous",
+          "industry": "Healthcare",
+          "order": 1
+        },
+        {
+          "title": "Johnson & Johnson: A Frictionless IT Experience",
+          "url": "https://nexthink.com/resource/johnson-johnson-a-frictionless-it-experience",
+          "customer": "Johnson & Johnson",
+          "industry": "Healthcare",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_act_campaign",
+        "f_collect_sentiment",
+        "f_library"
+      ],
+      "personaIds": [
+        "p_servicedesk",
+        "p_hr"
+      ],
+      "order": 50
+    },
+    {
+      "id": "uc_spark",
+      "name": "Self-help AI agent",
+      "valueCategoryId": "vc_service_mgmt",
+      "shortPitch": "Give every employee an autonomous AI agent that resolves IT issues without a ticket.",
+      "valueDescription": "Nexthink Spark, an agentic AI, integrates across the tech stack to resolve issues autonomously, eliminating human-touch ticket resolution. Employees describe their problem in natural language and Spark diagnoses the issue using live device telemetry, then executes IT-approved remediation actions — reducing the need to call the service desk and accelerating resolution without any agent involvement.",
+      "benefitTypes": [
+        "IT costs saved",
+        "IT time saved",
+        "Business time saved",
+        "Business productivity",
+        "Overall employee experience"
+      ],
+      "customerStories": [
+        {
+          "title": "How One Company Saved with a Single Self-Help Automation",
+          "url": "https://nexthink.com/blog/it-self-help-reduce-tickets/",
+          "customer": "Anonymous",
+          "industry": "Manufacturing",
+          "order": 1
+        },
+        {
+          "title": "How Leidos Is Building a Proactive, AI-Enabled IT Organization",
+          "url": "https://nexthink.com/resource/how-leidos-is-building-a-proactive-ai-enabled-it-organization",
+          "customer": "Leidos",
+          "industry": "Defense & Technology",
+          "order": 2
+        },
+        {
+          "title": "5 Times Nexthink Helped Customers Reduce IT Costs",
+          "url": "https://nexthink.com/blog/5-times-nexthink-helped-customers-reduce-it-costs",
+          "customer": "Multiple Customers",
+          "industry": "Various",
+          "order": 3
+        }
+      ],
+      "featureIds": [
+        "f_spark",
+        "f_collect_endpoint",
+        "f_corr_ai",
+        "f_amplify",
+        "f_act_remediation",
+        "f_workspace"
+      ],
+      "personaIds": [
+        "p_servicedesk",
+        "p_workplace",
+        "p_finance"
+      ],
+      "order": 60
+    },
+    {
+      "id": "uc_sus_carbon",
+      "name": "Reduce Carbon Footprint",
+      "valueCategoryId": "vc_sustain",
+      "shortPitch": "Measure, report and reduce the carbon impact of the device fleet.",
+      "valueDescription": "Nexthink identifies idle and always-on devices that consume energy unnecessarily — typically 25–30% of the fleet. By automating shutdown campaigns and smart power policies, IT can reduce the fleet's energy consumption and calculate the resulting carbon savings with precision, providing ESG-ready data for sustainability reporting.",
+      "benefitTypes": [
+        "Business costs saved",
+        "Company reputation"
+      ],
+      "customerStories": [
+        {
+          "title": "How to Optimize Energy Consumption and Reduce Carbon Emissions",
+          "url": "https://nexthink.com/blog/how-to-optimize-energy-consumption-and-carbon-emissions-with-nexthink",
+          "customer": "Anonymous",
+          "industry": "Various",
+          "order": 1
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_act_dashboards",
+        "f_act_api",
+        "f_act_campaign"
+      ],
+      "personaIds": [
+        "p_cio",
+        "p_finance"
+      ],
+      "order": 10
+    },
+    {
+      "id": "uc_sus_energy",
+      "name": "Reduce Energy costs",
+      "valueCategoryId": "vc_sustain",
+      "shortPitch": "Optimize sleep policies and identify always-on devices to cut energy spend.",
+      "valueDescription": "Nexthink monitors device power states across the fleet and automatically enforces energy-efficient sleep and shutdown policies. By targeting specific device populations — those left on overnight, those with aggressive display settings — IT can reduce annual energy consumption significantly and provide Finance with auditable cost savings.",
+      "benefitTypes": [
+        "IT costs saved",
+        "Business costs saved"
+      ],
+      "customerStories": [
+        {
+          "title": "How to Optimize Energy Consumption and Reduce Carbon Emissions",
+          "url": "https://nexthink.com/blog/how-to-optimize-energy-consumption-and-carbon-emissions-with-nexthink",
+          "customer": "Anonymous",
+          "industry": "Various",
+          "order": 1
+        },
+        {
+          "title": "5 Times Nexthink Helped Customers Reduce IT Costs",
+          "url": "https://nexthink.com/blog/5-times-nexthink-helped-customers-reduce-it-costs",
+          "customer": "Multiple Customers",
+          "industry": "Various",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_act_remediation",
+        "f_act_dashboards"
+      ],
+      "personaIds": [
+        "p_finance",
+        "p_workplace"
+      ],
+      "order": 20
+    },
+    {
+      "id": "uc_sus_hw_proc",
+      "name": "Reduced hardware procurement",
+      "valueCategoryId": "vc_sustain",
+      "shortPitch": "Extend device lifecycles using real performance data to defer CapEx.",
+      "valueDescription": "With 80% of a device's lifecycle carbon emissions occurring during manufacturing, extending hardware lifespan is the single highest-impact sustainability action IT can take. Nexthink uses real performance and health data to identify devices that can safely continue in service, enabling IT to defer procurement and provide tangible sustainability metrics to stakeholders.",
+      "benefitTypes": [
+        "IT cost avoided",
+        "Business costs saved",
+        "Company reputation"
+      ],
+      "customerStories": [
+        {
+          "title": "Hospital Saves $900k on Hardware Refresh",
+          "url": "https://nexthink.com/blog/5-times-nexthink-helped-customers-reduce-it-costs",
+          "customer": "Anonymous",
+          "industry": "Healthcare",
+          "order": 1
+        },
+        {
+          "title": "Extend Device Lifecycles and Increase Employee Happiness",
+          "url": "https://nexthink.com/blog/extend-hardware-refresh-cycle",
+          "customer": "Anonymous",
+          "industry": "Various",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_corr_ai",
+        "f_act_dashboards",
+        "f_act_api"
+      ],
+      "personaIds": [
+        "p_finance",
+        "p_workplace"
+      ],
+      "order": 30
+    },
+    {
+      "id": "uc_am_hw_refresh",
+      "name": "Performance based HW Refresh",
+      "valueCategoryId": "vc_workplace",
+      "shortPitch": "Replace hardware based on real performance data, not arbitrary age policies.",
+      "valueDescription": "Nexthink replaces arbitrary age-based refresh policies with data-driven decisions. By combining real-time performance metrics — crash rates, application load times, CPU and memory utilisation — with hardware attributes and user productivity impact, IT can precisely identify devices that genuinely need replacement, avoiding both premature refreshes and the productivity drain of underperforming machines.",
+      "benefitTypes": [
+        "IT cost avoided",
+        "Overall employee experience"
+      ],
+      "customerStories": [
+        {
+          "title": "Hospital Saves $900k on Hardware Refresh",
+          "url": "https://nexthink.com/blog/5-times-nexthink-helped-customers-reduce-it-costs",
+          "customer": "Anonymous",
+          "industry": "Healthcare",
+          "order": 1
+        },
+        {
+          "title": "Honeywell: Running a Cost-Efficient Workplace",
+          "url": "https://nexthink.com/resource/honeywell-cost-efficient-workplace",
+          "customer": "Honeywell",
+          "industry": "Manufacturing",
+          "order": 2
+        },
+        {
+          "title": "Extend Device Lifecycles and Increase Employee Happiness",
+          "url": "https://nexthink.com/blog/extend-hardware-refresh-cycle",
+          "customer": "Anonymous",
+          "industry": "Various",
+          "order": 3
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_corr_ai",
+        "f_act_dashboards",
+        "f_exp_central"
+      ],
+      "personaIds": [
+        "p_finance",
+        "p_workplace"
+      ],
+      "order": 10
+    },
+    {
+      "id": "uc_am_hw_sizing",
+      "name": "Hardware Right-sizing",
+      "valueCategoryId": "vc_workplace",
+      "shortPitch": "Match hardware spec to actual workload to avoid over-provisioning and waste.",
+      "valueDescription": "Nexthink analyses actual resource consumption against device specifications to identify over- and under-provisioned hardware. By building persona-based hardware profiles grounded in real workload data, IT can right-size every device category in the fleet — ensuring new purchases match actual needs and avoiding costly over-specification.",
+      "benefitTypes": [
+        "IT cost avoided",
+        "IT costs saved"
+      ],
+      "customerStories": [
+        {
+          "title": "German Manufacturer Saves $1.6M on Windows Migration",
+          "url": "https://nexthink.com/blog/migration-savings/",
+          "customer": "Anonymous",
+          "industry": "Manufacturing",
+          "order": 1
+        },
+        {
+          "title": "5 Times Nexthink Helped Customers Reduce IT Costs",
+          "url": "https://nexthink.com/blog/5-times-nexthink-helped-customers-reduce-it-costs",
+          "customer": "Multiple Customers",
+          "industry": "Various",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_corr_ai",
+        "f_act_dashboards",
+        "f_act_api"
+      ],
+      "personaIds": [
+        "p_finance",
+        "p_workplace"
+      ],
+      "order": 20
+    },
+    {
+      "id": "uc_am_sw_spend",
+      "name": "Reduce Software Spend",
+      "valueCategoryId": "vc_workplace",
+      "shortPitch": "Eliminate unused licenses and consolidate redundant SaaS tools.",
+      "valueDescription": "Nexthink provides complete visibility into SaaS application usage across the enterprise, tracking which licenses are actively used, underused, or dormant. By surfacing exact utilisation data, IT and finance teams can confidently eliminate waste, consolidate overlapping tools, and negotiate renewals with leverage — turning software spend into a managed cost.",
+      "benefitTypes": [
+        "IT cost avoided",
+        "IT costs saved"
+      ],
+      "customerStories": [
+        {
+          "title": "AB InBev Saves $261k on PowerBI Licenses",
+          "url": "https://nexthink.com/blog/5-times-nexthink-helped-customers-reduce-it-costs",
+          "customer": "AB InBev",
+          "industry": "Consumer Goods",
+          "order": 1
+        },
+        {
+          "title": "Cleaning House: How One IT Team Saved $1.8M on SaaS Licensing",
+          "url": "https://nexthink.com/blog/save-saas-licensing-app-experience/",
+          "customer": "Anonymous",
+          "industry": "Various",
+          "order": 2
+        },
+        {
+          "title": "Honeywell: Running a Cost-Efficient Workplace",
+          "url": "https://nexthink.com/resource/honeywell-cost-efficient-workplace",
+          "customer": "Honeywell",
+          "industry": "Manufacturing",
+          "order": 3
+        }
+      ],
+      "featureIds": [
+        "f_collect_endpoint",
+        "f_collect_external",
+        "f_act_dashboards",
+        "f_act_api"
+      ],
+      "personaIds": [
+        "p_finance",
+        "p_workplace"
+      ],
+      "order": 30
+    },
+    {
+      "id": "uc_am_ai_optim",
+      "name": "AI Consumption & Optimisation",
+      "valueCategoryId": "vc_workplace",
+      "shortPitch": "Track AI tool adoption and optimize Copilot/ChatGPT license usage.",
+      "valueDescription": "As organisations invest heavily in AI productivity tools like Microsoft Copilot, Nexthink tracks who is actually using them, how frequently, and in which workflows. This real-time adoption data enables IT to reclaim unused licenses, redeploy them to higher-value users, and justify — or challenge — further AI investments with hard evidence.",
+      "benefitTypes": [
+        "IT cost avoided",
+        "IT costs saved"
+      ],
+      "customerStories": [
+        {
+          "title": "Secure AI Adoption at Scale with Nexthink Adopt",
+          "url": "https://nexthink.com/resource/empower-smarter-safer-ai-adoption-across-your-enterprise",
+          "customer": "Anonymous",
+          "industry": "Utilities",
+          "order": 1
+        },
+        {
+          "title": "How Leidos Is Building a Proactive, AI-Enabled IT Organization",
+          "url": "https://nexthink.com/resource/how-leidos-is-building-a-proactive-ai-enabled-it-organization",
+          "customer": "Leidos",
+          "industry": "Defense & Technology",
+          "order": 2
+        }
+      ],
+      "featureIds": [
+        "f_ai_tools",
+        "f_collect_endpoint",
+        "f_act_dashboards",
+        "f_act_api"
+      ],
+      "personaIds": [
+        "p_finance",
+        "p_cio"
+      ],
+      "order": 40
+    },
+    {
+      "id": "uc_am_vdi",
+      "name": "VDI Optimisation",
+      "valueCategoryId": "vc_workplace",
+      "shortPitch": "Right-size VDI sessions and identify underutilized virtual machines.",
+      "valueDescription": "Nexthink's VDI Experience module provides deep visibility into virtual desktop performance — session responsiveness, logon times, application latency and resource contention. By identifying over-provisioned sessions and underutilised infrastructure, IT can right-size the VDI estate and consolidate infrastructure without degrading the employee experience.",
+      "benefitTypes": [
+        "IT cost avoided",
+        "IT costs saved",
+        "Overall employee experience"
+      ],
+      "customerStories": [
+        {
+          "title": "The Virtual Experience: 3 Future-Facing VDI Use Cases",
+          "url": "https://nexthink.com/en/blog/future-vdi-use-cases",
+          "customer": "Anonymous",
+          "industry": "Various",
+          "order": 1
+        }
+      ],
+      "featureIds": [
+        "f_vdi",
+        "f_collect_endpoint",
+        "f_corr_ai",
+        "f_act_dashboards"
+      ],
+      "personaIds": [
+        "p_workplace",
+        "p_finance"
+      ],
+      "order": 50
+    },
+    {
+      "id": "uc_am_mobile",
+      "name": "Mobile & POS",
+      "valueCategoryId": "vc_workplace",
+      "shortPitch": "Ensure mobile devices and point-of-sale terminals stay healthy and compliant.",
+      "valueDescription": "Nexthink extends real-time health monitoring to mobile devices and point-of-sale terminals, tracking battery health, connectivity quality, application performance and compliance status. IT teams gain the same level of visibility into mobile fleets as traditional endpoints, enabling proactive intervention before device issues impact frontline workers or customer-facing operations.",
+      "benefitTypes": [
+        "IT cost avoided",
+        "Overall employee experience"
+      ],
+      "customerStories": [],
+      "featureIds": [
+        "f_mobile",
+        "f_collect_endpoint",
+        "f_act_dashboards"
+      ],
+      "personaIds": [
+        "p_workplace",
+        "p_finance"
+      ],
+      "order": 60
+    }
+  ]
+}
+/*BUNDLED_DATA_END*/
+</script>
+
+<script>
+const ICONS = {
+  vdi:      'M3 4h18v12H3z|M8 20h8|M12 16v4',
+  laptop:   'M3 4h18v12H3z|M2 20h20',
+  desktop:  'M3 4h18v13H3z|M9 21h6|M12 17v4',
+  mobile:   'M7 2h10v20H7z|M11 18h2',
+  plug:     'M9 7V3|M15 7V3|M6 7h12v4a6 6 0 0 1-12 0V7z|M12 17v4',
+  smile:    'M21 12a9 9 0 1 1-3.5-7.1L21 4v5h-5|M9 12h.01|M15 12h.01|M9 16c1 1 2 1.5 3 1.5s2-.5 3-1.5',
+  leader:   'M12 8a4 4 0 1 0 0-0.01z|M4 21a8 8 0 0 1 16 0',
+  engineer: 'M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2-2 2.5-2.5z',
+  support:  'M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l1.9-5.6A8.5 8.5 0 1 1 21 11.5z',
+  shield:   'M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z|M9 12l2 2 4-4',
+  people:   'M9 8a3.5 3.5 0 1 0 0-0.01z|M2 21a7 7 0 0 1 14 0|M17 9a2.5 2.5 0 1 0 0-0.01z|M22 19a5 5 0 0 0-7-4.5',
+  coin:     'M12 6c4.4 0 8 1.3 8 3v6c0 1.7-3.6 3-8 3s-8-1.3-8-3V9c0-1.7 3.6-3 8-3z|M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3'
+};
+function svg(key){
+  const paths = (ICONS[key]||'').split('|').filter(Boolean).map(d=>`<path d="${d}"/>`).join('');
+  return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${paths||'<circle cx="12" cy="12" r="6"/>'}</svg>`;
+}
+const FEAT_ICON = {
+  collect:   '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>',
+  correlate: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M6 8.5L12 16M18 8.5L12 16"/></svg>',
+  act:       '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>',
+  govern:    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg>'
+};
+
+let DATA = null;
+let SELECTED_UC = null;
+
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+async function boot(){
+  // 1) Try inline bundled data (works from file:// — no server needed)
+  try{
+    const raw = document.getElementById('bundled-data').textContent
+      .replace('/*BUNDLED_DATA_START*/','').replace('/*BUNDLED_DATA_END*/','').trim();
+    const parsed = JSON.parse(raw);
+    if(parsed && parsed.useCases && parsed.useCases.length){ DATA = parsed; render(); return; }
+  }catch(e){ /* fall through to fetch */ }
+  // 2) Fallback: fetch data.json next to the HTML (needs a local server)
+  try{
+    const res = await fetch('data.json', {cache:'no-store'});
+    DATA = await res.json();
+    render();
+  }catch(e){
+    document.body.innerHTML = '<div style="padding:40px; color:#fff; font-family:sans-serif">' +
+      '<h2>No data loaded</h2>' +
+      '<p>Run <code>python3 xlsx_to_json.py</code> to generate <code>data.json</code> ' +
+      'and refresh the page (the converter also injects the data inline so the file works offline).</p></div>';
+  }
+}
+
+function render(){
+  renderBenefits();
+  renderValueCategories();
+  renderUseCases();
+  renderFeatures();
+  renderSources();
+  renderPersonas();
+  // Lines drawn after layout settles
+  requestAnimationFrame(()=> requestAnimationFrame(drawLinks));
+}
+
+function renderBenefits(){
+  const allBenefits = [...new Set(DATA.useCases.flatMap(u => u.benefitTypes||[]))];
+  $('#benefit-pills').innerHTML = allBenefits.map(b =>
+    `<div class="benefit-pill" data-benefit="${escapeHtml(b)}">${escapeHtml(b)}</div>`
+  ).join('');
+}
+
+function renderSources(){
+  const el = $('#sources');
+  el.innerHTML = DATA.dataSources.map(s => `
+    <div class="src" data-id="${s.id}">
+      <div class="ic">${svg(s.icon||'plug')}</div>
+      <div style="flex:1; min-width:0">
+        <div class="nm">${escapeHtml(s.name)}</div>
+        <div class="sub">${escapeHtml(s.description||s.category||'')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderFeatures(){
+  const groups = ['collect','correlate','act','govern'];
+  const groupLabel = {collect:'Collect', correlate:'Correlate', act:'Act', govern:'Govern'};
+  const byGroup = Object.fromEntries(groups.map(g=>[g,[]]));
+  DATA.foundationFeatures.forEach(f => { (byGroup[f.group]||(byGroup[f.group]=[])).push(f); });
+  const MAX = 5;
+  // Build flat list of columns (each group may produce 1 or 2 columns)
+  const cols = [];
+  groups.forEach(g => {
+    const feats = byGroup[g] || [];
+    if(!feats.length) return;
+    for(let i=0; i<feats.length; i+=MAX){
+      cols.push({ g, chunk: feats.slice(i, i+MAX), isFirst: i===0 });
+    }
+  });
+  const grid = $('#features');
+  grid.style.gridTemplateColumns = `repeat(${cols.length}, 1fr)`;
+  grid.innerHTML = cols.map(({g, chunk, isFirst}) => `
+    <div class="feat-col">
+      <div class="feat-group" style="color:var(--c-${g});${isFirst?'':' visibility:hidden'}">${groupLabel[g]}</div>
+      ${chunk.map(f => `
+        <div class="feat" data-id="${f.id}" data-group="${g}" style="cursor:pointer">
+          <div class="ic">${FEAT_ICON[g]||''}</div>
+          <div class="nm">${escapeHtml(f.name)}</div>
+        </div>`).join('')}
+    </div>`).join('');
+  // Click handler: open feature detail drawer
+  $$('.feat').forEach(el => el.addEventListener('click', e => {
+    e.stopPropagation();
+    const feat = DATA.foundationFeatures.find(f => f.id === el.dataset.id);
+    if(feat) openFeatureDrawer(feat);
+  }));
+}
+
+function renderValueCategories(){
+  $('#vcrow').innerHTML = DATA.valueCategories.map(v => `
+    <div class="vc" data-id="${v.id}">
+      <div class="nm">${escapeHtml(v.name)}</div>
+      <div class="tg">${escapeHtml(v.tagline||'')}</div>
+      <div class="bar" style="background:#${v.color}"></div>
+    </div>`).join('');
+}
+
+function renderUseCases(){
+  const cols = $('#uccols');
+  cols.innerHTML = DATA.valueCategories.map(v => {
+    const list = DATA.useCases.filter(u => u.valueCategoryId === v.id);
+    return `<div class="uc-stack" data-vc="${v.id}">${list.map(u => `
+      <div class="uc" data-id="${u.id}" data-vc="${v.id}">
+        <div class="nm">${escapeHtml(u.name)}</div>
+        <div class="px">${escapeHtml(u.shortPitch||'')}</div>
+      </div>`).join('')}
+    </div>`;
+  }).join('');
+  $$('#uccols .uc').forEach(el => el.addEventListener('click', ()=> selectUseCase(el.dataset.id)));
+}
+
+function renderPersonas(){
+  $('#personas').innerHTML = DATA.personas.map(p => `
+    <div class="per" data-id="${p.id}">
+      <div class="ic">${svg(p.icon||'leader')}</div>
+      <div><div class="nm">${escapeHtml(p.name)}</div><div class="ro">${escapeHtml(p.role||'')}</div></div>
+    </div>`).join('');
+}
+
+function selectUseCase(id){
+  if(SELECTED_UC === id){ clearSelection(); return; }
+  SELECTED_UC = id;
+  const uc = DATA.useCases.find(u => u.id===id);
+  $$('#uccols .uc').forEach(el => el.classList.toggle('selected', el.dataset.id===id));
+  // Highlight features
+  const fset = new Set(uc.featureIds);
+  $$('.feat').forEach(el => {
+    el.classList.toggle('hi',  fset.has(el.dataset.id));
+    el.classList.toggle('dim', !fset.has(el.dataset.id));
+  });
+  // Highlight personas
+  const pset = new Set(uc.personaIds);
+  $$('.per').forEach(el => {
+    el.classList.toggle('hi',  pset.has(el.dataset.id));
+    el.classList.toggle('dim', !pset.has(el.dataset.id));
+  });
+  // Highlight benefit pills
+  const bset = new Set(uc.benefitTypes||[]);
+  $$('.benefit-pill').forEach(el => {
+    el.classList.toggle('hi',  bset.has(el.dataset.benefit));
+    el.classList.toggle('dim', !bset.has(el.dataset.benefit));
+  });
+  openDrawer(uc);
+  drawLinks();
+}
+
+function clearSelection(){
+  SELECTED_UC = null;
+  $$('#uccols .uc').forEach(el => el.classList.remove('selected'));
+  $$('.feat').forEach(el => el.classList.remove('hi','dim'));
+  $$('.per').forEach(el => el.classList.remove('hi','dim'));
+  $$('.benefit-pill').forEach(el => el.classList.remove('hi','dim'));
+  closeDrawer();
+  drawLinks();
+}
+
+function openDrawer(uc){
+  const vc = DATA.valueCategories.find(v => v.id===uc.valueCategoryId) || {};
+  const features = uc.featureIds.map(id => DATA.foundationFeatures.find(f=>f.id===id)).filter(Boolean);
+  const personas = uc.personaIds.map(id => DATA.personas.find(p=>p.id===id)).filter(Boolean);
+  const stories = uc.customerStories || [];
+  const bt = uc.benefitTypes || [];
+  const vd = uc.valueDescription || '';
+
+  const valueHtml = vd
+    ? `<div style="padding:14px 16px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid var(--line); line-height:1.7; color:var(--ink-2); font-size:14px">${escapeHtml(vd)}</div>`
+    : '<div style="color:var(--ink-3); font-size:13px">No value description available.</div>';
+
+  $('#drawerContent').innerHTML = `
+    <div class="vcat" style="color:#${vc.color||'9CA3AF'}">${escapeHtml(vc.name||'Value category')}</div>
+    <h2>${escapeHtml(uc.name)}</h2>
+    <div class="pitch">${escapeHtml(uc.shortPitch||'')}</div>
+
+    <div class="section">
+      <h3 style="color:#34D399"><span class="dot"></span>Value</h3>
+      ${valueHtml}
+    </div>
+
+    <div class="section">
+      <h3 style="color:#A7F3D0"><span class="dot"></span>IT &amp; Business benefits</h3>
+      <div class="chips">${bt.map(b => `<span class="chip benefit">${escapeHtml(b)}</span>`).join('') || '<span style="color:var(--ink-3); font-size:13px">—</span>'}</div>
+    </div>
+
+    <div class="section">
+      <h3 style="color:#67E8F9"><span class="dot"></span>Customer stories</h3>
+      ${stories.length ? stories.map(s => `
+        <a class="story-link" href="${escapeHtml(s.url)}" target="_blank" rel="noopener noreferrer">
+          <div><span class="who">${escapeHtml(s.customer)}</span><span class="ind">${escapeHtml(s.industry)}</span></div>
+          <div class="stitle">${escapeHtml(s.title)}</div>
+        </a>`).join('') :
+        '<div style="color:var(--ink-3);font-size:13px;padding:4px 0">No customer stories available.</div>'}
+    </div>
+
+    <div class="section">
+      <h3 style="color:#FBCFE8"><span class="dot"></span>Personas concerned</h3>
+      <div class="chips">${personas.map(p => `<span class="chip">${escapeHtml(p.name)}</span>`).join('') || '<span class="chip">—</span>'}</div>
+    </div>
+
+    <div class="section">
+      <h3 style="color:#A5B4FC"><span class="dot"></span>Features used</h3>
+      <div class="chips">${features.map(f => `<span class="chip feat">${escapeHtml(f.name)}</span>`).join('') || '<span class="chip feat">—</span>'}</div>
+    </div>
+  `;
+  $('#drawer').classList.add('open');
+  $('#drawer').setAttribute('aria-hidden','false');
+}
+
+function openFeatureDrawer(feat){
+  const groupLabel = {collect:'Collect', correlate:'Correlate', act:'Act', govern:'Govern'};
+  const groupColor  = {collect:'var(--c-collect)', correlate:'var(--c-correlate)', act:'var(--c-act)', govern:'var(--c-govern)'};
+  const g = feat.group || 'collect';
+  // Wrap description paragraphs
+  const descHtml = (feat.description || 'No description available.')
+    .split(/\n+/).map(p => `<p style="margin:0 0 10px; line-height:1.6; color:var(--ink-2)">${escapeHtml(p)}</p>`).join('');
+  $('#drawerContent').innerHTML = `
+    <div class="vcat" style="color:${groupColor[g]}">${groupLabel[g] || g}</div>
+    <h2>${escapeHtml(feat.name)}</h2>
+    <div class="pitch" style="margin-bottom:20px">Foundation feature · <span style="color:${groupColor[g]}">${groupLabel[g] || g}</span> layer</div>
+    <div class="section">
+      <h3 style="color:${groupColor[g]}"><span class="dot"></span>How it works</h3>
+      <div style="padding:14px 16px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid var(--line)">
+        ${descHtml}
+      </div>
+    </div>
+  `;
+  $('#drawer').classList.add('open');
+  $('#drawer').setAttribute('aria-hidden','false');
+}
+
+function closeDrawer(){
+  $('#drawer').classList.remove('open');
+  $('#drawer').setAttribute('aria-hidden','true');
+}
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') clearSelection(); });
+$('#drawerClose').addEventListener('click', clearSelection);
+
+// ----- Curved connection lines -----
+function drawLinks(){
+  const stage = $('#stage');
+  const svgEl = $('#links');
+  const r = stage.getBoundingClientRect();
+  svgEl.setAttribute('viewBox', `0 0 ${r.width} ${r.height}`);
+  // Gradients: gA = teal (sources→hub), gB = violet (hub→uc), gC = white (uc→features), gD = green (uc→benefits)
+  svgEl.innerHTML = `
+    <defs>
+      <linearGradient id="gA" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#22D3EE" stop-opacity="0"/><stop offset=".5" stop-color="#22D3EE" stop-opacity=".55"/><stop offset="1" stop-color="#6366F1" stop-opacity="0"/></linearGradient>
+      <linearGradient id="gB" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#A78BFA" stop-opacity="0"/><stop offset=".5" stop-color="#A78BFA" stop-opacity=".55"/><stop offset="1" stop-color="#F472B6" stop-opacity="0"/></linearGradient>
+      <linearGradient id="gC" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0"/><stop offset=".5" stop-color="#FFFFFF" stop-opacity=".75"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+      <linearGradient id="gD" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#34D399" stop-opacity="0"/><stop offset=".5" stop-color="#34D399" stop-opacity=".65"/><stop offset="1" stop-color="#34D399" stop-opacity="0"/></linearGradient>
+    </defs>`;
+
+  const srcBlock = $('#src-block').getBoundingClientRect();
+  const hub      = $('#hub').getBoundingClientRect();
+
+  // Sources (bottom) → Hub (above sources): top-center of srcBlock → bottom-center of hub
+  appendCurveV(svgEl,
+    srcBlock.left - r.left + srcBlock.width / 2,  srcBlock.top  - r.top - 4,
+    hub.left      - r.left + hub.width      / 2,  hub.bottom    - r.top + 4,
+    'url(#gA)', 1.8);
+
+  // Hub → uc columns + VC → first UC: only when nothing is selected
+  if(!SELECTED_UC){
+    // Hub (below uc-cols) → first UC of each column
+    $$('#uccols .uc-stack').forEach(stack => {
+      const first = stack.querySelector('.uc');
+      if(!first) return;
+      const fb = first.getBoundingClientRect();
+      appendCurveV(svgEl,
+        hub.left - r.left + hub.width / 2, hub.top  - r.top - 4,
+        fb.left  - r.left + fb.width  / 2, fb.bottom - r.top + 4,
+        'url(#gB)', 0.8);
+    });
+    // VC card → first UC of its column
+    $$('#uccols .uc-stack').forEach(stack => {
+      const vcId = stack.dataset.vc;
+      const vcEl = $(`#vcrow .vc[data-id="${vcId}"]`);
+      const first = stack.querySelector('.uc');
+      if(!vcEl || !first) return;
+      const a = vcEl.getBoundingClientRect();
+      const b = first.getBoundingClientRect();
+      appendCurveV(svgEl,
+        a.left-r.left + a.width/2, a.bottom-r.top+2,
+        b.left-r.left + b.width/2, b.top   -r.top-2,
+        'url(#gB)', 0.7);
+    });
+  }
+
+  // Selected UC: downward to feature cards (hub is below uc), upward to benefit pills (benefits block is above)
+  if(SELECTED_UC){
+    const uc   = DATA.useCases.find(u=>u.id===SELECTED_UC);
+    const ucEl = $(`#uccols .uc[data-id="${SELECTED_UC}"]`);
+    if(uc && ucEl){
+      const ub = ucEl.getBoundingClientRect();
+      // → Features (below uc, inside hub)
+      uc.featureIds.forEach(fid => {
+        const fe = $(`.feat[data-id="${fid}"]`);
+        if(!fe) return;
+        const fb = fe.getBoundingClientRect();
+        appendCurveV(svgEl,
+          ub.left-r.left + ub.width/2, ub.bottom-r.top+4,
+          fb.left-r.left + fb.width/2, fb.top   -r.top-4,
+          'url(#gC)', 1.6);
+      });
+      // → Benefit pills (above uc, inside benefits block)
+      $$('.benefit-pill.hi').forEach(bp => {
+        const bb = bp.getBoundingClientRect();
+        appendCurveV(svgEl,
+          ub.left-r.left + ub.width/2, ub.top -r.top-4,
+          bb.left-r.left + bb.width/2, bb.bottom-r.top+4,
+          'url(#gD)', 1.2);
+      });
+    }
+  }
+}
+
+function appendCurve(svgEl,x1,y1,x2,y2,stroke,width){
+  const mx = (x1+x2)/2;
+  const path = `<path d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" stroke="${stroke}" stroke-width="${width}" fill="none" />`;
+  svgEl.insertAdjacentHTML('beforeend', path);
+}
+function appendCurveV(svgEl,x1,y1,x2,y2,stroke,width){
+  const my = (y1+y2)/2;
+  const path = `<path d="M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}" stroke="${stroke}" stroke-width="${width}" fill="none" />`;
+  svgEl.insertAdjacentHTML('beforeend', path);
+}
+
+window.addEventListener('resize', () => { clearTimeout(window._lr); window._lr = setTimeout(drawLinks, 80); });
+
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+
+boot();
+</script>
+</body>
+</html>

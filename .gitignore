@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+venv/
+.venv/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Generated (rebuild with: python3 populate_workbook.py && python3 xlsx_to_json.py)
+data.json
+
+# Keep the xlsx in git so the data is versioned
+# platform_content.xlsx  ← intentionally tracked
