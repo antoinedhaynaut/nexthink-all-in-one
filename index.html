@@ -1,8 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Platform · data → outcomes</title>
 <style>
   :root{
@@ -24,7 +22,9 @@
       radial-gradient(900px 500px at 90% 100%, rgba(34,211,238,0.18), transparent 60%),
       linear-gradient(160deg, var(--bg-0) 0%, var(--bg-1) 50%, var(--bg-2) 100%);
   }
-  .app{position:relative; padding:22px 28px 40px; max-width:2500px; margin:0 auto;}
+  .app{position:relative; padding:22px 28px 40px; max-width:2500px; margin:0 auto;
+    transition:padding-right .35s cubic-bezier(.5,.05,.2,1);}
+  @media(min-width:1440px){body.drawer-open .app{padding-right:calc(420px + 32px);}}
   header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;}
   .crumb{display:inline-flex; align-items:center; gap:8px; font-size:11px; letter-spacing:.18em;
     text-transform:uppercase; color:var(--ink-3);}
@@ -87,7 +87,7 @@
     margin:2px 4px 4px;}
   .feat{display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:10px;
     border:1px solid var(--line); background:rgba(255,255,255,0.03);
-    transition:.2s; cursor:default; min-width:0;}
+    transition:.2s; cursor:pointer; user-select:none; min-width:0;}
   .feat .ic{width:26px; height:26px; border-radius:7px; display:grid; place-items:center; flex-shrink:0;
     background:rgba(255,255,255,0.04); border:1px solid var(--line);}
   .feat .nm{font-size:12px; font-weight:600; color:#fff; line-height:1.15;
@@ -101,6 +101,12 @@
     border-color:rgba(165,180,252,0.6);
     background:linear-gradient(180deg, rgba(99,102,241,0.20), rgba(34,211,238,0.06));
     box-shadow:0 0 0 1px rgba(165,180,252,0.45) inset, 0 0 22px rgba(99,102,241,0.35);
+    transform: translateY(-1px);
+  }
+  .feat.selected{
+    border-color:rgba(165,180,252,0.90);
+    background:linear-gradient(180deg, rgba(99,102,241,0.32), rgba(34,211,238,0.12));
+    box-shadow:0 0 0 1px rgba(165,180,252,0.65) inset, 0 0 28px rgba(99,102,241,0.55);
     transform: translateY(-1px);
   }
 
@@ -124,31 +130,39 @@
     background:linear-gradient(180deg, rgba(99,102,241,0.30), rgba(34,211,238,0.10));
     box-shadow:0 0 0 1px rgba(165,180,252,0.6) inset, 0 8px 20px rgba(99,102,241,0.30);}
   .uc.dim{opacity:.25;}
+  .uc.hi{border-color:rgba(165,180,252,0.60);
+    background:linear-gradient(180deg, rgba(99,102,241,0.18), rgba(34,211,238,0.06));
+    box-shadow:0 0 0 1px rgba(165,180,252,0.35) inset, 0 6px 16px rgba(99,102,241,0.22);}
   .uc .nm{font-size:12.5px; font-weight:600; color:#fff; line-height:1.2;}
   .uc .px{font-size:11px; color:var(--ink-3); margin-top:4px; line-height:1.35;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
 
   /* Top row: benefits + personas, equal size, centered */
   .top-row{display:flex; gap:18px; justify-content:center; align-items:stretch; margin-bottom:22px;}
-  .benefits-wrap{flex:0 0 480px; margin:0 !important;}
+  .benefits-wrap{flex:0 0 480px; margin:0 !important; display:flex; flex-direction:column;}
+  .benefits-block{flex:1;}
   .personas-col{flex:0 0 480px; display:flex; flex-direction:column;}
   .personas-col .col-title{margin:0 0 10px 4px;}
-  /* Personas band */
-  .personas{display:grid; gap:8px; grid-template-columns:1fr;}
+  .personas{flex:1; align-content:start;}
+  /* Personas band — 2-col grid */
+  .personas{display:grid; gap:8px; grid-template-columns:repeat(2,1fr);}
   .per{display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px;
     background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-    border:1px solid var(--line); transition:.2s;}
+    border:1px solid var(--line); transition:.2s; cursor:pointer; user-select:none;}
   .per:hover{transform:translateY(-1px); border-color:rgba(244,114,182,0.45);}
   .per.dim{opacity:.25;}
   .per.hi{border-color:rgba(244,114,182,0.7);
     background:linear-gradient(180deg, rgba(244,114,182,0.18), rgba(167,139,250,0.06));}
+  .per.selected{border-color:rgba(244,114,182,0.90);
+    background:linear-gradient(180deg, rgba(244,114,182,0.28), rgba(167,139,250,0.12));
+    box-shadow:0 0 22px rgba(244,114,182,0.40), 0 0 0 1px rgba(244,114,182,0.45) inset;}
   .per .ic{width:30px;height:30px;border-radius:8px; display:grid; place-items:center;
     background:rgba(244,114,182,0.10); border:1px solid rgba(244,114,182,0.28); color:#FBCFE8;}
   .per .nm{font-size:12.5px; font-weight:600;}
   .per .ro{font-size:10.5px; color:var(--ink-3);}
 
   /* Drawer */
-  .drawer{position:fixed; top:0; right:-560px; width:520px; max-width:96vw; height:100vh;
+  .drawer{position:fixed; top:0; right:-450px; width:420px; max-width:96vw; height:100vh;
     background:linear-gradient(180deg, rgba(15,22,46,0.96), rgba(10,15,37,0.96));
     border-left:1px solid var(--line-2); box-shadow:-30px 0 80px rgba(0,0,0,0.5);
     transition:right .35s cubic-bezier(.5,.05,.2,1); z-index:50; padding:22px 26px; overflow-y:auto;
@@ -195,10 +209,12 @@
   .benefit-pills{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
   .benefit-pill{padding:7px 14px; border-radius:999px; font-size:12px; font-weight:600;
     background:rgba(52,211,153,0.10); border:1px solid rgba(52,211,153,0.30); color:#A7F3D0;
-    transition:.2s; cursor:default;}
+    transition:.2s; cursor:pointer; user-select:none;}
   .benefit-pill.dim{opacity:.15;}
   .benefit-pill.hi{background:rgba(52,211,153,0.22); border-color:rgba(52,211,153,0.7);
     color:#6EE7B7; box-shadow:0 0 18px rgba(52,211,153,0.25);}
+  .benefit-pill.selected{background:rgba(52,211,153,0.30); border-color:rgba(52,211,153,0.90);
+    color:#D1FAE5; box-shadow:0 0 22px rgba(52,211,153,0.45), 0 0 0 1px rgba(52,211,153,0.5) inset;}
 
   .chip.benefit{background:rgba(52,211,153,0.10); border-color:rgba(52,211,153,0.35); color:#A7F3D0;}
 
@@ -211,6 +227,98 @@
     .feat-grid{grid-template-columns: repeat(2, 1fr);}
     .vc-row, .uc-cols, .personas{grid-template-columns: repeat(2, 1fr);}
   }
+
+  /* ===== Data Editor Overlay ===== */
+  .editor-overlay{position:fixed;inset:0;background:rgba(8,12,28,0.97);z-index:200;
+    display:flex;flex-direction:column;opacity:0;pointer-events:none;
+    transition:opacity .2s ease;backdrop-filter:blur(16px);}
+  .editor-overlay.open{opacity:1;pointer-events:all;}
+  .editor-header{display:flex;align-items:center;justify-content:space-between;
+    padding:14px 24px;border-bottom:1px solid var(--line-2);flex-shrink:0;}
+  .editor-layout{display:flex;flex:1;overflow:hidden;}
+  .editor-sidebar{width:260px;flex-shrink:0;border-right:1px solid var(--line-2);
+    overflow-y:auto;padding:12px 0;}
+  .editor-form{flex:1;overflow-y:auto;padding:26px 36px 40px;}
+  .ed-vc{padding:10px 18px 4px;font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-4);}
+  .ed-uc-item{padding:9px 18px;font-size:13px;cursor:pointer;
+    border-left:3px solid transparent;transition:.12s;line-height:1.3;color:var(--ink-3);}
+  .ed-uc-item:hover{background:rgba(255,255,255,0.04);color:var(--ink-2);}
+  .ed-uc-item.active{background:rgba(99,102,241,0.14);border-left-color:#A78BFA;color:#fff;}
+  .ed-form-header{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--line);}
+  .ed-vc-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:5px;}
+  .ed-uc-title{font-size:22px;font-weight:700;margin-bottom:5px;}
+  .ed-uc-pitch{font-size:13px;color:var(--ink-3);line-height:1.5;}
+  .ed-section{margin-bottom:26px;}
+  .ed-sec-title{font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-3);margin:0 0 12px;border-left:3px solid rgba(165,180,252,0.4);padding-left:8px;}
+  .ed-group-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    margin-bottom:7px;margin-top:4px;}
+  .ed-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px;}
+  .ed-chip{padding:7px 13px;border-radius:999px;font-size:12px;font-weight:500;
+    cursor:pointer;user-select:none;transition:.14s;
+    background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--ink-4);}
+  .ed-chip:hover{border-color:rgba(165,180,252,0.35);color:var(--ink-2);}
+  /* feature group colours when active */
+  .ed-chip.feat-chip.on[data-group="collect"]   {background:rgba(34,211,238,0.13);border-color:rgba(34,211,238,0.55);color:#67E8F9;}
+  .ed-chip.feat-chip.on[data-group="correlate"] {background:rgba(167,139,250,0.13);border-color:rgba(167,139,250,0.55);color:#C4B5FD;}
+  .ed-chip.feat-chip.on[data-group="act"]        {background:rgba(52,211,153,0.13);border-color:rgba(52,211,153,0.55);color:#6EE7B7;}
+  .ed-chip.feat-chip.on[data-group="govern"]     {background:rgba(251,191,36,0.13);border-color:rgba(251,191,36,0.55);color:#FDE68A;}
+  .ed-chip.per-chip.on{background:rgba(244,114,182,0.13);border-color:rgba(244,114,182,0.55);color:#FBCFE8;}
+  .ed-chip.ben-chip.on{background:rgba(52,211,153,0.13);border-color:rgba(52,211,153,0.55);color:#A7F3D0;}
+  /* benefit add-input row */
+  .ed-benefit-add{display:flex;gap:8px;margin-top:10px;}
+  .ed-benefit-add input{flex:1;min-width:0;background:rgba(255,255,255,0.05);
+    border:1px solid var(--line-2);border-radius:8px;padding:8px 12px;
+    font:inherit;font-size:13px;color:var(--ink);outline:none;}
+  .ed-benefit-add input:focus{border-color:rgba(52,211,153,0.55);}
+  .ed-benefit-add button{padding:8px 16px;border-radius:8px;white-space:nowrap;
+    background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.45);
+    color:#6EE7B7;font:500 12px/1 inherit;cursor:pointer;transition:.14s;}
+  .ed-benefit-add button:hover{background:rgba(52,211,153,0.22);}
+  /* header action buttons */
+  .ed-btn{padding:8px 14px;border-radius:999px;background:rgba(255,255,255,0.05);
+    border:1px solid var(--line-2);color:var(--ink-2);font:500 12px/1 inherit;
+    cursor:pointer;transition:.14s;}
+  .ed-btn:hover{background:rgba(255,255,255,0.09);}
+  .ed-btn.primary{background:linear-gradient(90deg,rgba(99,102,241,.5),rgba(34,211,238,.4));
+    border-color:rgba(165,180,252,.5);color:#fff;}
+  .ed-btn.primary:hover{opacity:.85;}
+  /* tabs */
+  .ed-tabs{display:flex;gap:2px;background:rgba(255,255,255,0.04);border-radius:999px;padding:3px;}
+  .ed-tab{padding:6px 14px;border-radius:999px;font-size:12px;font-weight:500;
+    cursor:pointer;color:var(--ink-3);transition:.14s;white-space:nowrap;}
+  .ed-tab:hover{color:var(--ink-2);}
+  .ed-tab.active{background:rgba(99,102,241,0.28);color:#fff;}
+  /* form inputs */
+  .ed-label{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-4);margin-bottom:5px;}
+  .ed-field-group{display:flex;flex-direction:column;}
+  .ed-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--line-2);
+    border-radius:8px;padding:8px 12px;font:inherit;font-size:13px;color:var(--ink);
+    outline:none;transition:.14s;box-sizing:border-box;}
+  .ed-input:focus{border-color:rgba(165,180,252,0.55);background:rgba(99,102,241,0.08);}
+  .ed-input-lg{font-size:18px;font-weight:600;padding:10px 14px;}
+  select.ed-input{cursor:pointer;}
+  .ed-textarea{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--line-2);
+    border-radius:8px;padding:10px 12px;font:inherit;font-size:13px;color:var(--ink);
+    outline:none;resize:vertical;transition:.14s;box-sizing:border-box;line-height:1.65;}
+  .ed-textarea:focus{border-color:rgba(165,180,252,0.55);background:rgba(99,102,241,0.08);}
+  .ed-color-input{width:44px;height:36px;border-radius:7px;border:1px solid var(--line-2);
+    background:none;cursor:pointer;padding:2px;}
+  /* add / delete buttons */
+  .ed-add-btn{width:100%;padding:8px 14px;border-radius:8px;text-align:left;
+    background:rgba(255,255,255,0.04);border:1px dashed var(--line-2);
+    color:var(--ink-3);font:500 12px inherit;cursor:pointer;transition:.14s;}
+  .ed-add-btn:hover{background:rgba(255,255,255,0.08);color:var(--ink-2);}
+  .ed-del-btn{padding:6px 12px;border-radius:7px;background:rgba(239,68,68,0.09);
+    border:1px solid rgba(239,68,68,0.28);color:#FCA5A5;
+    font:500 11px inherit;cursor:pointer;white-space:nowrap;transition:.14s;flex-shrink:0;}
+  .ed-del-btn:hover{background:rgba(239,68,68,0.20);}
+  /* customer story editor card */
+  .ed-story{background:rgba(255,255,255,0.03);border:1px solid var(--line);
+    border-radius:10px;padding:14px;margin-bottom:10px;}
+  .ed-story-row{display:flex;gap:10px;align-items:flex-end;}
 </style>
 </head>
 <body>
@@ -222,11 +330,28 @@
       <h1>From every device, to every team — one platform.</h1>
       <div class="lede">Every data source feeds a unified platform. Foundation features power 6 categories of value, broken down into focused use cases. Click a use case to see how it's built.</div>
     </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+    <button class="btn" onclick="openEditor()" style="display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>Edit data</button>
+    <button id="toggleLinks" class="btn active" title="Show / hide connection lines" onclick="
+      SHOW_LINKS = !SHOW_LINKS;
+      this.classList.toggle('active', SHOW_LINKS);
+      this.innerHTML = SHOW_LINKS
+        ? '&lt;svg width=\'14\' height=\'14\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\'&gt;&lt;path d=\'M3 12 Q6 4 12 12 Q18 20 21 12\'/&gt;&lt;/svg&gt;&nbsp;Lines on'
+        : '&lt;svg width=\'14\' height=\'14\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\'&gt;&lt;path d=\'M3 12 Q6 4 12 12 Q18 20 21 12\'/&gt;&lt;line x1=\'2\' y1=\'2\' x2=\'22\' y2=\'22\'/&gt;&lt;/svg&gt;&nbsp;Lines off';
+      drawLinks();
+    "><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12 Q6 4 12 12 Q18 20 21 12"></path></svg>&nbsp;Lines on</button>
+    </div>
   </header>
 
   <div class="grid">
     <section class="stage" id="stage">
-      <svg class="links" id="links" preserveAspectRatio="none"></svg>
+      <svg class="links" id="links" preserveAspectRatio="none" viewBox="0 0 2444 1357.125">
+    <defs>
+      <linearGradient id="gA" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#22D3EE" stop-opacity="0"></stop><stop offset=".5" stop-color="#22D3EE" stop-opacity=".55"></stop><stop offset="1" stop-color="#6366F1" stop-opacity="0"></stop></linearGradient>
+      <linearGradient id="gB" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#A78BFA" stop-opacity="0"></stop><stop offset=".5" stop-color="#A78BFA" stop-opacity=".55"></stop><stop offset="1" stop-color="#F472B6" stop-opacity="0"></stop></linearGradient>
+      <linearGradient id="gC" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0"></stop><stop offset=".5" stop-color="#FFFFFF" stop-opacity=".75"></stop><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"></stop></linearGradient>
+      <linearGradient id="gD" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#34D399" stop-opacity="0"></stop><stop offset=".5" stop-color="#34D399" stop-opacity=".65"></stop><stop offset="1" stop-color="#34D399" stop-opacity="0"></stop></linearGradient>
+    </defs><path d="M1222,1214.125 C1222,1198.125 1222,1198.125 1222,1182.125" stroke="url(#gA)" stroke-width="1.8" fill="none"></path><path d="M1222,816.125 C1222,603.40625 199.5,603.40625 199.5,390.6875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M1222,816.125 C1222,603.40625 608.5,603.40625 608.5,390.6875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M1222,816.125 C1222,603.40625 1017.5,603.40625 1017.5,390.6875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M1222,816.125 C1222,595.984375 1426.5,595.984375 1426.5,375.84375" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M1222,816.125 C1222,603.40625 1835.5,603.40625 1835.5,390.6875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M1222,816.125 C1222,595.984375 2244.5,595.984375 2244.5,375.84375" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M199.5,308 C199.5,311 199.5,311 199.5,314" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M608.5,308 C608.5,311 608.5,311 608.5,314" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M1017.5,308 C1017.5,311 1017.5,311 1017.5,314" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M1426.5,308 C1426.5,311 1426.5,311 1426.5,314" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M1835.5,308 C1835.5,311 1835.5,311 1835.5,314" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M2244.5,308 C2244.5,311 2244.5,311 2244.5,314" stroke="url(#gB)" stroke-width="0.7" fill="none"></path></svg>
 
       <!-- Top row: IT & Business Benefits + Personas side-by-side -->
       <div class="top-row">
@@ -238,22 +363,198 @@
                 <div class="hub-title">Value delivered</div>
               </div>
             </div>
-            <div class="benefit-pills" id="benefit-pills"></div>
+            <div class="benefit-pills" id="benefit-pills"><div class="benefit-pill" data-benefit="IT time saved">IT time saved</div><div class="benefit-pill" data-benefit="Business costs saved">Business costs saved</div><div class="benefit-pill" data-benefit="Business productivity">Business productivity</div><div class="benefit-pill" data-benefit="IT costs saved">IT costs saved</div><div class="benefit-pill" data-benefit="Overall employee experience">Overall employee experience</div><div class="benefit-pill" data-benefit="Company reputation">Company reputation</div><div class="benefit-pill" data-benefit="Risk avoidance">Risk avoidance</div><div class="benefit-pill" data-benefit="Business time saved">Business time saved</div><div class="benefit-pill" data-benefit="IT cost avoided">IT cost avoided</div></div>
           </div>
         </div>
 
         <!-- Personas (right of benefits) -->
         <div class="personas-col">
           <div class="col-title"><span class="dot" style="color:#F472B6"></span>Personas served</div>
-          <div class="personas" id="personas"></div>
+          <div class="personas" id="personas">
+    <div class="per" data-id="p_cio">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8a4 4 0 1 0 0-0.01z"></path><path d="M4 21a8 8 0 0 1 16 0"></path></svg></div>
+      <div><div class="nm">CIO / IT leadership</div><div class="ro">Strategy &amp; outcomes</div></div>
+    </div>
+    <div class="per" data-id="p_workplace">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2-2 2.5-2.5z"></path></svg></div>
+      <div><div class="nm">Workplace engineering</div><div class="ro">Build &amp; run</div></div>
+    </div>
+    <div class="per" data-id="p_servicedesk">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l1.9-5.6A8.5 8.5 0 1 1 21 11.5z"></path></svg></div>
+      <div><div class="nm">Service desk</div><div class="ro">Resolve faster</div></div>
+    </div>
+    <div class="per" data-id="p_security">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"></path><path d="M9 12l2 2 4-4"></path></svg></div>
+      <div><div class="nm">Security &amp; risk</div><div class="ro">Posture &amp; response</div></div>
+    </div>
+    <div class="per" data-id="p_hr">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 8a3.5 3.5 0 1 0 0-0.01z"></path><path d="M2 21a7 7 0 0 1 14 0"></path><path d="M17 9a2.5 2.5 0 1 0 0-0.01z"></path><path d="M22 19a5 5 0 0 0-7-4.5"></path></svg></div>
+      <div><div class="nm">HR &amp; People</div><div class="ro">Employee experience</div></div>
+    </div>
+    <div class="per" data-id="p_finance">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c4.4 0 8 1.3 8 3v6c0 1.7-3.6 3-8 3s-8-1.3-8-3V9c0-1.7 3.6-3 8-3z"></path><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"></path></svg></div>
+      <div><div class="nm">Finance &amp; procurement</div><div class="ro">Spend &amp; assets</div></div>
+    </div></div>
         </div>
       </div>
 
       <!-- Value categories -->
-      <div class="vc-row" id="vcrow"></div>
+      <div class="vc-row" id="vcrow">
+    <div class="vc" data-id="vc_service_mgmt">
+      <div class="nm">Service Management</div>
+      <div class="tg">Reduce reactive workload and prevent disruptions</div>
+      <div class="bar" style="background:#5B7FFF"></div>
+    </div>
+    <div class="vc" data-id="vc_security">
+      <div class="nm">Compliance</div>
+      <div class="tg">Maintain posture, enforce standards, manage risk</div>
+      <div class="bar" style="background:#0EA5E9"></div>
+    </div>
+    <div class="vc" data-id="vc_workplace">
+      <div class="nm">Asset Management</div>
+      <div class="tg">Right-size, optimize and rationalize IT assets</div>
+      <div class="bar" style="background:#F97316"></div>
+    </div>
+    <div class="vc" data-id="vc_sustain">
+      <div class="nm">Sustainability</div>
+      <div class="tg">Reduce carbon, energy and hardware procurement</div>
+      <div class="bar" style="background:#34D399"></div>
+    </div>
+    <div class="vc" data-id="vc_dex">
+      <div class="nm">Strategy</div>
+      <div class="tg">Improve experience, revenue and talent retention</div>
+      <div class="bar" style="background:#A855F7"></div>
+    </div>
+    <div class="vc" data-id="vc_change">
+      <div class="nm">Change &amp; Transformation</div>
+      <div class="tg">De-risk migrations, adoptions and M&amp;A activity</div>
+      <div class="bar" style="background:#3B82F6"></div>
+    </div></div>
 
       <!-- Use cases columns under each vc -->
-      <div class="uc-cols" id="uccols"></div>
+      <div class="uc-cols" id="uccols"><div class="uc-stack" data-vc="vc_service_mgmt">
+      <div class="uc" data-id="uc_sm_reactive" data-vc="vc_service_mgmt">
+        <div class="nm">Reduce reactive workload</div>
+        <div class="px">Shift from firefighting to prevention with AI-powered issue detection and auto-remediation.</div>
+      </div>
+      <div class="uc" data-id="uc_sm_automation" data-vc="vc_service_mgmt">
+        <div class="nm">Proactive Automation</div>
+        <div class="px">Automate repetitive IT tasks and runbooks to free agents for high-value work.</div>
+      </div>
+      <div class="uc" data-id="uc_sm_efficiency" data-vc="vc_service_mgmt">
+        <div class="nm">Improve IT efficiency</div>
+        <div class="px">Measure and benchmark IT operations to eliminate waste and accelerate resolution.</div>
+      </div>
+      <div class="uc" data-id="uc_sm_prevention" data-vc="vc_service_mgmt">
+        <div class="nm">Prevent technology disruptions</div>
+        <div class="px">Detect performance regressions and hardware failures before they cause downtime.</div>
+      </div>
+      <div class="uc" data-id="uc_sm_onboarding" data-vc="vc_service_mgmt">
+        <div class="nm">Employee Onboarding</div>
+        <div class="px">Automate device setup and guided onboarding so new hires are productive on day one.</div>
+      </div>
+      <div class="uc" data-id="uc_spark" data-vc="vc_service_mgmt">
+        <div class="nm">Self-help AI agent</div>
+        <div class="px">Give every employee an autonomous AI agent that resolves IT issues without a ticket.</div>
+      </div>
+    </div><div class="uc-stack" data-vc="vc_security">
+      <div class="uc" data-id="uc_comp_sec_posture" data-vc="vc_security">
+        <div class="nm">Improve security posture</div>
+        <div class="px">Continuously assess and harden endpoint security across the entire fleet.</div>
+      </div>
+      <div class="uc" data-id="uc_comp_standards" data-vc="vc_security">
+        <div class="nm">Enforce corporate standards</div>
+        <div class="px">Detect and auto-remediate policy drift the moment it occurs.</div>
+      </div>
+      <div class="uc" data-id="uc_comp_human_risk" data-vc="vc_security">
+        <div class="nm">Manage Human Risk</div>
+        <div class="px">Identify risky user behaviours and intervene with targeted in-app guidance.</div>
+      </div>
+      <div class="uc" data-id="uc_comp_data" data-vc="vc_security">
+        <div class="nm">Data Integrity &amp; Compliance</div>
+        <div class="px">Ensure data governance and integrity across all managed devices and systems.</div>
+      </div>
+      <div class="uc" data-id="uc_comp_ai" data-vc="vc_security">
+        <div class="nm">AI Compliance</div>
+        <div class="px">Govern shadow AI tool usage and enforce AI policies across the workforce.</div>
+      </div>
+    </div><div class="uc-stack" data-vc="vc_workplace">
+      <div class="uc" data-id="uc_am_hw_refresh" data-vc="vc_workplace">
+        <div class="nm">Performance based HW Refresh</div>
+        <div class="px">Replace hardware based on real performance data, not arbitrary age policies.</div>
+      </div>
+      <div class="uc" data-id="uc_am_hw_sizing" data-vc="vc_workplace">
+        <div class="nm">Hardware Right-sizing</div>
+        <div class="px">Match hardware spec to actual workload to avoid over-provisioning and waste.</div>
+      </div>
+      <div class="uc" data-id="uc_am_sw_spend" data-vc="vc_workplace">
+        <div class="nm">Reduce Software Spend</div>
+        <div class="px">Eliminate unused licenses and consolidate redundant SaaS tools.</div>
+      </div>
+      <div class="uc" data-id="uc_am_ai_optim" data-vc="vc_workplace">
+        <div class="nm">AI Consumption &amp; Optimisation</div>
+        <div class="px">Track AI tool adoption and optimize Copilot/ChatGPT license usage.</div>
+      </div>
+      <div class="uc" data-id="uc_am_vdi" data-vc="vc_workplace">
+        <div class="nm">VDI Optimisation</div>
+        <div class="px">Right-size VDI sessions and identify underutilized virtual machines.</div>
+      </div>
+      <div class="uc" data-id="uc_am_mobile" data-vc="vc_workplace">
+        <div class="nm">Mobile &amp; POS</div>
+        <div class="px">Ensure mobile devices and point-of-sale terminals stay healthy and compliant.</div>
+      </div>
+    </div><div class="uc-stack" data-vc="vc_sustain">
+      <div class="uc" data-id="uc_sus_carbon" data-vc="vc_sustain">
+        <div class="nm">Reduce Carbon Footprint</div>
+        <div class="px">Measure, report and reduce the carbon impact of the device fleet.</div>
+      </div>
+      <div class="uc" data-id="uc_sus_energy" data-vc="vc_sustain">
+        <div class="nm">Reduce Energy costs</div>
+        <div class="px">Optimize sleep policies and identify always-on devices to cut energy spend.</div>
+      </div>
+      <div class="uc" data-id="uc_sus_hw_proc" data-vc="vc_sustain">
+        <div class="nm">Reduced hardware procurement</div>
+        <div class="px">Extend device lifecycles using real performance data to defer CapEx.</div>
+      </div>
+    </div><div class="uc-stack" data-vc="vc_dex">
+      <div class="uc" data-id="uc_str_experience" data-vc="vc_dex">
+        <div class="nm">Improve employee &amp; customer Experience</div>
+        <div class="px">Measure and improve the digital experience of every employee with a unified DEX score.</div>
+      </div>
+      <div class="uc" data-id="uc_str_revenue" data-vc="vc_dex">
+        <div class="nm">Increase Revenue</div>
+        <div class="px">Link employee digital experience to business productivity and revenue outcomes.</div>
+      </div>
+      <div class="uc" data-id="uc_str_data" data-vc="vc_dex">
+        <div class="nm">Become Data Driven</div>
+        <div class="px">Build a data platform for IT decisions that eliminates guesswork and opinion.</div>
+      </div>
+      <div class="uc" data-id="uc_str_talent" data-vc="vc_dex">
+        <div class="nm">Attract &amp; Retain Talent</div>
+        <div class="px">Use digital experience as a talent differentiator to reduce attrition.</div>
+      </div>
+      <div class="uc" data-id="uc_str_xla" data-vc="vc_dex">
+        <div class="nm">XLA Methodology</div>
+        <div class="px">Shift from SLA compliance to experience-level agreements that measure what users actually feel.</div>
+      </div>
+    </div><div class="uc-stack" data-vc="vc_change">
+      <div class="uc" data-id="uc_ct_budget" data-vc="vc_change">
+        <div class="nm">Budgeting and planning</div>
+        <div class="px">Use real device and usage data to plan IT budgets with confidence.</div>
+      </div>
+      <div class="uc" data-id="uc_ct_transform" data-vc="vc_change">
+        <div class="nm">Accelerate Transformation</div>
+        <div class="px">Track rollout velocity, adoption and experience impact for every transformation programme.</div>
+      </div>
+      <div class="uc" data-id="uc_ct_ai_adopt" data-vc="vc_change">
+        <div class="nm">AI &amp; Digital Adoption</div>
+        <div class="px">Measure and boost adoption of AI tools and new digital capabilities.</div>
+      </div>
+      <div class="uc" data-id="uc_ct_mna" data-vc="vc_change">
+        <div class="nm">M&amp;A Activity</div>
+        <div class="px">Accelerate IT integration after mergers and acquisitions with full estate visibility.</div>
+      </div>
+    </div></div>
 
       <!-- Hub (platform) — full width -->
       <div class="hub-wrap">
@@ -270,7 +571,131 @@
               <span class="btn" style="cursor:default"><span class="pillc" style="background:var(--c-govern)"></span>Govern</span>
             </div>
           </div>
-          <div class="feat-grid" id="features"></div>
+          <div class="feat-grid" id="features" style="grid-template-columns: repeat(7, 1fr);">
+    <div class="feat-col">
+      <div class="feat-group" style="color:var(--c-collect);">Collect</div>
+      
+        <div class="feat" data-id="f_collect_endpoint" data-group="collect" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"></path></svg></div>
+          <div class="nm">Endpoint telemetry</div>
+        </div>
+        <div class="feat" data-id="f_network" data-group="collect" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"></path></svg></div>
+          <div class="nm">Network data</div>
+        </div>
+        <div class="feat" data-id="f_collabex" data-group="collect" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"></path></svg></div>
+          <div class="nm">Collaboration Experience</div>
+        </div>
+        <div class="feat" data-id="f_collect_sentiment" data-group="collect" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"></path></svg></div>
+          <div class="nm">Employee sentiment surveys</div>
+        </div>
+        <div class="feat" data-id="f_collect_external" data-group="collect" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"></path></svg></div>
+          <div class="nm">External connectors</div>
+        </div>
+    </div>
+    <div class="feat-col">
+      <div class="feat-group" style="color:var(--c-collect); visibility:hidden">Collect</div>
+      
+        <div class="feat" data-id="f_mobile" data-group="collect" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"></path></svg></div>
+          <div class="nm">Mobile Experience</div>
+        </div>
+        <div class="feat" data-id="f_appex" data-group="collect" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"></path></svg></div>
+          <div class="nm">Application Experience</div>
+        </div>
+        <div class="feat" data-id="f_vdi" data-group="collect" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"></path></svg></div>
+          <div class="nm">VDI Experience</div>
+        </div>
+    </div>
+    <div class="feat-col">
+      <div class="feat-group" style="color:var(--c-correlate);">Correlate</div>
+      
+        <div class="feat" data-id="f_corr_ai" data-group="correlate" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="6" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle><path d="M6 8.5L12 16M18 8.5L12 16"></path></svg></div>
+          <div class="nm">AI insights &amp; anomaly</div>
+        </div>
+        <div class="feat" data-id="f_act_dashboards" data-group="correlate" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="6" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle><path d="M6 8.5L12 16M18 8.5L12 16"></path></svg></div>
+          <div class="nm">Live dashboards</div>
+        </div>
+        <div class="feat" data-id="f_investigations" data-group="correlate" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="6" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle><path d="M6 8.5L12 16M18 8.5L12 16"></path></svg></div>
+          <div class="nm">Investigations</div>
+        </div>
+        <div class="feat" data-id="f_library" data-group="correlate" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="6" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle><path d="M6 8.5L12 16M18 8.5L12 16"></path></svg></div>
+          <div class="nm">Content library</div>
+        </div>
+        <div class="feat" data-id="f_alert" data-group="correlate" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="6" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle><path d="M6 8.5L12 16M18 8.5L12 16"></path></svg></div>
+          <div class="nm">Real-time alerts</div>
+        </div>
+    </div>
+    <div class="feat-col">
+      <div class="feat-group" style="color:var(--c-correlate); visibility:hidden">Correlate</div>
+      
+        <div class="feat" data-id="f_diagnostic" data-group="correlate" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="6" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle><path d="M6 8.5L12 16M18 8.5L12 16"></path></svg></div>
+          <div class="nm">Automated diagnostics</div>
+        </div>
+    </div>
+    <div class="feat-col">
+      <div class="feat-group" style="color:var(--c-act);">Act</div>
+      
+        <div class="feat" data-id="f_act_remediation" data-group="act" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"></path></svg></div>
+          <div class="nm">Remote Actions &amp; Workflows</div>
+        </div>
+        <div class="feat" data-id="f_act_campaign" data-group="act" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"></path></svg></div>
+          <div class="nm">In-App guidance</div>
+        </div>
+        <div class="feat" data-id="f_spark" data-group="act" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"></path></svg></div>
+          <div class="nm">Spark</div>
+        </div>
+        <div class="feat" data-id="f_amplify" data-group="act" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"></path></svg></div>
+          <div class="nm">Amplify</div>
+        </div>
+    </div>
+    <div class="feat-col">
+      <div class="feat-group" style="color:var(--c-govern);">Govern</div>
+      
+        <div class="feat" data-id="f_corr_dex_score" data-group="govern" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"></path></svg></div>
+          <div class="nm">DEX score</div>
+        </div>
+        <div class="feat" data-id="f_act_api" data-group="govern" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"></path></svg></div>
+          <div class="nm">APIs, Data Exporter &amp; webhooks</div>
+        </div>
+        <div class="feat" data-id="f_gov_rbac" data-group="govern" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"></path></svg></div>
+          <div class="nm">RBAC &amp; data residency</div>
+        </div>
+        <div class="feat" data-id="f_ai_tools" data-group="govern" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"></path></svg></div>
+          <div class="nm">AI tools</div>
+        </div>
+        <div class="feat" data-id="f_workspace" data-group="govern" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"></path></svg></div>
+          <div class="nm">Workspace</div>
+        </div>
+    </div>
+    <div class="feat-col">
+      <div class="feat-group" style="color:var(--c-govern); visibility:hidden">Govern</div>
+      
+        <div class="feat" data-id="f_exp_central" data-group="govern" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"></path></svg></div>
+          <div class="nm">Experience Central</div>
+        </div>
+    </div></div>
         </div>
       </div>
 
@@ -283,7 +708,55 @@
               <div class="hub-title">Connected endpoints &amp; systems</div>
             </div>
           </div>
-          <div class="sources" id="sources"></div>
+          <div class="sources" id="sources">
+    <div class="src" data-id="src_vdi">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v12H3z"></path><path d="M8 20h8"></path><path d="M12 16v4"></path></svg></div>
+      <div style="flex:1; min-width:0">
+        <div class="nm">Virtual sessions</div>
+        <div class="sub">Citrix, VMware, Azure Virtual Desktop, Cloud PCs...</div>
+      </div>
+    </div>
+  
+    <div class="src" data-id="src_laptop">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v12H3z"></path><path d="M2 20h20"></path></svg></div>
+      <div style="flex:1; min-width:0">
+        <div class="nm">Laptops</div>
+        <div class="sub">Windows, macOS — full hardware/software/network telemetry.</div>
+      </div>
+    </div>
+  
+    <div class="src" data-id="src_desktop">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v13H3z"></path><path d="M9 21h6"></path><path d="M12 17v4"></path></svg></div>
+      <div style="flex:1; min-width:0">
+        <div class="nm">Desktops</div>
+        <div class="sub">Office and shop-floor workstations and kiosks.</div>
+      </div>
+    </div>
+  
+    <div class="src" data-id="src_mobile">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2h10v20H7z"></path><path d="M11 18h2"></path></svg></div>
+      <div style="flex:1; min-width:0">
+        <div class="nm">Mobile devices</div>
+        <div class="sub">iOS, Android phones and tablets — connectivity &amp; app health.</div>
+      </div>
+    </div>
+  
+    <div class="src" data-id="src_external">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7V3"></path><path d="M15 7V3"></path><path d="M6 7h12v4a6 6 0 0 1-12 0V7z"></path><path d="M12 17v4"></path></svg></div>
+      <div style="flex:1; min-width:0">
+        <div class="nm">External systems</div>
+        <div class="sub">ITSM, IdP, MDM, network, SaaS apps — connectors enrich device truth.</div>
+      </div>
+    </div>
+  
+    <div class="src" data-id="src_sentiment">
+      <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3.5-7.1L21 4v5h-5"></path><path d="M9 12h.01"></path><path d="M15 12h.01"></path><path d="M9 16c1 1 2 1.5 3 1.5s2-.5 3-1.5"></path></svg></div>
+      <div style="flex:1; min-width:0">
+        <div class="nm">User sentiment</div>
+        <div class="sub">In-context surveys correlating how users feel with what we measure.</div>
+      </div>
+    </div>
+  </div>
         </div>
       </div>
     </section>
@@ -293,10 +766,200 @@
 <!-- Drawer -->
 <aside class="drawer" id="drawer" aria-hidden="true">
   <button class="close" id="drawerClose" aria-label="Close">✕</button>
-  <div id="drawerContent"></div>
+  <div id="drawerContent">
+    <div class="vcat" style="color:#A855F7">Strategy</div>
+    <h2>Increase Revenue</h2>
+    <div class="pitch">Link employee digital experience to business productivity and revenue outcomes.</div>
+
+    <div class="section">
+      <h3 style="color:#34D399"><span class="dot"></span>Value</h3>
+      <div style="padding:14px 16px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid var(--line); line-height:1.7; color:var(--ink-2); font-size:14px">Research consistently shows that employees with better digital experiences are more productive and more engaged. Nexthink enables organisations to quantify this link — correlating DEX scores with productivity metrics, output quality and revenue per employee — building the business case for IT investment in terms that resonate with the CFO and CEO.</div>
+    </div>
+
+    <div class="section">
+      <h3 style="color:#A7F3D0"><span class="dot"></span>IT &amp; Business benefits</h3>
+      <div class="chips"><span class="chip benefit">Business productivity</span><span class="chip benefit">Business costs saved</span></div>
+    </div>
+
+    <div class="section">
+      <h3 style="color:#67E8F9"><span class="dot"></span>Customer stories</h3>
+      
+        <a class="story-link" href="https://nexthink.com/resource/honeywell-cost-efficient-workplace" target="_blank" rel="noopener noreferrer">
+          <div><span class="who">Honeywell</span><span class="ind">Manufacturing</span></div>
+          <div class="stitle">Honeywell: Running a Cost-Efficient Workplace</div>
+        </a>
+        <a class="story-link" href="https://nexthink.com/en/resource/a-year-in-the-life-of-a-nexthink-customer" target="_blank" rel="noopener noreferrer">
+          <div><span class="who">Anonymous</span><span class="ind">Financial Services</span></div>
+          <div class="stitle">A Year in the Life of a Nexthink Customer</div>
+        </a>
+    </div>
+
+    <div class="section">
+      <h3 style="color:#FBCFE8"><span class="dot"></span>Personas concerned</h3>
+      <div class="chips"><span class="chip">CIO / IT leadership</span><span class="chip">Finance &amp; procurement</span></div>
+    </div>
+
+    <div class="section">
+      <h3 style="color:#A5B4FC"><span class="dot"></span>Features used</h3>
+      <div class="chips"><span class="chip feat">Endpoint telemetry</span><span class="chip feat">AI insights &amp; anomaly</span><span class="chip feat">Live dashboards</span><span class="chip feat">APIs, Data Exporter &amp; webhooks</span></div>
+    </div>
+  </div>
 </aside>
 
-<div class="hint" id="hint">Tip: click any use case → see its features and value</div>
+<!-- Data editor overlay (built by JS) -->
+<div id="editorOverlay" class="editor-overlay">
+  <div class="editor-header">
+    <div style="display:flex;align-items:center;gap:16px;min-width:0">
+      <span style="font-size:15px;font-weight:700;flex-shrink:0">✏ Edit data</span>
+      <div class="ed-tabs">
+        <div class="ed-tab active" onclick="switchEdTab('uc')">Use Cases</div><div class="ed-tab " onclick="switchEdTab('vc')">Value Categories</div><div class="ed-tab " onclick="switchEdTab('feat')">Features</div><div class="ed-tab " onclick="switchEdTab('per')">Personas</div><div class="ed-tab " onclick="switchEdTab('src')">Data Sources</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+      <button class="ed-btn primary" onclick="exportHTML()">↓ Save HTML</button>
+      <button class="ed-btn" onclick="closeEditor()">✕ Close</button>
+    </div>
+  </div>
+  <div class="editor-layout">
+  <div class="editor-sidebar" id="edSidebar">
+    <div class="ed-vc" style="color:#5B7FFF">Service Management</div>
+        <div class="ed-uc-item active" data-id="uc_sm_reactive" onclick="selectEdUC('uc_sm_reactive')">Reduce reactive workload</div><div class="ed-uc-item " data-id="uc_sm_automation" onclick="selectEdUC('uc_sm_automation')">Proactive Automation</div><div class="ed-uc-item " data-id="uc_sm_efficiency" onclick="selectEdUC('uc_sm_efficiency')">Improve IT efficiency</div><div class="ed-uc-item " data-id="uc_sm_prevention" onclick="selectEdUC('uc_sm_prevention')">Prevent technology disruptions</div><div class="ed-uc-item " data-id="uc_sm_onboarding" onclick="selectEdUC('uc_sm_onboarding')">Employee Onboarding</div><div class="ed-uc-item " data-id="uc_spark" onclick="selectEdUC('uc_spark')">Self-help AI agent</div><div class="ed-vc" style="color:#0EA5E9">Compliance</div>
+        <div class="ed-uc-item " data-id="uc_comp_sec_posture" onclick="selectEdUC('uc_comp_sec_posture')">Improve security posture</div><div class="ed-uc-item " data-id="uc_comp_standards" onclick="selectEdUC('uc_comp_standards')">Enforce corporate standards</div><div class="ed-uc-item " data-id="uc_comp_human_risk" onclick="selectEdUC('uc_comp_human_risk')">Manage Human Risk</div><div class="ed-uc-item " data-id="uc_comp_data" onclick="selectEdUC('uc_comp_data')">Data Integrity &amp; Compliance</div><div class="ed-uc-item " data-id="uc_comp_ai" onclick="selectEdUC('uc_comp_ai')">AI Compliance</div><div class="ed-vc" style="color:#F97316">Asset Management</div>
+        <div class="ed-uc-item " data-id="uc_am_hw_refresh" onclick="selectEdUC('uc_am_hw_refresh')">Performance based HW Refresh</div><div class="ed-uc-item " data-id="uc_am_hw_sizing" onclick="selectEdUC('uc_am_hw_sizing')">Hardware Right-sizing</div><div class="ed-uc-item " data-id="uc_am_sw_spend" onclick="selectEdUC('uc_am_sw_spend')">Reduce Software Spend</div><div class="ed-uc-item " data-id="uc_am_ai_optim" onclick="selectEdUC('uc_am_ai_optim')">AI Consumption &amp; Optimisation</div><div class="ed-uc-item " data-id="uc_am_vdi" onclick="selectEdUC('uc_am_vdi')">VDI Optimisation</div><div class="ed-uc-item " data-id="uc_am_mobile" onclick="selectEdUC('uc_am_mobile')">Mobile &amp; POS</div><div class="ed-vc" style="color:#34D399">Sustainability</div>
+        <div class="ed-uc-item " data-id="uc_sus_carbon" onclick="selectEdUC('uc_sus_carbon')">Reduce Carbon Footprint</div><div class="ed-uc-item " data-id="uc_sus_energy" onclick="selectEdUC('uc_sus_energy')">Reduce Energy costs</div><div class="ed-uc-item " data-id="uc_sus_hw_proc" onclick="selectEdUC('uc_sus_hw_proc')">Reduced hardware procurement</div><div class="ed-vc" style="color:#A855F7">Strategy</div>
+        <div class="ed-uc-item " data-id="uc_str_experience" onclick="selectEdUC('uc_str_experience')">Improve employee &amp; customer Experience</div><div class="ed-uc-item " data-id="uc_str_revenue" onclick="selectEdUC('uc_str_revenue')">Increase Revenue</div><div class="ed-uc-item " data-id="uc_str_data" onclick="selectEdUC('uc_str_data')">Become Data Driven</div><div class="ed-uc-item " data-id="uc_str_talent" onclick="selectEdUC('uc_str_talent')">Attract &amp; Retain Talent</div><div class="ed-uc-item " data-id="uc_str_xla" onclick="selectEdUC('uc_str_xla')">XLA Methodology</div><div class="ed-vc" style="color:#3B82F6">Change &amp; Transformation</div>
+        <div class="ed-uc-item " data-id="uc_ct_budget" onclick="selectEdUC('uc_ct_budget')">Budgeting and planning</div><div class="ed-uc-item " data-id="uc_ct_transform" onclick="selectEdUC('uc_ct_transform')">Accelerate Transformation</div><div class="ed-uc-item " data-id="uc_ct_ai_adopt" onclick="selectEdUC('uc_ct_ai_adopt')">AI &amp; Digital Adoption</div><div class="ed-uc-item " data-id="uc_ct_mna" onclick="selectEdUC('uc_ct_mna')">M&amp;A Activity</div>
+    <div style="padding:10px 14px;margin-top:6px">
+      <button class="ed-add-btn" onclick="addNewUC()">+ New use case</button>
+    </div>
+  </div>
+  <div class="editor-form" id="edForm">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+              margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line)">
+    <div style="flex:1;min-width:0">
+      <div class="ed-field-group">
+        <label class="ed-label">Name</label>
+        <input class="ed-input ed-input-lg" value="Reduce reactive workload" oninput="updateUCField('uc_sm_reactive','name',this.value)">
+      </div>
+      <div class="ed-field-group" style="margin-top:10px">
+        <label class="ed-label">Value category</label>
+        <select class="ed-input" onchange="updateUCField('uc_sm_reactive','valueCategoryId',this.value)">
+    <option value="vc_service_mgmt" selected="">
+      Service Management</option><option value="vc_security">
+      Compliance</option><option value="vc_workplace">
+      Asset Management</option><option value="vc_sustain">
+      Sustainability</option><option value="vc_dex">
+      Strategy</option><option value="vc_change">
+      Change &amp; Transformation</option>
+  </select>
+      </div>
+    </div>
+    <button class="ed-del-btn" style="margin-top:20px" onclick="deleteUC('uc_sm_reactive')">Delete UC</button>
+  </div>
+  <div class="ed-section">
+    <div class="ed-sec-title">Short pitch</div>
+    <input class="ed-input" value="Shift from firefighting to prevention with AI-powered issue detection and auto-remediation." oninput="updateUCField('uc_sm_reactive','shortPitch',this.value)" placeholder="One-line positioning statement">
+  </div>
+  <div class="ed-section">
+    <div class="ed-sec-title">Value description</div>
+    <textarea class="ed-textarea" rows="5" oninput="updateUCField('uc_sm_reactive','valueDescription',this.value)" placeholder="Detailed description of the value delivered...">Nexthink gives IT full visibility to see, diagnose and fix issues before employees even notice them. By detecting recurring problems across the fleet — from crashes and connectivity drops to application freezes — IT can shift from reactive firefighting to proactive resolution, reducing inbound ticket volumes and shortening mean time to resolution.</textarea>
+  </div>
+  <div class="ed-section">
+    <div class="ed-sec-title">Foundation features</div>
+    <div style="margin-bottom:10px">
+      <div class="ed-group-label" style="color:var(--c-collect)">Collect</div>
+      <div class="ed-chips"><div class="ed-chip feat-chip on" data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_collect_endpoint',this)">Endpoint telemetry</div><div class="ed-chip feat-chip on" data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_network',this)">Network data</div><div class="ed-chip feat-chip on" data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_collabex',this)">Collaboration Experience</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_collect_sentiment',this)">Employee sentiment surveys</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_collect_external',this)">External connectors</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_mobile',this)">Mobile Experience</div><div class="ed-chip feat-chip on" data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_appex',this)">Application Experience</div><div class="ed-chip feat-chip on" data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_vdi',this)">VDI Experience</div></div></div><div style="margin-bottom:10px">
+      <div class="ed-group-label" style="color:var(--c-correlate)">Correlate</div>
+      <div class="ed-chips"><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_sm_reactive','f_corr_ai',this)">AI insights &amp; anomaly</div><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_sm_reactive','f_act_dashboards',this)">Live dashboards</div><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_sm_reactive','f_investigations',this)">Investigations</div><div class="ed-chip feat-chip " data-group="correlate" onclick="toggleFeat('uc_sm_reactive','f_library',this)">Content library</div><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_sm_reactive','f_alert',this)">Real-time alerts</div><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_sm_reactive','f_diagnostic',this)">Automated diagnostics</div></div></div><div style="margin-bottom:10px">
+      <div class="ed-group-label" style="color:var(--c-act)">Act</div>
+      <div class="ed-chips"><div class="ed-chip feat-chip on" data-group="act" onclick="toggleFeat('uc_sm_reactive','f_act_remediation',this)">Remote Actions &amp; Workflows</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_sm_reactive','f_act_campaign',this)">In-App guidance</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_sm_reactive','f_spark',this)">Spark</div><div class="ed-chip feat-chip on" data-group="act" onclick="toggleFeat('uc_sm_reactive','f_amplify',this)">Amplify</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_sm_reactive','f_opwgrz',this)">Employee notifications &amp; self-help</div></div></div><div style="margin-bottom:10px">
+      <div class="ed-group-label" style="color:var(--c-govern)">Govern</div>
+      <div class="ed-chips"><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_sm_reactive','f_corr_dex_score',this)">DEX score</div><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_sm_reactive','f_act_api',this)">APIs, Data Exporter &amp; webhooks</div><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_sm_reactive','f_gov_rbac',this)">RBAC &amp; data residency</div><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_sm_reactive','f_ai_tools',this)">AI tools</div><div class="ed-chip feat-chip on" data-group="govern" onclick="toggleFeat('uc_sm_reactive','f_workspace',this)">Workspace</div><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_sm_reactive','f_exp_central',this)">Experience Central</div></div></div>
+  </div>
+  <div class="ed-section">
+    <div class="ed-sec-title">Personas</div>
+    <div class="ed-chips"><div class="ed-chip per-chip " onclick="togglePer('uc_sm_reactive','p_cio',this)">CIO / IT leadership</div><div class="ed-chip per-chip on" onclick="togglePer('uc_sm_reactive','p_workplace',this)">Workplace engineering</div><div class="ed-chip per-chip on" onclick="togglePer('uc_sm_reactive','p_servicedesk',this)">Service desk</div><div class="ed-chip per-chip " onclick="togglePer('uc_sm_reactive','p_security',this)">Security &amp; risk</div><div class="ed-chip per-chip " onclick="togglePer('uc_sm_reactive','p_hr',this)">HR &amp; People</div><div class="ed-chip per-chip " onclick="togglePer('uc_sm_reactive','p_finance',this)">Finance &amp; procurement</div></div>
+  </div>
+  <div class="ed-section">
+    <div class="ed-sec-title">IT &amp; business benefits</div>
+    <div class="ed-chips"><div class="ed-chip ben-chip " onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="Business costs saved">Business costs saved</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="Business productivity">Business productivity</div><div class="ed-chip ben-chip on" onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="Business time saved">Business time saved</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="Company reputation">Company reputation</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="IT cost avoided">IT cost avoided</div><div class="ed-chip ben-chip on" onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="IT costs saved">IT costs saved</div><div class="ed-chip ben-chip on" onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="IT time saved">IT time saved</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="Overall employee experience">Overall employee experience</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="Risk avoidance">Risk avoidance</div></div>
+    <div class="ed-benefit-add" style="margin-top:10px">
+      <input id="benefitInput" placeholder="New benefit type..." onkeydown="if(event.key==='Enter'){event.preventDefault();addBenefit('uc_sm_reactive')}">
+      <button onclick="addBenefit('uc_sm_reactive')">Add</button>
+    </div>
+  </div>
+  <div class="ed-section">
+    <div class="ed-sec-title" style="display:flex;justify-content:space-between;align-items:center">
+      Customer stories
+      <button class="ed-add-btn" style="width:auto;padding:5px 12px" onclick="addStory('uc_sm_reactive')">+ Add story</button>
+    </div>
+    
+    <div class="ed-story">
+      <div class="ed-story-row">
+        <div class="ed-field-group" style="flex:2">
+          <label class="ed-label">Title</label>
+          <input class="ed-input" value="Western Union: From Reactive to Proactive" oninput="updateStory('uc_sm_reactive',0,'title',this.value)" placeholder="Story title">
+        </div>
+        <div class="ed-field-group" style="flex:1">
+          <label class="ed-label">Customer</label>
+          <input class="ed-input" value="Western Union" oninput="updateStory('uc_sm_reactive',0,'customer',this.value)" placeholder="Customer name">
+        </div>
+        <div class="ed-field-group" style="flex:1">
+          <label class="ed-label">Industry</label>
+          <input class="ed-input" value="Financial Services" oninput="updateStory('uc_sm_reactive',0,'industry',this.value)" placeholder="Industry">
+        </div>
+        <button class="ed-del-btn" onclick="deleteStory('uc_sm_reactive',0)" style="margin-bottom:1px">✕</button>
+      </div>
+      <div class="ed-field-group" style="margin-top:8px">
+        <label class="ed-label">URL</label>
+        <input class="ed-input" value="https://nexthink.com/en/resource/western-union-testimonial" oninput="updateStory('uc_sm_reactive',0,'url',this.value)" placeholder="https://nexthink.com/customers/...">
+      </div>
+    </div>
+    <div class="ed-story">
+      <div class="ed-story-row">
+        <div class="ed-field-group" style="flex:2">
+          <label class="ed-label">Title</label>
+          <input class="ed-input" value="Fortune 500 Healthcare Cracks Their IT Problems Once and For All" oninput="updateStory('uc_sm_reactive',1,'title',this.value)" placeholder="Story title">
+        </div>
+        <div class="ed-field-group" style="flex:1">
+          <label class="ed-label">Customer</label>
+          <input class="ed-input" value="Anonymous" oninput="updateStory('uc_sm_reactive',1,'customer',this.value)" placeholder="Customer name">
+        </div>
+        <div class="ed-field-group" style="flex:1">
+          <label class="ed-label">Industry</label>
+          <input class="ed-input" value="Healthcare" oninput="updateStory('uc_sm_reactive',1,'industry',this.value)" placeholder="Industry">
+        </div>
+        <button class="ed-del-btn" onclick="deleteStory('uc_sm_reactive',1)" style="margin-bottom:1px">✕</button>
+      </div>
+      <div class="ed-field-group" style="margin-top:8px">
+        <label class="ed-label">URL</label>
+        <input class="ed-input" value="https://nexthink.com/resource/fortune-500-healthcare-case-study" oninput="updateStory('uc_sm_reactive',1,'url',this.value)" placeholder="https://nexthink.com/customers/...">
+      </div>
+    </div>
+    <div class="ed-story">
+      <div class="ed-story-row">
+        <div class="ed-field-group" style="flex:2">
+          <label class="ed-label">Title</label>
+          <input class="ed-input" value="How Leidos Is Building a Proactive, AI-Enabled IT Organization" oninput="updateStory('uc_sm_reactive',2,'title',this.value)" placeholder="Story title">
+        </div>
+        <div class="ed-field-group" style="flex:1">
+          <label class="ed-label">Customer</label>
+          <input class="ed-input" value="Leidos" oninput="updateStory('uc_sm_reactive',2,'customer',this.value)" placeholder="Customer name">
+        </div>
+        <div class="ed-field-group" style="flex:1">
+          <label class="ed-label">Industry</label>
+          <input class="ed-input" value="Defense &amp; Technology" oninput="updateStory('uc_sm_reactive',2,'industry',this.value)" placeholder="Industry">
+        </div>
+        <button class="ed-del-btn" onclick="deleteStory('uc_sm_reactive',2)" style="margin-bottom:1px">✕</button>
+      </div>
+      <div class="ed-field-group" style="margin-top:8px">
+        <label class="ed-label">URL</label>
+        <input class="ed-input" value="https://nexthink.com/resource/how-leidos-is-building-a-proactive-ai-enabled-it-organization" oninput="updateStory('uc_sm_reactive',2,'url',this.value)" placeholder="https://nexthink.com/customers/...">
+      </div>
+    </div>
+  </div></div></div></div>
+
+<div class="hint" id="hint">Tip: click a use case, benefit, or persona to explore connections</div>
 
 <!-- BUNDLED DATA (auto-rewritten by xlsx_to_json.py). Keep the markers intact. -->
 <script id="bundled-data" type="application/json">
@@ -520,6 +1183,13 @@
       "group": "correlate",
       "description": "When Nexthink triggers an alert, the platform automatically generates a Diagnostics page co-located with the alert record, providing a first-level root cause analysis without requiring manual investigation steps by the IT engineer. The Diagnostics page is composed of several auto-populated sections. At the top it displays the monitor name, the specific context entity that breached the threshold, and the primary monitored condition. A timeline panel visualises the metric trend around the alert event, enabling engineers to see whether the issue is isolated or part of a longer degradation pattern. The core of the automated analysis is a statistical insights engine that applies Bayesian inference to identify which device attributes — such as OS version, hardware model, installed software versions, network segment, or geographic location — are statistically over-represented among the affected devices compared to the unaffected population within the same tenant. The algorithm quantifies a likelihood score for each candidate attribute, ranking them from most to least probable contributor, so the first item in the insights list represents the strongest statistical differentiator. The engine supplements tenant-specific inference with anonymised cross-customer benchmarking data aggregated from Nexthink's cloud customer base, helping distinguish issues idiosyncratic to a specific environment from those following broader industry patterns. Engineers can apply filters by technical property, geographic location, or organisational entity directly on the Diagnostics page to narrow scope and validate hypotheses.",
       "order": 260
+    },
+    {
+      "id": "f_opwgrz",
+      "name": "Employee notifications & self-help",
+      "group": "act",
+      "description": "Notify users in real time using an on-screen popup and act employees to take action, to validate, choose or acknowledge automated actions.",
+      "order": 999
     }
   ],
   "valueCategories": [
@@ -756,9 +1426,11 @@
       "featureIds": [
         "f_collect_endpoint",
         "f_collect_external",
-        "f_corr_ai",
         "f_act_dashboards",
-        "f_act_api"
+        "f_act_api",
+        "f_appex",
+        "f_investigations",
+        "f_workspace"
       ],
       "personaIds": [
         "p_cio",
@@ -805,7 +1477,10 @@
         "f_collect_sentiment",
         "f_corr_dex_score",
         "f_exp_central",
-        "f_act_dashboards"
+        "f_act_dashboards",
+        "f_appex",
+        "f_collabex",
+        "f_investigations"
       ],
       "personaIds": [
         "p_cio",
@@ -843,7 +1518,9 @@
         "f_collect_endpoint",
         "f_corr_ai",
         "f_act_dashboards",
-        "f_act_api"
+        "f_act_api",
+        "f_collect_sentiment",
+        "f_ai_tools"
       ],
       "personaIds": [
         "p_cio",
@@ -975,8 +1652,8 @@
       "valueDescription": "Nexthink provides continuous, real-time visibility into the security posture of every managed endpoint. By surfacing configuration gaps, missing patches, and policy drift across the fleet, IT security teams can proactively identify and close vulnerabilities before they are exploited — dramatically reducing audit preparation time and improving overall compliance scores.",
       "benefitTypes": [
         "Risk avoidance",
-        "IT costs saved",
-        "Company reputation"
+        "Company reputation",
+        "IT cost avoided"
       ],
       "customerStories": [
         {
@@ -1003,10 +1680,19 @@
       ],
       "featureIds": [
         "f_collect_endpoint",
-        "f_corr_ai",
         "f_act_dashboards",
         "f_act_remediation",
-        "f_act_api"
+        "f_network",
+        "f_mobile",
+        "f_appex",
+        "f_investigations",
+        "f_alert",
+        "f_corr_ai",
+        "f_workspace",
+        "f_ai_tools",
+        "f_act_api",
+        "f_opwgrz",
+        "f_act_campaign"
       ],
       "personaIds": [
         "p_security",
@@ -1022,7 +1708,7 @@
       "valueDescription": "Nexthink continuously monitors endpoint configurations against corporate SOE standards and automatically remediates deviations at scale. When a device drifts from policy — through a user action, software update, or OS change — Nexthink detects it instantly and can trigger a self-healing action or alert the relevant team, maintaining compliance without manual intervention.",
       "benefitTypes": [
         "Risk avoidance",
-        "IT costs saved"
+        "IT cost avoided"
       ],
       "customerStories": [
         {
@@ -1044,7 +1730,9 @@
         "f_collect_endpoint",
         "f_act_remediation",
         "f_act_dashboards",
-        "f_gov_rbac"
+        "f_gov_rbac",
+        "f_workspace",
+        "f_ai_tools"
       ],
       "personaIds": [
         "p_security",
@@ -1060,7 +1748,8 @@
       "valueDescription": "Nexthink monitors employee behaviours that introduce security risk — from shadow IT tool adoption to unsafe browsing and policy bypasses. When risky patterns are detected, IT can deploy targeted in-app campaigns to educate and redirect employees in the moment, reducing human-caused security incidents without heavy-handed enforcement.",
       "benefitTypes": [
         "Risk avoidance",
-        "Company reputation"
+        "Company reputation",
+        "IT cost avoided"
       ],
       "customerStories": [
         {
@@ -1082,7 +1771,10 @@
         "f_collect_endpoint",
         "f_corr_ai",
         "f_act_dashboards",
-        "f_collect_sentiment"
+        "f_collect_sentiment",
+        "f_act_campaign",
+        "f_ai_tools",
+        "f_appex"
       ],
       "personaIds": [
         "p_security",
@@ -1121,7 +1813,13 @@
         "f_collect_endpoint",
         "f_act_api",
         "f_gov_rbac",
-        "f_act_dashboards"
+        "f_act_dashboards",
+        "f_network",
+        "f_collabex",
+        "f_mobile",
+        "f_appex",
+        "f_vdi",
+        "f_investigations"
       ],
       "personaIds": [
         "p_security",
@@ -1160,7 +1858,10 @@
         "f_ai_tools",
         "f_collect_endpoint",
         "f_act_dashboards",
-        "f_gov_rbac"
+        "f_gov_rbac",
+        "f_appex",
+        "f_opwgrz",
+        "f_act_campaign"
       ],
       "personaIds": [
         "p_security",
@@ -1177,7 +1878,7 @@
       "benefitTypes": [
         "IT time saved",
         "IT costs saved",
-        "Business productivity"
+        "Business time saved"
       ],
       "customerStories": [
         {
@@ -1207,7 +1908,15 @@
         "f_corr_ai",
         "f_act_dashboards",
         "f_alert",
-        "f_diagnostic"
+        "f_diagnostic",
+        "f_network",
+        "f_collabex",
+        "f_appex",
+        "f_vdi",
+        "f_investigations",
+        "f_act_remediation",
+        "f_amplify",
+        "f_workspace"
       ],
       "personaIds": [
         "p_servicedesk",
@@ -1224,7 +1933,7 @@
       "benefitTypes": [
         "IT time saved",
         "IT costs saved",
-        "Business productivity"
+        "Business time saved"
       ],
       "customerStories": [
         {
@@ -1253,8 +1962,13 @@
         "f_collect_endpoint",
         "f_corr_ai",
         "f_act_remediation",
-        "f_act_campaign",
-        "f_library"
+        "f_library",
+        "f_network",
+        "f_collabex",
+        "f_appex",
+        "f_vdi",
+        "f_alert",
+        "f_opwgrz"
       ],
       "personaIds": [
         "p_servicedesk",
@@ -1300,7 +2014,13 @@
         "f_corr_ai",
         "f_act_dashboards",
         "f_investigations",
-        "f_act_api"
+        "f_collect_sentiment",
+        "f_vdi",
+        "f_appex",
+        "f_mobile",
+        "f_act_remediation",
+        "f_opwgrz",
+        "f_workspace"
       ],
       "personaIds": [
         "p_servicedesk",
@@ -1348,7 +2068,15 @@
         "f_corr_ai",
         "f_act_dashboards",
         "f_alert",
-        "f_act_remediation"
+        "f_act_remediation",
+        "f_mobile",
+        "f_vdi",
+        "f_network",
+        "f_collabex",
+        "f_appex",
+        "f_investigations",
+        "f_diagnostic",
+        "f_workspace"
       ],
       "personaIds": [
         "p_workplace",
@@ -1387,7 +2115,12 @@
         "f_collect_endpoint",
         "f_act_campaign",
         "f_collect_sentiment",
-        "f_library"
+        "f_mobile",
+        "f_vdi",
+        "f_act_dashboards",
+        "f_act_remediation",
+        "f_opwgrz",
+        "f_corr_dex_score"
       ],
       "personaIds": [
         "p_servicedesk",
@@ -1435,9 +2168,14 @@
         "f_spark",
         "f_collect_endpoint",
         "f_corr_ai",
-        "f_amplify",
         "f_act_remediation",
-        "f_workspace"
+        "f_network",
+        "f_collabex",
+        "f_mobile",
+        "f_appex",
+        "f_vdi",
+        "f_library",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_servicedesk",
@@ -1469,7 +2207,8 @@
         "f_collect_endpoint",
         "f_act_dashboards",
         "f_act_api",
-        "f_act_campaign"
+        "f_act_remediation",
+        "f_opwgrz"
       ],
       "personaIds": [
         "p_cio",
@@ -1506,7 +2245,8 @@
       "featureIds": [
         "f_collect_endpoint",
         "f_act_remediation",
-        "f_act_dashboards"
+        "f_act_dashboards",
+        "f_investigations"
       ],
       "personaIds": [
         "p_finance",
@@ -1543,7 +2283,6 @@
       ],
       "featureIds": [
         "f_collect_endpoint",
-        "f_corr_ai",
         "f_act_dashboards",
         "f_act_api"
       ],
@@ -1588,9 +2327,11 @@
       ],
       "featureIds": [
         "f_collect_endpoint",
-        "f_corr_ai",
         "f_act_dashboards",
-        "f_exp_central"
+        "f_investigations",
+        "f_alert",
+        "f_opwgrz",
+        "f_workspace"
       ],
       "personaIds": [
         "p_finance",
@@ -1626,9 +2367,10 @@
       ],
       "featureIds": [
         "f_collect_endpoint",
-        "f_corr_ai",
         "f_act_dashboards",
-        "f_act_api"
+        "f_act_api",
+        "f_investigations",
+        "f_workspace"
       ],
       "personaIds": [
         "p_finance",
@@ -1673,7 +2415,12 @@
         "f_collect_endpoint",
         "f_collect_external",
         "f_act_dashboards",
-        "f_act_api"
+        "f_act_api",
+        "f_appex",
+        "f_investigations",
+        "f_workspace",
+        "f_act_remediation",
+        "f_opwgrz"
       ],
       "personaIds": [
         "p_finance",
@@ -1711,7 +2458,10 @@
         "f_ai_tools",
         "f_collect_endpoint",
         "f_act_dashboards",
-        "f_act_api"
+        "f_act_api",
+        "f_investigations",
+        "f_appex",
+        "f_opwgrz"
       ],
       "personaIds": [
         "p_finance",
@@ -1743,7 +2493,14 @@
         "f_vdi",
         "f_collect_endpoint",
         "f_corr_ai",
-        "f_act_dashboards"
+        "f_act_dashboards",
+        "f_network",
+        "f_investigations",
+        "f_alert",
+        "f_diagnostic",
+        "f_act_remediation",
+        "f_opwgrz",
+        "f_workspace"
       ],
       "personaIds": [
         "p_workplace",
@@ -1765,7 +2522,9 @@
       "featureIds": [
         "f_mobile",
         "f_collect_endpoint",
-        "f_act_dashboards"
+        "f_act_dashboards",
+        "f_investigations",
+        "f_workspace"
       ],
       "personaIds": [
         "p_workplace",
@@ -1806,6 +2565,10 @@ const FEAT_ICON = {
 
 let DATA = null;
 let SELECTED_UC = null;
+let SHOW_LINKS = true;
+let SELECTED_BENEFIT = null;
+let SELECTED_PERSONA = null;
+let SELECTED_FEATURE = null;
 
 const $ = sel => document.querySelector(sel);
 const $$ = sel => Array.from(document.querySelectorAll(sel));
@@ -1847,6 +2610,9 @@ function renderBenefits(){
   $('#benefit-pills').innerHTML = allBenefits.map(b =>
     `<div class="benefit-pill" data-benefit="${escapeHtml(b)}">${escapeHtml(b)}</div>`
   ).join('');
+  $$('.benefit-pill').forEach(el =>
+    el.addEventListener('click', () => selectBenefit(el.dataset.benefit))
+  );
 }
 
 function renderSources(){
@@ -1888,11 +2654,10 @@ function renderFeatures(){
           <div class="nm">${escapeHtml(f.name)}</div>
         </div>`).join('')}
     </div>`).join('');
-  // Click handler: open feature detail drawer
+  // Click handler: filter UCs by this feature
   $$('.feat').forEach(el => el.addEventListener('click', e => {
     e.stopPropagation();
-    const feat = DATA.foundationFeatures.find(f => f.id === el.dataset.id);
-    if(feat) openFeatureDrawer(feat);
+    selectFeature(el.dataset.id);
   }));
 }
 
@@ -1925,13 +2690,134 @@ function renderPersonas(){
       <div class="ic">${svg(p.icon||'leader')}</div>
       <div><div class="nm">${escapeHtml(p.name)}</div><div class="ro">${escapeHtml(p.role||'')}</div></div>
     </div>`).join('');
+  $$('.per').forEach(el =>
+    el.addEventListener('click', () => selectPersona(el.dataset.id))
+  );
+}
+
+function selectFeature(id){
+  if(SELECTED_FEATURE === id){ clearSelection(); return; }
+  SELECTED_UC      = null;
+  SELECTED_BENEFIT = null;
+  SELECTED_PERSONA = null;
+  SELECTED_FEATURE = id;
+  closeDrawer();
+
+  // Feature states
+  $$('.feat').forEach(el => {
+    const match = el.dataset.id === id;
+    el.classList.toggle('selected', match);
+    el.classList.toggle('dim',      !match);
+    el.classList.remove('hi');
+  });
+
+  // UC states — highlight those that include this feature
+  const matchingUCs = new Set(
+    DATA.useCases.filter(u => (u.featureIds||[]).includes(id)).map(u => u.id)
+  );
+  $$('#uccols .uc').forEach(el => {
+    const hit = matchingUCs.has(el.dataset.id);
+    el.classList.toggle('hi',  hit);
+    el.classList.toggle('dim', !hit);
+    el.classList.remove('selected');
+  });
+
+  // Personas — dim all
+  $$('.per').forEach(el => { el.classList.remove('selected','hi'); el.classList.add('dim'); });
+
+  // Benefit pills — dim all
+  $$('.benefit-pill').forEach(el => { el.classList.remove('selected','hi'); el.classList.add('dim'); });
+
+  drawLinks();
+}
+
+function selectBenefit(benefit){
+  if(SELECTED_BENEFIT === benefit){ clearSelection(); return; }
+  SELECTED_UC      = null;
+  SELECTED_FEATURE = null;
+  SELECTED_PERSONA = null;
+  SELECTED_BENEFIT = benefit;
+  closeDrawer();
+
+  // Benefit pill states
+  $$('.benefit-pill').forEach(el => {
+    const match = el.dataset.benefit === benefit;
+    el.classList.toggle('selected', match);
+    el.classList.toggle('dim',      !match);
+    el.classList.remove('hi');
+  });
+
+  // UC states
+  const matchingUCs = new Set(
+    DATA.useCases.filter(u => (u.benefitTypes||[]).includes(benefit)).map(u => u.id)
+  );
+  $$('#uccols .uc').forEach(el => {
+    const hit = matchingUCs.has(el.dataset.id);
+    el.classList.toggle('hi',  hit);
+    el.classList.toggle('dim', !hit);
+    el.classList.remove('selected');
+  });
+
+  // Persona states — dim all (not relevant when filtering by benefit)
+  $$('.per').forEach(el => { el.classList.remove('selected','hi'); el.classList.add('dim'); });
+
+  // Features — dim all
+  $$('.feat').forEach(el => { el.classList.remove('hi'); el.classList.add('dim'); });
+
+  drawLinks();
+}
+
+function selectPersona(id){
+  if(SELECTED_PERSONA === id){ clearSelection(); return; }
+  SELECTED_UC      = null;
+  SELECTED_BENEFIT = null;
+  SELECTED_FEATURE = null;
+  SELECTED_PERSONA = id;
+  closeDrawer();
+
+  // Persona states
+  $$('.per').forEach(el => {
+    const match = el.dataset.id === id;
+    el.classList.toggle('selected', match);
+    el.classList.toggle('dim',      !match);
+    el.classList.remove('hi');
+  });
+
+  // UC states
+  const matchingUCs = new Set(
+    DATA.useCases.filter(u => (u.personaIds||[]).includes(id)).map(u => u.id)
+  );
+  $$('#uccols .uc').forEach(el => {
+    const hit = matchingUCs.has(el.dataset.id);
+    el.classList.toggle('hi',  hit);
+    el.classList.toggle('dim', !hit);
+    el.classList.remove('selected');
+  });
+
+  // Benefit pills — dim all
+  $$('.benefit-pill').forEach(el => { el.classList.remove('selected','hi'); el.classList.add('dim'); });
+
+  // Features — dim all
+  $$('.feat').forEach(el => { el.classList.remove('hi'); el.classList.add('dim'); });
+
+  drawLinks();
 }
 
 function selectUseCase(id){
   if(SELECTED_UC === id){ clearSelection(); return; }
+  SELECTED_BENEFIT = null;
+  SELECTED_PERSONA = null;
+  SELECTED_FEATURE = null;
   SELECTED_UC = id;
   const uc = DATA.useCases.find(u => u.id===id);
-  $$('#uccols .uc').forEach(el => el.classList.toggle('selected', el.dataset.id===id));
+  $$('#uccols .uc').forEach(el => {
+    el.classList.toggle('selected', el.dataset.id===id);
+    el.classList.remove('hi','dim');
+  });
+  // Clear filter-mode selected state on pills / personas / features
+  $$('.benefit-pill').forEach(el => el.classList.remove('selected'));
+  $$('.per').forEach(el => el.classList.remove('selected'));
+  $$('.feat').forEach(el => el.classList.remove('selected'));
   // Highlight features
   const fset = new Set(uc.featureIds);
   $$('.feat').forEach(el => {
@@ -1955,11 +2841,14 @@ function selectUseCase(id){
 }
 
 function clearSelection(){
-  SELECTED_UC = null;
-  $$('#uccols .uc').forEach(el => el.classList.remove('selected'));
-  $$('.feat').forEach(el => el.classList.remove('hi','dim'));
-  $$('.per').forEach(el => el.classList.remove('hi','dim'));
-  $$('.benefit-pill').forEach(el => el.classList.remove('hi','dim'));
+  SELECTED_UC      = null;
+  SELECTED_BENEFIT = null;
+  SELECTED_PERSONA = null;
+  SELECTED_FEATURE = null;
+  $$('#uccols .uc').forEach(el => el.classList.remove('selected','hi','dim'));
+  $$('.feat').forEach(el => el.classList.remove('selected','hi','dim'));
+  $$('.per').forEach(el => el.classList.remove('selected','hi','dim'));
+  $$('.benefit-pill').forEach(el => el.classList.remove('selected','hi','dim'));
   closeDrawer();
   drawLinks();
 }
@@ -2035,11 +2924,15 @@ function openFeatureDrawer(feat){
   `;
   $('#drawer').classList.add('open');
   $('#drawer').setAttribute('aria-hidden','false');
+  document.body.classList.add('drawer-open');
+  document.querySelector('.app').addEventListener('transitionend', drawLinks, {once:true});
 }
 
 function closeDrawer(){
   $('#drawer').classList.remove('open');
   $('#drawer').setAttribute('aria-hidden','true');
+  document.body.classList.remove('drawer-open');
+  document.querySelector('.app').addEventListener('transitionend', drawLinks, {once:true});
 }
 
 document.addEventListener('keydown', e => { if(e.key==='Escape') clearSelection(); });
@@ -2047,8 +2940,9 @@ $('#drawerClose').addEventListener('click', clearSelection);
 
 // ----- Curved connection lines -----
 function drawLinks(){
-  const stage = $('#stage');
   const svgEl = $('#links');
+  if(!SHOW_LINKS){ svgEl.innerHTML = ''; return; }
+  const stage = $('#stage');
   const r = stage.getBoundingClientRect();
   svgEl.setAttribute('viewBox', `0 0 ${r.width} ${r.height}`);
   // Gradients: gA = teal (sources→hub), gB = violet (hub→uc), gC = white (uc→features), gD = green (uc→benefits)
@@ -2069,8 +2963,8 @@ function drawLinks(){
     hub.left      - r.left + hub.width      / 2,  hub.bottom    - r.top + 4,
     'url(#gA)', 1.8);
 
-  // Hub → uc columns + VC → first UC: only when nothing is selected
-  if(!SELECTED_UC){
+  // Hub → uc columns + VC → first UC: only when no filter is active
+  if(!SELECTED_UC && !SELECTED_BENEFIT && !SELECTED_PERSONA && !SELECTED_FEATURE){
     // Hub (below uc-cols) → first UC of each column
     $$('#uccols .uc-stack').forEach(stack => {
       const first = stack.querySelector('.uc');
@@ -2122,6 +3016,55 @@ function drawLinks(){
       });
     }
   }
+
+  // FEATURE FILTER: selected feature card (in hub, below UC cols) → all matching UC cards
+  if(SELECTED_FEATURE){
+    const featEl = $(`.feat[data-id="${SELECTED_FEATURE}"]`);
+    const matchingUCEls = $$('#uccols .uc.hi');
+    if(featEl && matchingUCEls.length){
+      const fb = featEl.getBoundingClientRect();
+      matchingUCEls.forEach(ucEl => {
+        const ub = ucEl.getBoundingClientRect();
+        // Feature is below UC cols → draw from feature top upward to UC bottom
+        appendCurveV(svgEl,
+          fb.left-r.left + fb.width/2, fb.top   -r.top-4,
+          ub.left-r.left + ub.width/2, ub.bottom-r.top+4,
+          'url(#gC)', 1.4);
+      });
+    }
+  }
+
+  // BENEFIT FILTER: selected benefit pill → all matching UC cards
+  if(SELECTED_BENEFIT){
+    const pillEl = $(`.benefit-pill[data-benefit="${CSS.escape(SELECTED_BENEFIT)}"]`);
+    const matchingUCEls = $$('#uccols .uc.hi');
+    if(pillEl && matchingUCEls.length){
+      const pb = pillEl.getBoundingClientRect();
+      matchingUCEls.forEach(ucEl => {
+        const ub = ucEl.getBoundingClientRect();
+        appendCurveV(svgEl,
+          pb.left-r.left + pb.width/2,  pb.bottom-r.top+4,
+          ub.left-r.left + ub.width/2,  ub.top   -r.top-4,
+          'url(#gD)', 1.4);
+      });
+    }
+  }
+
+  // PERSONA FILTER: selected persona card → all matching UC cards
+  if(SELECTED_PERSONA){
+    const perEl = $(`.per[data-id="${SELECTED_PERSONA}"]`);
+    const matchingUCEls = $$('#uccols .uc.hi');
+    if(perEl && matchingUCEls.length){
+      const pb = perEl.getBoundingClientRect();
+      matchingUCEls.forEach(ucEl => {
+        const ub = ucEl.getBoundingClientRect();
+        appendCurveV(svgEl,
+          pb.left-r.left + pb.width/2,  pb.bottom-r.top+4,
+          ub.left-r.left + ub.width/2,  ub.top   -r.top-4,
+          'url(#gB)', 1.4);
+      });
+    }
+  }
 }
 
 function appendCurve(svgEl,x1,y1,x2,y2,stroke,width){
@@ -2137,9 +3080,551 @@ function appendCurveV(svgEl,x1,y1,x2,y2,stroke,width){
 
 window.addEventListener('resize', () => { clearTimeout(window._lr); window._lr = setTimeout(drawLinks, 80); });
 
+// ===== DATA EDITOR =====
+let EDIT_UC_ID   = null;
+let EDIT_VC_ID   = null;
+let EDIT_FEAT_ID = null;
+let EDIT_PER_ID  = null;
+let EDIT_SRC_ID  = null;
+let ED_TAB = 'uc';
+
+function openEditor(){
+  ED_TAB = 'uc';
+  EDIT_UC_ID   = DATA.useCases[0]?.id || null;
+  EDIT_VC_ID   = DATA.valueCategories[0]?.id || null;
+  EDIT_FEAT_ID = DATA.foundationFeatures[0]?.id || null;
+  EDIT_PER_ID  = DATA.personas[0]?.id || null;
+  EDIT_SRC_ID  = DATA.dataSources[0]?.id || null;
+  renderEditor();
+  $('#editorOverlay').classList.add('open');
+}
+
+function closeEditor(){
+  $('#editorOverlay').classList.remove('open');
+  renderBenefits(); renderPersonas(); renderValueCategories();
+  renderUseCases(); renderFeatures(); renderSources();
+  clearSelection(); drawLinks();
+}
+
+function renderEditor(){
+  $('#editorOverlay').innerHTML = buildEditorShell();
+}
+
+function switchEdTab(tab){
+  ED_TAB = tab;
+  renderEditor();
+}
+
+function buildEditorShell(){
+  const tabs = [
+    {id:'uc',   label:'Use Cases'},
+    {id:'vc',   label:'Value Categories'},
+    {id:'feat', label:'Features'},
+    {id:'per',  label:'Personas'},
+    {id:'src',  label:'Data Sources'},
+  ];
+  return `
+  <div class="editor-header">
+    <div style="display:flex;align-items:center;gap:16px;min-width:0">
+      <span style="font-size:15px;font-weight:700;flex-shrink:0">&#9999; Edit data</span>
+      <div class="ed-tabs">
+        ${tabs.map(t=>`<div class="ed-tab ${ED_TAB===t.id?'active':''}"
+          onclick="switchEdTab('${t.id}')">${t.label}</div>`).join('')}
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+      <button class="ed-btn primary" onclick="exportHTML()">&#8595; Save HTML</button>
+      <button class="ed-btn" onclick="closeEditor()">&#x2715; Close</button>
+    </div>
+  </div>
+  <div class="editor-layout">${buildEdTabContent()}</div>`;
+}
+
+function buildEdTabContent(){
+  if(ED_TAB==='uc')   return buildEdUCTab();
+  if(ED_TAB==='vc')   return buildEdVCTab();
+  if(ED_TAB==='feat') return buildEdFeatTab();
+  if(ED_TAB==='per')  return buildEdPerTab();
+  if(ED_TAB==='src')  return buildEdSrcTab();
+  return '';
+}
+
+// ── USE CASES ───────────────────────────────────────────────────────────────
+
+function buildEdUCTab(){
+  return `
+  <div class="editor-sidebar" id="edSidebar">
+    ${DATA.valueCategories.map(vc=>{
+      const ucs = DATA.useCases.filter(u=>u.valueCategoryId===vc.id);
+      if(!ucs.length) return '';
+      return `<div class="ed-vc" style="color:#${vc.color}">${escapeHtml(vc.name)}</div>
+        ${ucs.map(u=>`<div class="ed-uc-item ${u.id===EDIT_UC_ID?'active':''}" data-id="${u.id}"
+          onclick="selectEdUC('${u.id}')">${escapeHtml(u.name)}</div>`).join('')}`;
+    }).join('')}
+    <div style="padding:10px 14px;margin-top:6px">
+      <button class="ed-add-btn" onclick="addNewUC()">+ New use case</button>
+    </div>
+  </div>
+  <div class="editor-form" id="edForm">${EDIT_UC_ID ? buildEdUCForm(EDIT_UC_ID) : ''}</div>`;
+}
+
+function selectEdUC(id){
+  EDIT_UC_ID = id;
+  $$('#edSidebar .ed-uc-item').forEach(el=>el.classList.toggle('active',el.dataset.id===id));
+  $('#edForm').innerHTML = buildEdUCForm(id);
+}
+
+function buildEdUCForm(ucId){
+  const uc = DATA.useCases.find(u=>u.id===ucId); if(!uc) return '';
+  const vc = DATA.valueCategories.find(v=>v.id===uc.valueCategoryId)||{};
+  const groups = ['collect','correlate','act','govern'];
+  const glabel = {collect:'Collect',correlate:'Correlate',act:'Act',govern:'Govern'};
+
+  const vcSelect = `<select class="ed-input" onchange="updateUCField('${ucId}','valueCategoryId',this.value)">
+    ${DATA.valueCategories.map(v=>`<option value="${v.id}" ${v.id===uc.valueCategoryId?'selected':''}>
+      ${escapeHtml(v.name)}</option>`).join('')}
+  </select>`;
+
+  const featHtml = groups.map(g=>{
+    const fs = DATA.foundationFeatures.filter(f=>f.group===g);
+    if(!fs.length) return '';
+    return `<div style="margin-bottom:10px">
+      <div class="ed-group-label" style="color:var(--c-${g})">${glabel[g]}</div>
+      <div class="ed-chips">${fs.map(f=>{
+        const on=(uc.featureIds||[]).includes(f.id);
+        return `<div class="ed-chip feat-chip ${on?'on':''}" data-group="${g}"
+          onclick="toggleFeat('${ucId}','${f.id}',this)">${escapeHtml(f.name)}</div>`;
+      }).join('')}</div></div>`;
+  }).join('');
+
+  const perHtml = DATA.personas.map(p=>{
+    const on=(uc.personaIds||[]).includes(p.id);
+    return `<div class="ed-chip per-chip ${on?'on':''}"
+      onclick="togglePer('${ucId}','${p.id}',this)">${escapeHtml(p.name)}</div>`;
+  }).join('');
+
+  const allBen = [...new Set(DATA.useCases.flatMap(u=>u.benefitTypes||[]))].sort();
+  const benHtml = allBen.map(b=>{
+    const on=(uc.benefitTypes||[]).includes(b);
+    return `<div class="ed-chip ben-chip ${on?'on':''}"
+      onclick="toggleBen('${ucId}',this.dataset.b,this)" data-b="${escapeHtml(b)}">${escapeHtml(b)}</div>`;
+  }).join('');
+
+  const storiesHtml = (uc.customerStories||[]).map((s,i)=>`
+    <div class="ed-story">
+      <div class="ed-story-row">
+        <div class="ed-field-group" style="flex:2">
+          <label class="ed-label">Title</label>
+          <input class="ed-input" value="${escapeHtml(s.title||'')}"
+            oninput="updateStory('${ucId}',${i},'title',this.value)" placeholder="Story title">
+        </div>
+        <div class="ed-field-group" style="flex:1">
+          <label class="ed-label">Customer</label>
+          <input class="ed-input" value="${escapeHtml(s.customer||'')}"
+            oninput="updateStory('${ucId}',${i},'customer',this.value)" placeholder="Customer name">
+        </div>
+        <div class="ed-field-group" style="flex:1">
+          <label class="ed-label">Industry</label>
+          <input class="ed-input" value="${escapeHtml(s.industry||'')}"
+            oninput="updateStory('${ucId}',${i},'industry',this.value)" placeholder="Industry">
+        </div>
+        <button class="ed-del-btn" onclick="deleteStory('${ucId}',${i})" style="margin-bottom:1px">&#x2715;</button>
+      </div>
+      <div class="ed-field-group" style="margin-top:8px">
+        <label class="ed-label">URL</label>
+        <input class="ed-input" value="${escapeHtml(s.url||'')}"
+          oninput="updateStory('${ucId}',${i},'url',this.value)" placeholder="https://nexthink.com/customers/...">
+      </div>
+    </div>`).join('');
+
+  return `
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+              margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line)">
+    <div style="flex:1;min-width:0">
+      <div class="ed-field-group">
+        <label class="ed-label">Name</label>
+        <input class="ed-input ed-input-lg" value="${escapeHtml(uc.name)}"
+          oninput="updateUCField('${ucId}','name',this.value)">
+      </div>
+      <div class="ed-field-group" style="margin-top:10px">
+        <label class="ed-label">Value category</label>
+        ${vcSelect}
+      </div>
+    </div>
+    <button class="ed-del-btn" style="margin-top:20px" onclick="deleteUC('${ucId}')">Delete UC</button>
+  </div>
+  <div class="ed-section">
+    <div class="ed-sec-title">Short pitch</div>
+    <input class="ed-input" value="${escapeHtml(uc.shortPitch||'')}"
+      oninput="updateUCField('${ucId}','shortPitch',this.value)"
+      placeholder="One-line positioning statement">
+  </div>
+  <div class="ed-section">
+    <div class="ed-sec-title">Value description</div>
+    <textarea class="ed-textarea" rows="5"
+      oninput="updateUCField('${ucId}','valueDescription',this.value)"
+      placeholder="Detailed description of the value delivered...">${escapeHtml(uc.valueDescription||'')}</textarea>
+  </div>
+  <div class="ed-section">
+    <div class="ed-sec-title">Foundation features</div>
+    ${featHtml}
+  </div>
+  <div class="ed-section">
+    <div class="ed-sec-title">Personas</div>
+    <div class="ed-chips">${perHtml}</div>
+  </div>
+  <div class="ed-section">
+    <div class="ed-sec-title">IT &amp; business benefits</div>
+    <div class="ed-chips">${benHtml}</div>
+    <div class="ed-benefit-add" style="margin-top:10px">
+      <input id="benefitInput" placeholder="New benefit type..."
+        onkeydown="if(event.key==='Enter'){event.preventDefault();addBenefit('${ucId}')}" />
+      <button onclick="addBenefit('${ucId}')">Add</button>
+    </div>
+  </div>
+  <div class="ed-section">
+    <div class="ed-sec-title" style="display:flex;justify-content:space-between;align-items:center">
+      Customer stories
+      <button class="ed-add-btn" style="width:auto;padding:5px 12px"
+        onclick="addStory('${ucId}')">+ Add story</button>
+    </div>
+    ${storiesHtml||'<div style="color:var(--ink-4);font-size:13px;padding:4px 0">No stories yet.</div>'}
+  </div>`;
+}
+
+// ── VALUE CATEGORIES ────────────────────────────────────────────────────────
+
+function buildEdVCTab(){
+  return `
+  <div class="editor-sidebar" id="edSidebar">
+    ${DATA.valueCategories.map(vc=>`
+      <div class="ed-uc-item ${vc.id===EDIT_VC_ID?'active':''}" data-id="${vc.id}"
+        onclick="selectEdVC('${vc.id}')" style="border-left-color:${EDIT_VC_ID===vc.id?'#'+vc.color:'transparent'}">
+        ${escapeHtml(vc.name)}</div>`).join('')}
+  </div>
+  <div class="editor-form" id="edForm">${EDIT_VC_ID ? buildEdVCForm(EDIT_VC_ID) : ''}</div>`;
+}
+
+function selectEdVC(id){
+  EDIT_VC_ID = id;
+  $$('#edSidebar .ed-uc-item').forEach(el=>el.classList.toggle('active',el.dataset.id===id));
+  $('#edForm').innerHTML = buildEdVCForm(id);
+}
+
+function buildEdVCForm(vcId){
+  const vc = DATA.valueCategories.find(v=>v.id===vcId); if(!vc) return '';
+  return `
+  <div class="ed-form-header">
+    <div class="ed-uc-title" style="color:#${vc.color||'9CA3AF'}">${escapeHtml(vc.name)}</div>
+  </div>
+  <div class="ed-section">
+    <div class="ed-field-group">
+      <label class="ed-label">Name</label>
+      <input class="ed-input ed-input-lg" value="${escapeHtml(vc.name)}"
+        oninput="updateVCField('${vcId}','name',this.value)">
+    </div>
+    <div class="ed-field-group" style="margin-top:12px">
+      <label class="ed-label">Tagline</label>
+      <input class="ed-input" value="${escapeHtml(vc.tagline||'')}"
+        oninput="updateVCField('${vcId}','tagline',this.value)" placeholder="Short tagline...">
+    </div>
+    <div class="ed-field-group" style="margin-top:12px">
+      <label class="ed-label">Colour</label>
+      <div style="display:flex;gap:10px;align-items:center">
+        <input type="color" class="ed-color-input" value="#${vc.color||'9CA3AF'}"
+          oninput="updateVCColor('${vcId}',this.value,false)">
+        <input class="ed-input" style="width:110px;font-family:monospace"
+          value="${vc.color||'9CA3AF'}"
+          oninput="updateVCColor('${vcId}',this.value,true)" placeholder="hex e.g. 22D3EE">
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── FEATURES ────────────────────────────────────────────────────────────────
+
+function buildEdFeatTab(){
+  const groups = ['collect','correlate','act','govern'];
+  const glabel = {collect:'Collect',correlate:'Correlate',act:'Act',govern:'Govern'};
+  return `
+  <div class="editor-sidebar" id="edSidebar">
+    ${groups.map(g=>{
+      const fs = DATA.foundationFeatures.filter(f=>f.group===g);
+      if(!fs.length) return '';
+      return `<div class="ed-vc" style="color:var(--c-${g})">${glabel[g]}</div>
+        ${fs.map(f=>`<div class="ed-uc-item ${f.id===EDIT_FEAT_ID?'active':''}" data-id="${f.id}"
+          onclick="selectEdFeat('${f.id}')">${escapeHtml(f.name)}</div>`).join('')}`;
+    }).join('')}
+    <div style="padding:10px 14px;margin-top:6px">
+      <button class="ed-add-btn" onclick="addNewFeat()">+ New feature</button>
+    </div>
+  </div>
+  <div class="editor-form" id="edForm">${EDIT_FEAT_ID ? buildEdFeatForm(EDIT_FEAT_ID) : ''}</div>`;
+}
+
+function selectEdFeat(id){
+  EDIT_FEAT_ID = id;
+  $$('#edSidebar .ed-uc-item').forEach(el=>el.classList.toggle('active',el.dataset.id===id));
+  $('#edForm').innerHTML = buildEdFeatForm(id);
+}
+
+function buildEdFeatForm(featId){
+  const f = DATA.foundationFeatures.find(f=>f.id===featId); if(!f) return '';
+  const groups = ['collect','correlate','act','govern'];
+  const glabel = {collect:'Collect',correlate:'Correlate',act:'Act',govern:'Govern'};
+  return `
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;
+              margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line)">
+    <div class="ed-field-group" style="flex:1">
+      <label class="ed-label">Feature name</label>
+      <input class="ed-input ed-input-lg" value="${escapeHtml(f.name)}"
+        oninput="updateFeatField('${featId}','name',this.value)">
+    </div>
+    <button class="ed-del-btn" onclick="deleteFeat('${featId}')">Delete</button>
+  </div>
+  <div class="ed-section">
+    <div class="ed-field-group">
+      <label class="ed-label">Group</label>
+      <select class="ed-input" style="max-width:200px"
+        onchange="updateFeatField('${featId}','group',this.value)">
+        ${groups.map(g=>`<option value="${g}" ${f.group===g?'selected':''}>${glabel[g]}</option>`).join('')}
+      </select>
+    </div>
+  </div>
+  <div class="ed-section">
+    <div class="ed-sec-title">Description</div>
+    <textarea class="ed-textarea" rows="9"
+      oninput="updateFeatField('${featId}','description',this.value)"
+      placeholder="Technical description...">${escapeHtml(f.description||'')}</textarea>
+  </div>`;
+}
+
+// ── PERSONAS ────────────────────────────────────────────────────────────────
+
+function buildEdPerTab(){
+  return `
+  <div class="editor-sidebar" id="edSidebar">
+    ${DATA.personas.map(p=>`
+      <div class="ed-uc-item ${p.id===EDIT_PER_ID?'active':''}" data-id="${p.id}"
+        onclick="selectEdPer('${p.id}')">${escapeHtml(p.name)}</div>`).join('')}
+    <div style="padding:10px 14px;margin-top:6px">
+      <button class="ed-add-btn" onclick="addNewPer()">+ New persona</button>
+    </div>
+  </div>
+  <div class="editor-form" id="edForm">${EDIT_PER_ID ? buildEdPerForm(EDIT_PER_ID) : ''}</div>`;
+}
+
+function selectEdPer(id){
+  EDIT_PER_ID = id;
+  $$('#edSidebar .ed-uc-item').forEach(el=>el.classList.toggle('active',el.dataset.id===id));
+  $('#edForm').innerHTML = buildEdPerForm(id);
+}
+
+function buildEdPerForm(perId){
+  const p = DATA.personas.find(p=>p.id===perId); if(!p) return '';
+  return `
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;
+              margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line)">
+    <div class="ed-field-group" style="flex:1">
+      <label class="ed-label">Persona name</label>
+      <input class="ed-input ed-input-lg" value="${escapeHtml(p.name)}"
+        oninput="updatePerField('${perId}','name',this.value)">
+    </div>
+    <button class="ed-del-btn" onclick="deletePer('${perId}')">Delete</button>
+  </div>
+  <div class="ed-section">
+    <div class="ed-field-group">
+      <label class="ed-label">Role / description</label>
+      <input class="ed-input" value="${escapeHtml(p.role||'')}"
+        oninput="updatePerField('${perId}','role',this.value)"
+        placeholder="e.g. IT Operations Lead">
+    </div>
+  </div>`;
+}
+
+// ── DATA SOURCES ────────────────────────────────────────────────────────────
+
+function buildEdSrcTab(){
+  return `
+  <div class="editor-sidebar" id="edSidebar">
+    ${DATA.dataSources.map(s=>`
+      <div class="ed-uc-item ${s.id===EDIT_SRC_ID?'active':''}" data-id="${s.id}"
+        onclick="selectEdSrc('${s.id}')">${escapeHtml(s.name)}</div>`).join('')}
+    <div style="padding:10px 14px;margin-top:6px">
+      <button class="ed-add-btn" onclick="addNewSrc()">+ New data source</button>
+    </div>
+  </div>
+  <div class="editor-form" id="edForm">${EDIT_SRC_ID ? buildEdSrcForm(EDIT_SRC_ID) : ''}</div>`;
+}
+
+function selectEdSrc(id){
+  EDIT_SRC_ID = id;
+  $$('#edSidebar .ed-uc-item').forEach(el=>el.classList.toggle('active',el.dataset.id===id));
+  $('#edForm').innerHTML = buildEdSrcForm(id);
+}
+
+function buildEdSrcForm(srcId){
+  const s = DATA.dataSources.find(s=>s.id===srcId); if(!s) return '';
+  return `
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;
+              margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line)">
+    <div class="ed-field-group" style="flex:1">
+      <label class="ed-label">Source name</label>
+      <input class="ed-input ed-input-lg" value="${escapeHtml(s.name)}"
+        oninput="updateSrcField('${srcId}','name',this.value)">
+    </div>
+    <button class="ed-del-btn" onclick="deleteSrc('${srcId}')">Delete</button>
+  </div>
+  <div class="ed-section">
+    <div class="ed-field-group">
+      <label class="ed-label">Category</label>
+      <input class="ed-input" value="${escapeHtml(s.category||'')}"
+        oninput="updateSrcField('${srcId}','category',this.value)"
+        placeholder="e.g. endpoint, mobile, external...">
+    </div>
+    <div class="ed-field-group" style="margin-top:12px">
+      <label class="ed-label">Description</label>
+      <textarea class="ed-textarea" rows="3"
+        oninput="updateSrcField('${srcId}','description',this.value)"
+        placeholder="Short description shown in the card...">${escapeHtml(s.description||'')}</textarea>
+    </div>
+  </div>`;
+}
+
+// ── FIELD UPDATERS ──────────────────────────────────────────────────────────
+
+function updateUCField(ucId,field,value){
+  const uc=DATA.useCases.find(u=>u.id===ucId); if(uc) uc[field]=value;
+}
+function updateVCField(vcId,field,value){
+  const vc=DATA.valueCategories.find(v=>v.id===vcId); if(vc) vc[field]=value;
+}
+function updateVCColor(vcId,raw,fromText){
+  const hex=raw.replace('#','');
+  const vc=DATA.valueCategories.find(v=>v.id===vcId); if(!vc) return;
+  vc.color=hex;
+  if(fromText){ const cp=document.querySelector('.ed-color-input'); if(cp) cp.value='#'+hex; }
+  else { const ti=document.querySelector('.ed-input[style*="monospace"]'); if(ti) ti.value=hex; }
+}
+function updateFeatField(featId,field,value){
+  const f=DATA.foundationFeatures.find(f=>f.id===featId); if(f) f[field]=value;
+}
+function updatePerField(perId,field,value){
+  const p=DATA.personas.find(p=>p.id===perId); if(p) p[field]=value;
+}
+function updateSrcField(srcId,field,value){
+  const s=DATA.dataSources.find(s=>s.id===srcId); if(s) s[field]=value;
+}
+
+// ── STORY MANAGEMENT ────────────────────────────────────────────────────────
+
+function updateStory(ucId,idx,field,value){
+  const uc=DATA.useCases.find(u=>u.id===ucId); if(!uc) return;
+  if(uc.customerStories[idx]) uc.customerStories[idx][field]=value;
+}
+function addStory(ucId){
+  const uc=DATA.useCases.find(u=>u.id===ucId); if(!uc) return;
+  (uc.customerStories=uc.customerStories||[]).push({title:'',url:'',customer:'',industry:'',order:999});
+  $('#edForm').innerHTML=buildEdUCForm(ucId);
+}
+function deleteStory(ucId,idx){
+  const uc=DATA.useCases.find(u=>u.id===ucId); if(!uc) return;
+  uc.customerStories.splice(idx,1);
+  $('#edForm').innerHTML=buildEdUCForm(ucId);
+}
+
+// ── TOGGLE CHIPS ────────────────────────────────────────────────────────────
+
+function toggleFeat(ucId,featId,el){
+  const uc=DATA.useCases.find(u=>u.id===ucId); if(!uc) return;
+  const i=(uc.featureIds=uc.featureIds||[]).indexOf(featId);
+  if(i===-1){uc.featureIds.push(featId);el.classList.add('on');}
+  else{uc.featureIds.splice(i,1);el.classList.remove('on');}
+}
+function togglePer(ucId,perId,el){
+  const uc=DATA.useCases.find(u=>u.id===ucId); if(!uc) return;
+  const i=(uc.personaIds=uc.personaIds||[]).indexOf(perId);
+  if(i===-1){uc.personaIds.push(perId);el.classList.add('on');}
+  else{uc.personaIds.splice(i,1);el.classList.remove('on');}
+}
+function toggleBen(ucId,benefit,el){
+  const uc=DATA.useCases.find(u=>u.id===ucId); if(!uc) return;
+  const i=(uc.benefitTypes=uc.benefitTypes||[]).indexOf(benefit);
+  if(i===-1){uc.benefitTypes.push(benefit);el.classList.add('on');}
+  else{uc.benefitTypes.splice(i,1);el.classList.remove('on');}
+}
+function addBenefit(ucId){
+  const inp=$('#benefitInput'); if(!inp) return;
+  const val=inp.value.trim(); if(!val) return;
+  const uc=DATA.useCases.find(u=>u.id===ucId); if(!uc) return;
+  if(!(uc.benefitTypes=uc.benefitTypes||[]).includes(val)) uc.benefitTypes.push(val);
+  inp.value='';
+  $('#edForm').innerHTML=buildEdUCForm(ucId);
+}
+
+// ── ADD / DELETE ENTITIES ───────────────────────────────────────────────────
+
+function genId(prefix){ return prefix+'_'+Math.random().toString(36).slice(2,8); }
+
+function addNewUC(){
+  const nu={id:genId('uc'),name:'New use case',
+    valueCategoryId:DATA.valueCategories[0]?.id||'',
+    shortPitch:'',valueDescription:'',benefitTypes:[],
+    featureIds:[],personaIds:[],customerStories:[],order:999};
+  DATA.useCases.push(nu); EDIT_UC_ID=nu.id; renderEditor();
+}
+function deleteUC(id){
+  if(!confirm('Delete this use case?')) return;
+  DATA.useCases=DATA.useCases.filter(u=>u.id!==id);
+  EDIT_UC_ID=DATA.useCases[0]?.id||null; renderEditor();
+}
+function addNewFeat(){
+  const nf={id:genId('f'),name:'New feature',group:'collect',description:'',order:999};
+  DATA.foundationFeatures.push(nf); EDIT_FEAT_ID=nf.id; renderEditor();
+}
+function deleteFeat(id){
+  if(!confirm('Delete this feature?')) return;
+  DATA.foundationFeatures=DATA.foundationFeatures.filter(f=>f.id!==id);
+  DATA.useCases.forEach(u=>{u.featureIds=(u.featureIds||[]).filter(fid=>fid!==id);});
+  EDIT_FEAT_ID=DATA.foundationFeatures[0]?.id||null; renderEditor();
+}
+function addNewPer(){
+  const np={id:genId('per'),name:'New persona',role:'',icon:'leader',order:999};
+  DATA.personas.push(np); EDIT_PER_ID=np.id; renderEditor();
+}
+function deletePer(id){
+  if(!confirm('Delete this persona?')) return;
+  DATA.personas=DATA.personas.filter(p=>p.id!==id);
+  DATA.useCases.forEach(u=>{u.personaIds=(u.personaIds||[]).filter(pid=>pid!==id);});
+  EDIT_PER_ID=DATA.personas[0]?.id||null; renderEditor();
+}
+function addNewSrc(){
+  const ns={id:genId('src'),name:'New source',category:'',icon:'plug',description:'',order:999};
+  DATA.dataSources.push(ns); EDIT_SRC_ID=ns.id; renderEditor();
+}
+function deleteSrc(id){
+  if(!confirm('Delete this data source?')) return;
+  DATA.dataSources=DATA.dataSources.filter(s=>s.id!==id);
+  EDIT_SRC_ID=DATA.dataSources[0]?.id||null; renderEditor();
+}
+
+// ── EXPORT ──────────────────────────────────────────────────────────────────
+
+function exportHTML(){
+  const json=JSON.stringify(DATA,null,2).replace(/<\//g,'<\\/');
+  const html=document.documentElement.outerHTML.replace(
+    /\/\*BUNDLED_DATA_START\*\/[\s\S]*?\/\*BUNDLED_DATA_END\*\//,
+    `/*BUNDLED_DATA_START*/\n${json}\n/*BUNDLED_DATA_END*/`
+  );
+  const blob=new Blob([html],{type:'text/html'});
+  Object.assign(document.createElement('a'),
+    {href:URL.createObjectURL(blob),download:'platform_infographic.html'}).click();
+}
+
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
 
 boot();
 </script>
-</body>
-</html>
+
+
+</body></html>
