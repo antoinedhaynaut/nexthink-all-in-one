@@ -82,7 +82,7 @@
   .hub-title{font-size:15px; font-weight:700; letter-spacing:.02em;}
   .hub-sub{font-size:11px; color:var(--ink-3); letter-spacing:.14em; text-transform:uppercase;}
   .feat-grid{display:grid; gap:8px;} /* column count set dynamically by JS */
-  .feat-col{display:flex; flex-direction:column; gap:8px; min-width:0;}
+  .feat-col{display:flex; flex-direction:column; gap:8px; min-width:0; max-height:218px; overflow:hidden;}
   .feat-group{font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-4);
     margin:2px 4px 4px;}
   .feat{display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:10px;
@@ -141,7 +141,8 @@
   .top-row{display:flex; gap:18px; justify-content:center; align-items:stretch; margin-bottom:22px;}
   .benefits-wrap{flex:0 0 480px; margin:0 !important; display:flex; flex-direction:column;}
   .benefits-block{flex:1;}
-  .personas-col{flex:0 0 480px; display:flex; flex-direction:column;}
+  .personas-col{flex:0 0 480px; display:flex; flex-direction:column;
+    border:1px solid rgba(244,114,182,0.28); border-radius:14px; padding:12px;}
   .personas-col .col-title{margin:0 0 10px 4px;}
   .personas{flex:1; align-content:start;}
   /* Personas band — 2-col grid */
@@ -2701,7 +2702,6 @@ function selectFeature(id){
   SELECTED_BENEFIT = null;
   SELECTED_PERSONA = null;
   SELECTED_FEATURE = id;
-  closeDrawer();
 
   // Feature states
   $$('.feat').forEach(el => {
@@ -2729,6 +2729,10 @@ function selectFeature(id){
   $$('.benefit-pill').forEach(el => { el.classList.remove('selected','hi'); el.classList.add('dim'); });
 
   drawLinks();
+
+  // Open feature detail panel
+  const feat = DATA.foundationFeatures.find(f => f.id === id);
+  if(feat) openFeatureDrawer(feat);
 }
 
 function selectBenefit(benefit){
@@ -2902,6 +2906,8 @@ function openDrawer(uc){
   `;
   $('#drawer').classList.add('open');
   $('#drawer').setAttribute('aria-hidden','false');
+  document.body.classList.add('drawer-open');
+  document.querySelector('.app').addEventListener('transitionend', drawLinks, {once:true});
 }
 
 function openFeatureDrawer(feat){
@@ -3086,6 +3092,7 @@ let EDIT_VC_ID   = null;
 let EDIT_FEAT_ID = null;
 let EDIT_PER_ID  = null;
 let EDIT_SRC_ID  = null;
+let EDIT_BEN     = null;
 let ED_TAB = 'uc';
 
 function openEditor(){
@@ -3095,6 +3102,8 @@ function openEditor(){
   EDIT_FEAT_ID = DATA.foundationFeatures[0]?.id || null;
   EDIT_PER_ID  = DATA.personas[0]?.id || null;
   EDIT_SRC_ID  = DATA.dataSources[0]?.id || null;
+  const allBens = [...new Set(DATA.useCases.flatMap(u=>u.benefitTypes||[]))].sort();
+  EDIT_BEN = allBens[0] || null;
   renderEditor();
   $('#editorOverlay').classList.add('open');
 }
@@ -3121,6 +3130,7 @@ function buildEditorShell(){
     {id:'vc',   label:'Value Categories'},
     {id:'feat', label:'Features'},
     {id:'per',  label:'Personas'},
+    {id:'ben',  label:'Benefits'},
     {id:'src',  label:'Data Sources'},
   ];
   return `
@@ -3145,6 +3155,7 @@ function buildEdTabContent(){
   if(ED_TAB==='vc')   return buildEdVCTab();
   if(ED_TAB==='feat') return buildEdFeatTab();
   if(ED_TAB==='per')  return buildEdPerTab();
+  if(ED_TAB==='ben')  return buildEdBenTab();
   if(ED_TAB==='src')  return buildEdSrcTab();
   return '';
 }
@@ -3440,6 +3451,87 @@ function buildEdPerForm(perId){
         placeholder="e.g. IT Operations Lead">
     </div>
   </div>`;
+}
+
+// ── BENEFITS ────────────────────────────────────────────────────────────────
+
+function allBenefitTypes(){
+  return [...new Set(DATA.useCases.flatMap(u=>u.benefitTypes||[]))].sort();
+}
+
+function buildEdBenTab(){
+  const bens = allBenefitTypes();
+  return `
+  <div class="editor-sidebar" id="edSidebar">
+    ${bens.map(b=>`
+      <div class="ed-uc-item ${b===EDIT_BEN?'active':''}" data-b="${escapeHtml(b)}"
+        onclick="selectEdBen(this.dataset.b)">${escapeHtml(b)}</div>`).join('')}
+    <div style="padding:10px 14px;margin-top:6px">
+      <button class="ed-add-btn" onclick="addNewBen()">+ New benefit type</button>
+    </div>
+  </div>
+  <div class="editor-form" id="edForm">${EDIT_BEN ? buildEdBenForm(EDIT_BEN) : ''}</div>`;
+}
+
+function selectEdBen(name){
+  EDIT_BEN = name;
+  $$('#edSidebar .ed-uc-item').forEach(el=>el.classList.toggle('active',el.dataset.b===name));
+  $('#edForm').innerHTML = buildEdBenForm(name);
+}
+
+function buildEdBenForm(name){
+  const ucCount = DATA.useCases.filter(u=>(u.benefitTypes||[]).includes(name)).length;
+  return `
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;
+              margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line)">
+    <div class="ed-field-group" style="flex:1">
+      <label class="ed-label">Benefit label</label>
+      <input class="ed-input ed-input-lg" id="benNameInput" value="${escapeHtml(name)}"
+        oninput="renameBen('${escapeHtml(name)}',this.value)"
+        placeholder="e.g. IT time saved">
+    </div>
+    <button class="ed-del-btn" onclick="deleteBen('${escapeHtml(name)}')">Delete</button>
+  </div>
+  <div class="ed-section">
+    <div style="color:var(--ink-3);font-size:13px">
+      Used in <strong style="color:var(--ink-2)">${ucCount}</strong> use case${ucCount!==1?'s':''}.
+      Renaming updates all use cases automatically.
+    </div>
+  </div>`;
+}
+
+function renameBen(oldName, newName){
+  if(!newName.trim()) return;
+  DATA.useCases.forEach(u=>{
+    if(!u.benefitTypes) return;
+    const idx = u.benefitTypes.indexOf(oldName);
+    if(idx !== -1) u.benefitTypes[idx] = newName;
+  });
+  EDIT_BEN = newName;
+  // Update sidebar label without full re-render
+  const item = document.querySelector(`#edSidebar .ed-uc-item[data-b="${CSS.escape(oldName)}"]`);
+  if(item){ item.dataset.b = newName; item.textContent = newName; }
+}
+
+function deleteBen(name){
+  if(!confirm(`Delete benefit type "${name}"? It will be removed from all use cases.`)) return;
+  DATA.useCases.forEach(u=>{
+    if(u.benefitTypes) u.benefitTypes = u.benefitTypes.filter(b=>b!==name);
+  });
+  const bens = allBenefitTypes();
+  EDIT_BEN = bens[0] || null;
+  renderEditor();
+}
+
+function addNewBen(){
+  const name = `New benefit ${allBenefitTypes().length+1}`;
+  // Add to first UC so it appears in the global list
+  if(DATA.useCases[0]){
+    if(!DATA.useCases[0].benefitTypes) DATA.useCases[0].benefitTypes = [];
+    DATA.useCases[0].benefitTypes.push(name);
+  }
+  EDIT_BEN = name;
+  renderEditor();
 }
 
 // ── DATA SOURCES ────────────────────────────────────────────────────────────
