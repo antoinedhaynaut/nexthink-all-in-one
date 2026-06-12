@@ -833,7 +833,7 @@
             </div>
             <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end">
               <span class="btn" style="cursor:default"><span class="pillc" style="background:var(--c-collect)"></span>Collect</span>
-              <span class="btn" style="cursor:default"><span class="pillc" style="background:var(--c-correlate)"></span>Correlate</span>
+              <span class="btn" style="cursor:default"><span class="pillc" style="background:var(--c-correlate)"></span>Diagnose</span>
               <span class="btn" style="cursor:default"><span class="pillc" style="background:var(--c-act)"></span>Act</span>
               <span class="btn" style="cursor:default"><span class="pillc" style="background:var(--c-govern)"></span>Govern</span>
             </div>
@@ -880,7 +880,7 @@
         </div>
     </div>
     <div class="feat-col">
-      <div class="feat-group" style="color:var(--c-correlate);">Correlate</div>
+      <div class="feat-group" style="color:var(--c-correlate);">Diagnose</div>
       
         <div class="feat" data-id="f_corr_ai" data-group="correlate" style="cursor:pointer">
           <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="6" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle><path d="M6 8.5L12 16M18 8.5L12 16"></path></svg></div>
@@ -904,7 +904,7 @@
         </div>
     </div>
     <div class="feat-col">
-      <div class="feat-group" style="color:var(--c-correlate); visibility:hidden">Correlate</div>
+      <div class="feat-group" style="color:var(--c-correlate); visibility:hidden">Diagnose</div>
       
         <div class="feat" data-id="f_diagnostic" data-group="correlate" style="cursor:pointer">
           <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="6" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle><path d="M6 8.5L12 16M18 8.5L12 16"></path></svg></div>
@@ -1144,7 +1144,7 @@
     <div style="margin-bottom:10px">
       <div class="ed-group-label" style="color:var(--c-collect)">Collect</div>
       <div class="ed-chips"><div class="ed-chip feat-chip on" data-group="collect" onclick="toggleFeat('uc_ct_budget','f_collect_endpoint',this)">Endpoint telemetry</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_network',this)">Network data</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_collabex',this)">Collaboration Experience</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_collect_sentiment',this)">Employee sentiment surveys</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_collect_external',this)">External connectors</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_mobile',this)">Mobile Experience</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_appex',this)">Application Experience</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_vdi',this)">VDI Experience</div></div></div><div style="margin-bottom:10px">
-      <div class="ed-group-label" style="color:var(--c-correlate)">Correlate</div>
+      <div class="ed-group-label" style="color:var(--c-correlate)">Diagnose</div>
       <div class="ed-chips"><div class="ed-chip feat-chip " data-group="correlate" onclick="toggleFeat('uc_ct_budget','f_corr_ai',this)">AI insights &amp; anomaly</div><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_ct_budget','f_act_dashboards',this)">Live dashboards</div><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_ct_budget','f_investigations',this)">Investigations</div><div class="ed-chip feat-chip " data-group="correlate" onclick="toggleFeat('uc_ct_budget','f_library',this)">Content library</div><div class="ed-chip feat-chip " data-group="correlate" onclick="toggleFeat('uc_ct_budget','f_alert',this)">Real-time alerts</div><div class="ed-chip feat-chip " data-group="correlate" onclick="toggleFeat('uc_ct_budget','f_diagnostic',this)">Automated diagnostics</div></div></div><div style="margin-bottom:10px">
       <div class="ed-group-label" style="color:var(--c-act)">Act</div>
       <div class="ed-chips"><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_ct_budget','f_act_remediation',this)">Remote Actions &amp; Workflows</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_ct_budget','f_act_campaign',this)">In-App guidance</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_ct_budget','f_spark',this)">Spark</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_ct_budget','f_amplify',this)">Amplify</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_ct_budget','f_opwgrz',this)">Employee notifications &amp; self-help</div></div></div><div style="margin-bottom:10px">
@@ -1272,14 +1272,14 @@
   "foundationFeatures": [
     {
       "id": "f_collect_endpoint",
-      "name": "Endpoint telemetry",
+      "name": "Endpoint data",
       "group": "collect",
       "description": "The Nexthink Collector is a lightweight agent implemented as a kernel-mode driver with accompanying user-space service modules, installed on Windows and macOS endpoints. On Windows the kernel component is signed with a Microsoft-issued certificate; on macOS the agent holds an Apple Developer ID and passes Apple notarisation. The driver intercepts OS-level events directly at the kernel layer, capturing network connections made by applications that use kernel-mode networking — traffic invisible to user-space monitors. Each functional concern is handled by a dedicated module: device performance monitoring, network connectivity tracking, user session recording, software inventory, employee engagement delivery, and remote action execution. The Collector samples device state every 20–30 seconds and aggregates readings into 5- or 15-minute time slices before transmitting them to Nexthink's cloud infrastructure over an encrypted TCP channel. If connectivity is lost, the agent buffers up to 15 minutes of event packets (capped at 2,500 packets) in memory and retries; for persistent telemetry such as software inventory events, local disk persistence guarantees delivery for up to 7 days. Configuration changes and version updates are applied without an OS restart and without interrupting end-user sessions. The agent operates with negligible CPU and memory overhead, transmitting aggregated structured payloads rather than raw packet captures.",
       "order": 10
     },
     {
       "id": "f_network",
-      "name": "Network data",
+      "name": "Network & connectivity data",
       "group": "collect",
       "description": "Network data collection in Nexthink is performed by the Collector kernel driver running on each endpoint. Because the driver operates at the kernel layer, it observes both user-space and kernel-mode network activity, capturing outgoing TCP connections and UDP datagrams invisible to user-space tools. For each connection, the Collector records the destination IP address, port, protocol, bytes transferred, and owning process. DNS resolution is tracked at the OS resolver level: when an application calls the OS DNS API, the Collector correlates the resolved domain name with subsequent connections, attaching the human-readable hostname to each connection event. If an application bypasses the OS resolver, the domain is not reported unless it can be retrieved from the TLS Server Name Indication (SNI) field. All captured data is stored in the NQL connection.events table, enabling queries across TCP initiation times, durations, volumes, and error codes. The Collector sampling cycle runs every 20–30 seconds and aggregates connection activity into 5-minute or 15-minute time slices before transmitting them to the Nexthink cloud backend. A change in network interface — such as switching from Wi-Fi to Ethernet — does not interrupt collection; the Collector adapts transparently. Network data is correlated server-side with application and device telemetry, enabling queries that link network errors directly to specific processes, users, and device configurations.",
       "order": 11
@@ -1307,7 +1307,7 @@
     },
     {
       "id": "f_corr_ai",
-      "name": "AI insights & anomaly",
+      "name": "AI insights",
       "group": "correlate",
       "description": "Nexthink AI Insights operates as an analysis layer built on top of the telemetry platform, using large language models deployed within an AWS-hosted environment in the customer's geographical region — no data crosses that regional boundary. When a user opens an AI Insights surface, the platform executes a multi-step pipeline. In the data collection step, relevant telemetry slices are assembled: device performance metrics, application crash records, VDI session statistics, network error logs, and employee sentiment scores for the target scope and time window. In the AI processing step, this structured context is passed to the LLM along with a task-specific prompt that instructs the model to identify trends, classify topic clusters, detect anomalies, or rank contributing factors. The model's output is post-processed into structured summaries, anomaly flags, and ranked recommendations rendered in the Nexthink UI. For anomaly detection, Nexthink cross-references endpoint telemetry against anonymised aggregated signals drawn from over 15 million endpoints under management globally, enabling statistical outlier detection that compares a customer's observed metric distributions against the broader Nexthink fleet baseline. Specific anomaly types include latency spikes and slow login sequences in VDI sessions, CPU and memory anomalies correlated with binary versions or configurations, and application crash rate deviations. All LLM inference occurs entirely within the customer's regional AWS environment.",
       "order": 60
@@ -1406,7 +1406,7 @@
     {
       "id": "f_library",
       "name": "Content library",
-      "group": "correlate",
+      "group": "govern",
       "description": "The Nexthink Content Library is an online repository integrated into the Infinity platform from which administrators browse, install, and manage pre-built content packs called library packs. Each library pack is a versioned, self-describing bundle grouping related content items by use case — for example, a Citrix CVAD Essentials pack or a Wi-Fi Diagnostics pack. Content items within a pack can be of several types: NQL-based dashboards, monitors (alert definitions), remote actions (PowerShell or Bash scripts), campaigns (employee engagement surveys), and custom fields. Library packs expose metadata including description, version number, and inter-item dependencies, allowing the platform to validate that all prerequisites are present before installation. When an administrator clicks Install, the platform resolves dependencies and provisions all required objects into the tenant, making them immediately available for use. Role-based access control gates installation: deploying a pack containing remote actions requires the Manage all remote actions permission, while dashboards require Manage all dashboards. The library is maintained by Nexthink and updated independently of the core platform release cycle, meaning new packs and updated versions become available without a platform upgrade. Once installed, individual content items can be customised — for instance, editing monitor thresholds or modifying NQL queries — while retaining traceability to the original pack version, separating the delivery of operational knowledge from platform code.",
       "order": 190
     },
@@ -1437,6 +1437,12 @@
       "group": "correlate",
       "description": "When Nexthink triggers an alert, the platform automatically generates a Diagnostics page co-located with the alert record, providing a first-level root cause analysis without requiring manual investigation steps by the IT engineer. The Diagnostics page is composed of several auto-populated sections. At the top it displays the monitor name, the specific context entity that breached the threshold, and the primary monitored condition. A timeline panel visualises the metric trend around the alert event, enabling engineers to see whether the issue is isolated or part of a longer degradation pattern. The core of the automated analysis is a statistical insights engine that applies Bayesian inference to identify which device attributes — such as OS version, hardware model, installed software versions, network segment, or geographic location — are statistically over-represented among the affected devices compared to the unaffected population within the same tenant. The algorithm quantifies a likelihood score for each candidate attribute, ranking them from most to least probable contributor, so the first item in the insights list represents the strongest statistical differentiator. The engine supplements tenant-specific inference with anonymised cross-customer benchmarking data aggregated from Nexthink's cloud customer base, helping distinguish issues idiosyncratic to a specific environment from those following broader industry patterns. Engineers can apply filters by technical property, geographic location, or organisational entity directly on the Diagnostics page to narrow scope and validate hypotheses.",
       "order": 260
+    },
+    {
+      "id": "f_benchmark",
+      "name": "Benchmark",
+      "group": "correlate",
+      "description": "Nexthink Benchmark provides anonymised, aggregated performance data from over 15 million endpoints under management globally. IT teams can compare their organisation's DEX scores, device performance metrics, application stability, and experience indicators against peers in the same industry, region, or company size band. Benchmark data is surfaced in the Infinity portal alongside the customer's own metrics, enabling direct peer comparison without manual data gathering. Results are updated periodically and segmented by industry vertical and geography."
     },
     {
       "id": "f_opwgrz",
@@ -1508,14 +1514,14 @@
     {
       "id": "p_servicedesk",
       "name": "Service desk",
-      "role": "Resolve faster",
+      "role": "Resolve incidents faster",
       "icon": "support",
       "order": 30
     },
     {
       "id": "p_security",
       "name": "Security & risk",
-      "role": "Posture & response",
+      "role": "Desired state compliance",
       "icon": "shield",
       "order": 40
     },
@@ -2916,8 +2922,25 @@ function render(){
   requestAnimationFrame(()=> requestAnimationFrame(drawLinks));
 }
 
+const BENEFIT_ORDER = [
+  // IT
+  'IT time saved','IT costs saved','IT cost avoided',
+  // Business
+  'Business productivity','Business costs saved','Business time saved',
+  // Other
+  'Overall employee experience','Risk avoidance','Company reputation',
+];
+function _sortBenefits(list){
+  return list.slice().sort((a,b)=>{
+    const ia = BENEFIT_ORDER.indexOf(a), ib = BENEFIT_ORDER.indexOf(b);
+    if(ia===-1 && ib===-1) return a.localeCompare(b);
+    if(ia===-1) return 1; if(ib===-1) return -1;
+    return ia - ib;
+  });
+}
+
 function renderBenefits(){
-  const allBenefits = [...new Set(DATA.useCases.flatMap(u => u.benefitTypes||[]))];
+  const allBenefits = _sortBenefits([...new Set(DATA.useCases.flatMap(u => u.benefitTypes||[]))]);
   $('#benefit-pills').innerHTML = allBenefits.map(b =>
     `<div class="benefit-pill" data-benefit="${escapeHtml(b)}">${escapeHtml(b)}</div>`
   ).join('');
@@ -2941,10 +2964,10 @@ function renderSources(){
 
 function renderFeatures(){
   const groups = ['collect','correlate','act','govern'];
-  const groupLabel = {collect:'Collect', correlate:'Correlate', act:'Act', govern:'Govern'};
+  const groupLabel = {collect:'Collect', correlate:'Diagnose', act:'Act', govern:'Govern'};
   const byGroup = Object.fromEntries(groups.map(g=>[g,[]]));
   DATA.foundationFeatures.forEach(f => { (byGroup[f.group]||(byGroup[f.group]=[])).push(f); });
-  const MAX = 5;
+  const MAX = 4;
   // Build flat list of columns (each group may produce 1 or 2 columns)
   const cols = [];
   groups.forEach(g => {
@@ -3222,7 +3245,7 @@ function openDrawer(uc){
 }
 
 function openFeatureDrawer(feat){
-  const groupLabel = {collect:'Collect', correlate:'Correlate', act:'Act', govern:'Govern'};
+  const groupLabel = {collect:'Collect', correlate:'Diagnose', act:'Act', govern:'Govern'};
   const groupColor  = {collect:'var(--c-collect)', correlate:'var(--c-correlate)', act:'var(--c-act)', govern:'var(--c-govern)'};
   const g = feat.group || 'collect';
   // Wrap description paragraphs
@@ -3500,7 +3523,7 @@ function buildEdUCForm(ucId){
   const uc = DATA.useCases.find(u=>u.id===ucId); if(!uc) return '';
   const vc = DATA.valueCategories.find(v=>v.id===uc.valueCategoryId)||{};
   const groups = ['collect','correlate','act','govern'];
-  const glabel = {collect:'Collect',correlate:'Correlate',act:'Act',govern:'Govern'};
+  const glabel = {collect:'Collect',correlate:'Diagnose',act:'Act',govern:'Govern'};
 
   const vcSelect = `<select class="ed-input" onchange="updateUCField('${ucId}','valueCategoryId',this.value)">
     ${DATA.valueCategories.map(v=>`<option value="${v.id}" ${v.id===uc.valueCategoryId?'selected':''}>
@@ -3667,7 +3690,7 @@ function buildEdVCForm(vcId){
 
 function buildEdFeatTab(){
   const groups = ['collect','correlate','act','govern'];
-  const glabel = {collect:'Collect',correlate:'Correlate',act:'Act',govern:'Govern'};
+  const glabel = {collect:'Collect',correlate:'Diagnose',act:'Act',govern:'Govern'};
   return `
   <div class="editor-sidebar" id="edSidebar">
     ${groups.map(g=>{
@@ -3693,7 +3716,7 @@ function selectEdFeat(id){
 function buildEdFeatForm(featId){
   const f = DATA.foundationFeatures.find(f=>f.id===featId); if(!f) return '';
   const groups = ['collect','correlate','act','govern'];
-  const glabel = {collect:'Collect',correlate:'Correlate',act:'Act',govern:'Govern'};
+  const glabel = {collect:'Collect',correlate:'Diagnose',act:'Act',govern:'Govern'};
   return `
   <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;
               margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line)">
@@ -3767,7 +3790,7 @@ function buildEdPerForm(perId){
 // ── BENEFITS ────────────────────────────────────────────────────────────────
 
 function allBenefitTypes(){
-  return [...new Set(DATA.useCases.flatMap(u=>u.benefitTypes||[]))].sort();
+  return _sortBenefits([...new Set(DATA.useCases.flatMap(u=>u.benefitTypes||[]))]);
 }
 
 function buildEdBenTab(){
@@ -4229,9 +4252,9 @@ function _buildRoadmapHTML(){
   const longNewBens  = [...longBens].filter(b => !nowBens.has(b) && !midBens.has(b));
 
   const cols = [
-    { phase:'now',      label:'Now',       ucs:nowUCs,  newFeats:[...nowFeats],  newPers:[...nowPers],  newBens:[...nowBens],  baseline:true },
-    { phase:'midterm',  label:'Mid-term',  ucs:midUCs,  newFeats:midNewFeats,    newPers:midNewPers,    newBens:midNewBens,    baseline:false },
-    { phase:'longterm', label:'Long-term', ucs:longUCs, newFeats:longNewFeats,   newPers:longNewPers,   newBens:longNewBens,   baseline:false },
+    { phase:'now',      label:'Now',       ucs:nowUCs,  newFeats:[...nowFeats],  newPers:[...nowPers],  newBens:_sortBenefits([...nowBens]),  baseline:true },
+    { phase:'midterm',  label:'Mid-term',  ucs:midUCs,  newFeats:midNewFeats,    newPers:midNewPers,    newBens:_sortBenefits(midNewBens),    baseline:false },
+    { phase:'longterm', label:'Long-term', ucs:longUCs, newFeats:longNewFeats,   newPers:longNewPers,   newBens:_sortBenefits(longNewBens),   baseline:false },
   ];
 
   const colsHTML = cols.map(col => `
