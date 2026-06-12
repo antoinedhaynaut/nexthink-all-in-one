@@ -229,6 +229,77 @@
     .vc-row, .uc-cols, .personas{grid-template-columns: repeat(2, 1fr);}
   }
 
+
+  /* ===== ROADMAP ===== */
+  /* Phase badge on UC cards */
+  body.tagging-mode .uc{cursor:pointer; position:relative;}
+  .phase-badge{position:absolute;top:6px;right:6px;font-size:10px;font-weight:700;
+    letter-spacing:.06em;padding:2px 8px;border-radius:20px;border:1px solid;
+    pointer-events:none;z-index:2;}
+  .phase-badge.now{background:rgba(52,211,153,0.18);border-color:rgba(52,211,153,0.6);color:#34D399;}
+  .phase-badge.midterm{background:rgba(251,191,36,0.18);border-color:rgba(251,191,36,0.6);color:#FBBF24;}
+  .phase-badge.longterm{background:rgba(167,139,250,0.18);border-color:rgba(167,139,250,0.6);color:#A78BFA;}
+  .phase-badge.outofscope{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.15);color:var(--ink-4);}
+  body.tagging-mode .uc.phase-outofscope{opacity:.4;}
+
+  /* Tagging progress bar */
+  #taggingBar{position:sticky;top:0;z-index:40;display:none;align-items:center;
+    justify-content:space-between;gap:16px;flex-wrap:wrap;
+    background:rgba(10,15,37,0.96);border-bottom:1px solid var(--line-2);
+    padding:10px 28px;backdrop-filter:blur(12px);}
+  body.tagging-mode #taggingBar{display:flex;}
+  body.tagging-mode #roadmapBtn, body.roadmap-view-active #roadmapBtn{display:none !important;}
+  .tbar-counts{display:flex;gap:12px;font-size:12px;font-weight:600;}
+  .tbar-counts span{display:flex;align-items:center;gap:5px;}
+  .tbar-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .tbar-actions{display:flex;gap:8px;align-items:center;}
+
+  /* Roadmap view */
+  #roadmapView{display:none;padding:22px 28px 60px;}
+  body.roadmap-view-active #roadmapView{display:block;}
+  body.roadmap-view-active .app > *:not(#roadmapView):not(header){display:none !important;}
+  body.roadmap-view-active .app > header{display:flex !important;}
+  .rm-grid{display:flex;gap:0;min-width:1260px;overflow-x:auto;}
+  .rm-col{flex:1;min-width:380px;border-right:1px solid var(--line-2);}
+  .rm-col:last-child{border-right:none;}
+  .rm-col-header{padding:16px 20px 12px;border-bottom:1px solid var(--line-2);position:sticky;top:0;
+    background:rgba(10,15,37,0.97);backdrop-filter:blur(8px);z-index:5;}
+  .rm-phase-label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;}
+  .rm-phase-label.now{color:#34D399;}
+  .rm-phase-label.midterm{color:#FBBF24;}
+  .rm-phase-label.longterm{color:#A78BFA;}
+  .rm-col-body{padding:16px 20px;}
+  .rm-section{margin-bottom:24px;}
+  .rm-section-title{font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-4);margin-bottom:10px;}
+  .rm-vc-group{margin-bottom:14px;}
+  .rm-vc-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    margin-bottom:6px;padding:2px 0;}
+  .rm-uc-card{padding:8px 12px;border-radius:10px;border:1px solid var(--line);
+    background:rgba(255,255,255,0.03);margin-bottom:6px;font-size:12px;font-weight:600;}
+  .rm-empty{color:var(--ink-4);font-size:12px;font-style:italic;padding:4px 0;}
+  .rm-feat-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;
+    padding:3px 9px;border-radius:20px;border:1px solid;
+    margin:0 4px 4px 0;}
+  .rm-per-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;
+    padding:3px 9px;border-radius:20px;border:1px solid rgba(244,114,182,0.3);
+    background:rgba(244,114,182,0.08);color:#FBCFE8;margin:0 4px 4px 0;}
+  .rm-per-chip.new{border-color:rgba(244,114,182,0.7);background:rgba(244,114,182,0.18);}
+  .rm-ben-chip{display:inline-flex;align-items:center;font-size:11px;font-weight:600;
+    padding:3px 9px;border-radius:20px;border:1px solid rgba(52,211,153,0.4);
+    background:rgba(52,211,153,0.10);color:#6EE7B7;margin:0 4px 4px 0;}
+  .rm-delta{font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;
+    background:rgba(255,255,255,0.05);color:var(--ink-3);margin-bottom:8px;display:inline-block;}
+  /* Out of scope strip */
+  .rm-oos{margin-top:28px;border-top:1px solid var(--line-2);padding-top:16px;}
+  .rm-oos-toggle{background:none;border:none;color:var(--ink-3);font-size:12px;
+    cursor:pointer;display:flex;align-items:center;gap:6px;padding:0;margin-bottom:10px;}
+  .rm-oos-toggle:hover{color:var(--ink);}
+  .rm-oos-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+  .rm-oos-card{padding:7px 12px;border-radius:10px;border:1px solid var(--line);
+    background:rgba(255,255,255,0.02);font-size:12px;font-weight:600;
+    color:var(--ink-4);opacity:.55;}
+
   /* ===== Data Editor Overlay ===== */
   .editor-overlay{position:fixed;inset:0;background:rgba(8,12,28,0.97);z-index:200;
     display:flex;flex-direction:column;opacity:0;pointer-events:none;
@@ -322,16 +393,16 @@
   .ed-story-row{display:flex;gap:10px;align-items:flex-end;}
 </style>
 </head>
-<body>
+<body class="">
 
 <div class="app">
   <header>
     <div>
       <div class="crumb"><span class="led"></span> SaaS platform · interactive map</div>
       <h1>From every device, to every team — one platform.</h1>
-      <div class="lede">Every data source feeds a unified platform. Foundation features power 6 categories of value, broken down into focused use cases. Click a use case to see how it's built.</div>
     </div>
     <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+    <button class="btn" onclick="enterTaggingMode()" id="roadmapBtn" style="display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"></path><path d="M3 10h12v4H3z"></path><path d="M3 17h8v4H3z"></path></svg>Roadmap</button>
     <button class="btn" onclick="openEditor()" style="display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>Edit data</button>
     <button id="toggleLinks" class="btn active" title="Show / hide connection lines" onclick="
       SHOW_LINKS = !SHOW_LINKS;
@@ -344,15 +415,210 @@
     </div>
   </header>
 
+<!-- Roadmap tagging bar -->
+<div id="taggingBar">
+  <div class="tbar-counts">
+    <span><span class="tbar-dot" style="background:#34D399"></span><span id="tbar-now">Now: 5</span></span>
+    <span><span class="tbar-dot" style="background:#FBBF24"></span><span id="tbar-mid">Mid-term: 6</span></span>
+    <span><span class="tbar-dot" style="background:#A78BFA"></span><span id="tbar-long">Long-term: 4</span></span>
+    <span><span class="tbar-dot" style="background:rgba(255,255,255,0.3)"></span><span id="tbar-oos">Out of scope: 3</span></span>
+    <span style="color:var(--ink-3)"><span id="tbar-unset">Unset: 11</span></span>
+  </div>
+  <div class="tbar-actions">
+    <button class="btn" onclick="clearRoadmap()" style="color:#F87171">Clear all</button>
+    <button class="btn" onclick="exitTaggingMode()">Back</button>
+    <button class="btn active" id="viewRoadmapBtn" onclick="showRoadmapView()" style="opacity: 1; pointer-events: auto;">View roadmap (with unset) →</button>
+  </div>
+</div>
+
+<!-- Roadmap view -->
+<div id="roadmapView">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px">Roadmap view</div>
+        <h2 style="margin:0;font-size:20px;font-weight:700">Value delivery over time</h2>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="exportHTML()" style="display:flex;align-items:center;gap:6px">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"></path></svg>Save HTML
+        </button>
+        <button class="btn" onclick="hideRoadmapView()">← Back to tagging</button>
+        <button class="btn" onclick="exitTaggingMode()">✕ Exit roadmap</button>
+      </div>
+    </div>
+    <div class="rm-grid">
+    <div class="rm-col">
+      <div class="rm-col-header">
+        <div class="rm-phase-label now">Now</div>
+        <div style="font-size:11px;color:var(--ink-3);margin-top:4px">5 use cases</div>
+      </div>
+      <div class="rm-col-body">
+
+        <!-- Use cases grouped by VC -->
+        <div class="rm-section">
+          <div class="rm-section-title">Use cases</div>
+          
+    <div class="rm-vc-group">
+      <div class="rm-vc-label" style="color:#5B7FFF">Service Management</div>
+      <div class="rm-uc-card" style="border-color:rgba(91,127,255,0.3)">Reduce reactive workload</div><div class="rm-uc-card" style="border-color:rgba(91,127,255,0.3)">Proactive Automation</div><div class="rm-uc-card" style="border-color:rgba(91,127,255,0.3)">Prevent technology disruptions</div>
+    </div>
+    <div class="rm-vc-group">
+      <div class="rm-vc-label" style="color:#0EA5E9">Compliance</div>
+      <div class="rm-uc-card" style="border-color:rgba(14,165,233,0.3)">Enforce corporate standards</div>
+    </div>
+    <div class="rm-vc-group">
+      <div class="rm-vc-label" style="color:#F97316">Asset Management</div>
+      <div class="rm-uc-card" style="border-color:rgba(249,115,22,0.3)">Reduce Software Spend</div>
+    </div>
+        </div>
+
+        <!-- Features (sorted by category) -->
+        <div class="rm-section">
+          <div class="rm-section-title">Features required</div>
+          <div style="line-height:2"><span class="rm-feat-chip" style="border-color:rgba(34,211,238,0.45);color:#22D3EE;background:rgba(34,211,238,0.10)">Application Experience</span><span class="rm-feat-chip" style="border-color:rgba(34,211,238,0.45);color:#22D3EE;background:rgba(34,211,238,0.10)">Collaboration Experience</span><span class="rm-feat-chip" style="border-color:rgba(34,211,238,0.45);color:#22D3EE;background:rgba(34,211,238,0.10)">Endpoint telemetry</span><span class="rm-feat-chip" style="border-color:rgba(34,211,238,0.45);color:#22D3EE;background:rgba(34,211,238,0.10)">External connectors</span><span class="rm-feat-chip" style="border-color:rgba(34,211,238,0.45);color:#22D3EE;background:rgba(34,211,238,0.10)">Network data</span><span class="rm-feat-chip" style="border-color:rgba(34,211,238,0.45);color:#22D3EE;background:rgba(34,211,238,0.10)">VDI Experience</span><span class="rm-feat-chip" style="border-color:rgba(167,139,250,0.45);color:#A78BFA;background:rgba(167,139,250,0.10)">AI insights &amp; anomaly</span><span class="rm-feat-chip" style="border-color:rgba(167,139,250,0.45);color:#A78BFA;background:rgba(167,139,250,0.10)">Automated diagnostics</span><span class="rm-feat-chip" style="border-color:rgba(167,139,250,0.45);color:#A78BFA;background:rgba(167,139,250,0.10)">Content library</span><span class="rm-feat-chip" style="border-color:rgba(167,139,250,0.45);color:#A78BFA;background:rgba(167,139,250,0.10)">Investigations</span><span class="rm-feat-chip" style="border-color:rgba(167,139,250,0.45);color:#A78BFA;background:rgba(167,139,250,0.10)">Live dashboards</span><span class="rm-feat-chip" style="border-color:rgba(167,139,250,0.45);color:#A78BFA;background:rgba(167,139,250,0.10)">Real-time alerts</span><span class="rm-feat-chip" style="border-color:rgba(52,211,153,0.45);color:#34D399;background:rgba(52,211,153,0.10)">Amplify</span><span class="rm-feat-chip" style="border-color:rgba(52,211,153,0.45);color:#34D399;background:rgba(52,211,153,0.10)">Employee notifications &amp; self-help</span><span class="rm-feat-chip" style="border-color:rgba(52,211,153,0.45);color:#34D399;background:rgba(52,211,153,0.10)">Remote Actions &amp; Workflows</span><span class="rm-feat-chip" style="border-color:rgba(251,191,36,0.45);color:#FBBF24;background:rgba(251,191,36,0.10)">AI tools</span><span class="rm-feat-chip" style="border-color:rgba(251,191,36,0.45);color:#FBBF24;background:rgba(251,191,36,0.10)">APIs, Data Exporter &amp; webhooks</span><span class="rm-feat-chip" style="border-color:rgba(251,191,36,0.45);color:#FBBF24;background:rgba(251,191,36,0.10)">RBAC &amp; data residency</span><span class="rm-feat-chip" style="border-color:rgba(251,191,36,0.45);color:#FBBF24;background:rgba(251,191,36,0.10)">Workspace</span></div>
+          
+        </div>
+
+        <!-- Personas -->
+        <div class="rm-section">
+          <div class="rm-section-title">Personas involved</div>
+          <div style="line-height:2"><span class="rm-per-chip">Security &amp; risk</span><span class="rm-per-chip">Workplace engineering</span><span class="rm-per-chip">Service desk</span><span class="rm-per-chip">Finance &amp; procurement</span></div>
+          
+        </div>
+
+        <!-- Benefits -->
+        <div class="rm-section">
+          <div class="rm-section-title">IT &amp; business benefits</div>
+          <div style="line-height:2"><span class="rm-ben-chip">Risk avoidance</span><span class="rm-ben-chip">IT cost avoided</span><span class="rm-ben-chip">IT time saved</span><span class="rm-ben-chip">IT costs saved</span><span class="rm-ben-chip">Business time saved</span><span class="rm-ben-chip">Business productivity</span></div>
+          
+        </div>
+
+      </div>
+    </div>
+  
+    <div class="rm-col">
+      <div class="rm-col-header">
+        <div class="rm-phase-label midterm">Mid-term</div>
+        <div style="font-size:11px;color:var(--ink-3);margin-top:4px">6 use cases</div>
+      </div>
+      <div class="rm-col-body">
+
+        <!-- Use cases grouped by VC -->
+        <div class="rm-section">
+          <div class="rm-section-title">Use cases</div>
+          
+    <div class="rm-vc-group">
+      <div class="rm-vc-label" style="color:#5B7FFF">Service Management</div>
+      <div class="rm-uc-card" style="border-color:rgba(91,127,255,0.3)">Self-help AI agent</div>
+    </div>
+    <div class="rm-vc-group">
+      <div class="rm-vc-label" style="color:#0EA5E9">Compliance</div>
+      <div class="rm-uc-card" style="border-color:rgba(14,165,233,0.3)">AI Compliance</div>
+    </div>
+    <div class="rm-vc-group">
+      <div class="rm-vc-label" style="color:#F97316">Asset Management</div>
+      <div class="rm-uc-card" style="border-color:rgba(249,115,22,0.3)">Performance based HW Refresh</div><div class="rm-uc-card" style="border-color:rgba(249,115,22,0.3)">AI Consumption &amp; Optimisation</div>
+    </div>
+    <div class="rm-vc-group">
+      <div class="rm-vc-label" style="color:#34D399">Sustainability</div>
+      <div class="rm-uc-card" style="border-color:rgba(52,211,153,0.3)">Reduced hardware procurement</div>
+    </div>
+    <div class="rm-vc-group">
+      <div class="rm-vc-label" style="color:#3B82F6">Change &amp; Transformation</div>
+      <div class="rm-uc-card" style="border-color:rgba(59,130,246,0.3)">AI &amp; Digital Adoption</div>
+    </div>
+        </div>
+
+        <!-- Features (sorted by category) -->
+        <div class="rm-section">
+          <div class="rm-section-title">Net-new features</div>
+          <div style="line-height:2"><span class="rm-feat-chip" style="border-color:rgba(52,211,153,0.45);color:#34D399;background:rgba(52,211,153,0.10)">In-App guidance</span><span class="rm-feat-chip" style="border-color:rgba(52,211,153,0.45);color:#34D399;background:rgba(52,211,153,0.10)">Spark</span></div>
+          <div class="rm-delta" style="margin-top:6px">+2 features</div>
+        </div>
+
+        <!-- Personas -->
+        <div class="rm-section">
+          <div class="rm-section-title">Net-new personas</div>
+          <div style="line-height:2"><span class="rm-per-chip">CIO / IT leadership</span></div>
+          <div class="rm-delta" style="margin-top:6px">+1 persona</div>
+        </div>
+
+        <!-- Benefits -->
+        <div class="rm-section">
+          <div class="rm-section-title">Net-new benefits</div>
+          <div style="line-height:2"><span class="rm-ben-chip">Company reputation</span><span class="rm-ben-chip">Overall employee experience</span><span class="rm-ben-chip">Business costs saved</span></div>
+          <div class="rm-delta" style="margin-top:6px">+3 benefits</div>
+        </div>
+
+      </div>
+    </div>
+  
+    <div class="rm-col">
+      <div class="rm-col-header">
+        <div class="rm-phase-label longterm">Long-term</div>
+        <div style="font-size:11px;color:var(--ink-3);margin-top:4px">4 use cases</div>
+      </div>
+      <div class="rm-col-body">
+
+        <!-- Use cases grouped by VC -->
+        <div class="rm-section">
+          <div class="rm-section-title">Use cases</div>
+          
+    <div class="rm-vc-group">
+      <div class="rm-vc-label" style="color:#F97316">Asset Management</div>
+      <div class="rm-uc-card" style="border-color:rgba(249,115,22,0.3)">VDI Optimisation</div><div class="rm-uc-card" style="border-color:rgba(249,115,22,0.3)">Mobile &amp; POS</div>
+    </div>
+    <div class="rm-vc-group">
+      <div class="rm-vc-label" style="color:#3B82F6">Change &amp; Transformation</div>
+      <div class="rm-uc-card" style="border-color:rgba(59,130,246,0.3)">Accelerate Transformation</div><div class="rm-uc-card" style="border-color:rgba(59,130,246,0.3)">M&amp;A Activity</div>
+    </div>
+        </div>
+
+        <!-- Features (sorted by category) -->
+        <div class="rm-section">
+          <div class="rm-section-title">Net-new features</div>
+          <div style="line-height:2"><span class="rm-feat-chip" style="border-color:rgba(34,211,238,0.45);color:#22D3EE;background:rgba(34,211,238,0.10)">Mobile Experience</span></div>
+          <div class="rm-delta" style="margin-top:6px">+1 feature</div>
+        </div>
+
+        <!-- Personas -->
+        <div class="rm-section">
+          <div class="rm-section-title">Net-new personas</div>
+          <div class="rm-empty">None</div>
+          <div class="rm-delta" style="margin-top:6px">+0 personas</div>
+        </div>
+
+        <!-- Benefits -->
+        <div class="rm-section">
+          <div class="rm-section-title">Net-new benefits</div>
+          <div class="rm-empty">None</div>
+          <div class="rm-delta" style="margin-top:6px">+0 benefits</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+    
+    <div class="rm-oos">
+      <button class="rm-oos-toggle" id="oosToggle">
+        <span class="oos-arrow">▸</span>
+        Out of scope (3 use cases)
+      </button>
+      <div class="rm-oos-grid" id="oosContent" style="display:none">
+        <div class="rm-oos-card">Reduce Carbon Footprint</div><div class="rm-oos-card">Reduce Energy costs</div><div class="rm-oos-card">Hardware Right-sizing</div>
+      </div>
+    </div>
+  </div>
+
   <div class="grid">
     <section class="stage" id="stage">
-      <svg class="links" id="links" preserveAspectRatio="none" viewBox="0 0 2444 1357.125">
+      <svg class="links" id="links" preserveAspectRatio="none" viewBox="0 0 1864 1296.125">
     <defs>
       <linearGradient id="gA" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#22D3EE" stop-opacity="0"></stop><stop offset=".5" stop-color="#22D3EE" stop-opacity=".55"></stop><stop offset="1" stop-color="#6366F1" stop-opacity="0"></stop></linearGradient>
       <linearGradient id="gB" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#A78BFA" stop-opacity="0"></stop><stop offset=".5" stop-color="#A78BFA" stop-opacity=".55"></stop><stop offset="1" stop-color="#F472B6" stop-opacity="0"></stop></linearGradient>
       <linearGradient id="gC" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0"></stop><stop offset=".5" stop-color="#FFFFFF" stop-opacity=".75"></stop><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"></stop></linearGradient>
       <linearGradient id="gD" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#34D399" stop-opacity="0"></stop><stop offset=".5" stop-color="#34D399" stop-opacity=".65"></stop><stop offset="1" stop-color="#34D399" stop-opacity="0"></stop></linearGradient>
-    </defs><path d="M1222,1214.125 C1222,1198.125 1222,1198.125 1222,1182.125" stroke="url(#gA)" stroke-width="1.8" fill="none"></path><path d="M1222,816.125 C1222,603.40625 199.5,603.40625 199.5,390.6875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M1222,816.125 C1222,603.40625 608.5,603.40625 608.5,390.6875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M1222,816.125 C1222,603.40625 1017.5,603.40625 1017.5,390.6875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M1222,816.125 C1222,595.984375 1426.5,595.984375 1426.5,375.84375" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M1222,816.125 C1222,603.40625 1835.5,603.40625 1835.5,390.6875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M1222,816.125 C1222,595.984375 2244.5,595.984375 2244.5,375.84375" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M199.5,308 C199.5,311 199.5,311 199.5,314" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M608.5,308 C608.5,311 608.5,311 608.5,314" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M1017.5,308 C1017.5,311 1017.5,311 1017.5,314" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M1426.5,308 C1426.5,311 1426.5,311 1426.5,314" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M1835.5,308 C1835.5,311 1835.5,311 1835.5,314" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M2244.5,308 C2244.5,311 2244.5,311 2244.5,314" stroke="url(#gB)" stroke-width="0.7" fill="none"></path></svg>
+    </defs><path d="M932,1154.625 C932,1138.625 932,1138.625 932,1122.625" stroke="url(#gA)" stroke-width="1.8" fill="none"></path><path d="M932,815.625 C932,602.90625 151.1640625,602.90625 151.1640625,390.1875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M932,815.625 C932,602.90625 463.49609375,602.90625 463.49609375,390.1875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M932,815.625 C932,602.90625 775.83203125,602.90625 775.83203125,390.1875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M932,815.625 C932,602.90625 1088.1640625,602.90625 1088.1640625,390.1875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M932,815.625 C932,602.90625 1400.49609375,602.90625 1400.49609375,390.1875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M932,815.625 C932,602.90625 1712.83203125,602.90625 1712.83203125,390.1875" stroke="url(#gB)" stroke-width="0.8" fill="none"></path><path d="M151.1640625,307.5 C151.1640625,310.5 151.1640625,310.5 151.1640625,313.5" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M463.49609375,307.5 C463.49609375,310.5 463.49609375,310.5 463.49609375,313.5" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M775.83203125,307.5 C775.83203125,310.5 775.83203125,310.5 775.83203125,313.5" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M1088.1640625,307.5 C1088.1640625,310.5 1088.1640625,310.5 1088.1640625,313.5" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M1400.49609375,307.5 C1400.49609375,310.5 1400.49609375,310.5 1400.49609375,313.5" stroke="url(#gB)" stroke-width="0.7" fill="none"></path><path d="M1712.83203125,307.5 C1712.83203125,310.5 1712.83203125,310.5 1712.83203125,313.5" stroke="url(#gB)" stroke-width="0.7" fill="none"></path></svg>
 
       <!-- Top row: IT & Business Benefits + Personas side-by-side -->
       <div class="top-row">
@@ -364,7 +630,7 @@
                 <div class="hub-title">Value delivered</div>
               </div>
             </div>
-            <div class="benefit-pills" id="benefit-pills"><div class="benefit-pill" data-benefit="IT time saved">IT time saved</div><div class="benefit-pill" data-benefit="Business costs saved">Business costs saved</div><div class="benefit-pill" data-benefit="Business productivity">Business productivity</div><div class="benefit-pill" data-benefit="IT costs saved">IT costs saved</div><div class="benefit-pill" data-benefit="Overall employee experience">Overall employee experience</div><div class="benefit-pill" data-benefit="Company reputation">Company reputation</div><div class="benefit-pill" data-benefit="Risk avoidance">Risk avoidance</div><div class="benefit-pill" data-benefit="Business time saved">Business time saved</div><div class="benefit-pill" data-benefit="IT cost avoided">IT cost avoided</div></div>
+            <div class="benefit-pills" id="benefit-pills"><div class="benefit-pill" data-benefit="IT time saved">IT time saved</div><div class="benefit-pill" data-benefit="Business costs saved">Business costs saved</div><div class="benefit-pill" data-benefit="Business productivity">Business productivity</div><div class="benefit-pill" data-benefit="Overall employee experience">Overall employee experience</div><div class="benefit-pill" data-benefit="IT costs saved">IT costs saved</div><div class="benefit-pill" data-benefit="Risk avoidance">Risk avoidance</div><div class="benefit-pill" data-benefit="Company reputation">Company reputation</div><div class="benefit-pill" data-benefit="IT cost avoided">IT cost avoided</div><div class="benefit-pill" data-benefit="Business time saved">Business time saved</div></div>
           </div>
         </div>
 
@@ -664,6 +930,10 @@
           <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"></path></svg></div>
           <div class="nm">Amplify</div>
         </div>
+        <div class="feat" data-id="f_opwgrz" data-group="act" style="cursor:pointer">
+          <div class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"></path></svg></div>
+          <div class="nm">Employee notifications &amp; self-help</div>
+        </div>
     </div>
     <div class="feat-col">
       <div class="feat-group" style="color:var(--c-govern);">Govern</div>
@@ -768,41 +1038,45 @@
 <aside class="drawer" id="drawer" aria-hidden="true">
   <button class="close" id="drawerClose" aria-label="Close">✕</button>
   <div id="drawerContent">
-    <div class="vcat" style="color:#A855F7">Strategy</div>
-    <h2>Increase Revenue</h2>
-    <div class="pitch">Link employee digital experience to business productivity and revenue outcomes.</div>
+    <div class="vcat" style="color:#5B7FFF">Service Management</div>
+    <h2>Reduce reactive workload</h2>
+    <div class="pitch">Shift from firefighting to prevention with AI-powered issue detection and auto-remediation.</div>
 
     <div class="section">
       <h3 style="color:#34D399"><span class="dot"></span>Value</h3>
-      <div style="padding:14px 16px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid var(--line); line-height:1.7; color:var(--ink-2); font-size:14px">Research consistently shows that employees with better digital experiences are more productive and more engaged. Nexthink enables organisations to quantify this link — correlating DEX scores with productivity metrics, output quality and revenue per employee — building the business case for IT investment in terms that resonate with the CFO and CEO.</div>
+      <div style="padding:14px 16px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid var(--line); line-height:1.7; color:var(--ink-2); font-size:14px">Nexthink gives IT full visibility to see, diagnose and fix issues before employees even notice them. By detecting recurring problems across the fleet — from crashes and connectivity drops to application freezes — IT can shift from reactive firefighting to proactive resolution, reducing inbound ticket volumes and shortening mean time to resolution.</div>
     </div>
 
     <div class="section">
       <h3 style="color:#A7F3D0"><span class="dot"></span>IT &amp; Business benefits</h3>
-      <div class="chips"><span class="chip benefit">Business productivity</span><span class="chip benefit">Business costs saved</span></div>
+      <div class="chips"><span class="chip benefit">IT time saved</span><span class="chip benefit">IT costs saved</span><span class="chip benefit">Business time saved</span></div>
     </div>
 
     <div class="section">
       <h3 style="color:#67E8F9"><span class="dot"></span>Customer stories</h3>
       
-        <a class="story-link" href="https://nexthink.com/resource/honeywell-cost-efficient-workplace" target="_blank" rel="noopener noreferrer">
-          <div><span class="who">Honeywell</span><span class="ind">Manufacturing</span></div>
-          <div class="stitle">Honeywell: Running a Cost-Efficient Workplace</div>
+        <a class="story-link" href="https://nexthink.com/en/resource/western-union-testimonial" target="_blank" rel="noopener noreferrer">
+          <div><span class="who">Western Union</span><span class="ind">Financial Services</span></div>
+          <div class="stitle">Western Union: From Reactive to Proactive</div>
         </a>
-        <a class="story-link" href="https://nexthink.com/en/resource/a-year-in-the-life-of-a-nexthink-customer" target="_blank" rel="noopener noreferrer">
-          <div><span class="who">Anonymous</span><span class="ind">Financial Services</span></div>
-          <div class="stitle">A Year in the Life of a Nexthink Customer</div>
+        <a class="story-link" href="https://nexthink.com/resource/fortune-500-healthcare-case-study" target="_blank" rel="noopener noreferrer">
+          <div><span class="who">Anonymous</span><span class="ind">Healthcare</span></div>
+          <div class="stitle">Fortune 500 Healthcare Cracks Their IT Problems Once and For All</div>
+        </a>
+        <a class="story-link" href="https://nexthink.com/resource/how-leidos-is-building-a-proactive-ai-enabled-it-organization" target="_blank" rel="noopener noreferrer">
+          <div><span class="who">Leidos</span><span class="ind">Defense &amp; Technology</span></div>
+          <div class="stitle">How Leidos Is Building a Proactive, AI-Enabled IT Organization</div>
         </a>
     </div>
 
     <div class="section">
       <h3 style="color:#FBCFE8"><span class="dot"></span>Personas concerned</h3>
-      <div class="chips"><span class="chip">CIO / IT leadership</span><span class="chip">Finance &amp; procurement</span></div>
+      <div class="chips"><span class="chip">Service desk</span><span class="chip">Workplace engineering</span></div>
     </div>
 
     <div class="section">
       <h3 style="color:#A5B4FC"><span class="dot"></span>Features used</h3>
-      <div class="chips"><span class="chip feat">Endpoint telemetry</span><span class="chip feat">AI insights &amp; anomaly</span><span class="chip feat">Live dashboards</span><span class="chip feat">APIs, Data Exporter &amp; webhooks</span></div>
+      <div class="chips"><span class="chip feat">Endpoint telemetry</span><span class="chip feat">AI insights &amp; anomaly</span><span class="chip feat">Live dashboards</span><span class="chip feat">Real-time alerts</span><span class="chip feat">Automated diagnostics</span><span class="chip feat">Network data</span><span class="chip feat">Collaboration Experience</span><span class="chip feat">Application Experience</span><span class="chip feat">VDI Experience</span><span class="chip feat">Investigations</span><span class="chip feat">Remote Actions &amp; Workflows</span><span class="chip feat">Amplify</span><span class="chip feat">Workspace</span><span class="chip feat">RBAC &amp; data residency</span></div>
     </div>
   </div>
 </aside>
@@ -813,7 +1087,7 @@
     <div style="display:flex;align-items:center;gap:16px;min-width:0">
       <span style="font-size:15px;font-weight:700;flex-shrink:0">✏ Edit data</span>
       <div class="ed-tabs">
-        <div class="ed-tab active" onclick="switchEdTab('uc')">Use Cases</div><div class="ed-tab " onclick="switchEdTab('vc')">Value Categories</div><div class="ed-tab " onclick="switchEdTab('feat')">Features</div><div class="ed-tab " onclick="switchEdTab('per')">Personas</div><div class="ed-tab " onclick="switchEdTab('src')">Data Sources</div>
+        <div class="ed-tab active" onclick="switchEdTab('uc')">Use Cases</div><div class="ed-tab " onclick="switchEdTab('vc')">Value Categories</div><div class="ed-tab " onclick="switchEdTab('feat')">Features</div><div class="ed-tab " onclick="switchEdTab('per')">Personas</div><div class="ed-tab " onclick="switchEdTab('ben')">Benefits</div><div class="ed-tab " onclick="switchEdTab('src')">Data Sources</div>
       </div>
     </div>
     <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
@@ -824,12 +1098,12 @@
   <div class="editor-layout">
   <div class="editor-sidebar" id="edSidebar">
     <div class="ed-vc" style="color:#5B7FFF">Service Management</div>
-        <div class="ed-uc-item active" data-id="uc_sm_reactive" onclick="selectEdUC('uc_sm_reactive')">Reduce reactive workload</div><div class="ed-uc-item " data-id="uc_sm_automation" onclick="selectEdUC('uc_sm_automation')">Proactive Automation</div><div class="ed-uc-item " data-id="uc_sm_efficiency" onclick="selectEdUC('uc_sm_efficiency')">Improve IT efficiency</div><div class="ed-uc-item " data-id="uc_sm_prevention" onclick="selectEdUC('uc_sm_prevention')">Prevent technology disruptions</div><div class="ed-uc-item " data-id="uc_sm_onboarding" onclick="selectEdUC('uc_sm_onboarding')">Employee Onboarding</div><div class="ed-uc-item " data-id="uc_spark" onclick="selectEdUC('uc_spark')">Self-help AI agent</div><div class="ed-vc" style="color:#0EA5E9">Compliance</div>
+        <div class="ed-uc-item " data-id="uc_sm_reactive" onclick="selectEdUC('uc_sm_reactive')">Reduce reactive workload</div><div class="ed-uc-item " data-id="uc_sm_automation" onclick="selectEdUC('uc_sm_automation')">Proactive Automation</div><div class="ed-uc-item " data-id="uc_sm_efficiency" onclick="selectEdUC('uc_sm_efficiency')">Improve IT efficiency</div><div class="ed-uc-item " data-id="uc_sm_prevention" onclick="selectEdUC('uc_sm_prevention')">Prevent technology disruptions</div><div class="ed-uc-item " data-id="uc_sm_onboarding" onclick="selectEdUC('uc_sm_onboarding')">Employee Onboarding</div><div class="ed-uc-item " data-id="uc_spark" onclick="selectEdUC('uc_spark')">Self-help AI agent</div><div class="ed-vc" style="color:#0EA5E9">Compliance</div>
         <div class="ed-uc-item " data-id="uc_comp_sec_posture" onclick="selectEdUC('uc_comp_sec_posture')">Improve security posture</div><div class="ed-uc-item " data-id="uc_comp_standards" onclick="selectEdUC('uc_comp_standards')">Enforce corporate standards</div><div class="ed-uc-item " data-id="uc_comp_human_risk" onclick="selectEdUC('uc_comp_human_risk')">Manage Human Risk</div><div class="ed-uc-item " data-id="uc_comp_data" onclick="selectEdUC('uc_comp_data')">Data Integrity &amp; Compliance</div><div class="ed-uc-item " data-id="uc_comp_ai" onclick="selectEdUC('uc_comp_ai')">AI Compliance</div><div class="ed-vc" style="color:#F97316">Asset Management</div>
         <div class="ed-uc-item " data-id="uc_am_hw_refresh" onclick="selectEdUC('uc_am_hw_refresh')">Performance based HW Refresh</div><div class="ed-uc-item " data-id="uc_am_hw_sizing" onclick="selectEdUC('uc_am_hw_sizing')">Hardware Right-sizing</div><div class="ed-uc-item " data-id="uc_am_sw_spend" onclick="selectEdUC('uc_am_sw_spend')">Reduce Software Spend</div><div class="ed-uc-item " data-id="uc_am_ai_optim" onclick="selectEdUC('uc_am_ai_optim')">AI Consumption &amp; Optimisation</div><div class="ed-uc-item " data-id="uc_am_vdi" onclick="selectEdUC('uc_am_vdi')">VDI Optimisation</div><div class="ed-uc-item " data-id="uc_am_mobile" onclick="selectEdUC('uc_am_mobile')">Mobile &amp; POS</div><div class="ed-vc" style="color:#34D399">Sustainability</div>
         <div class="ed-uc-item " data-id="uc_sus_carbon" onclick="selectEdUC('uc_sus_carbon')">Reduce Carbon Footprint</div><div class="ed-uc-item " data-id="uc_sus_energy" onclick="selectEdUC('uc_sus_energy')">Reduce Energy costs</div><div class="ed-uc-item " data-id="uc_sus_hw_proc" onclick="selectEdUC('uc_sus_hw_proc')">Reduced hardware procurement</div><div class="ed-vc" style="color:#A855F7">Strategy</div>
         <div class="ed-uc-item " data-id="uc_str_experience" onclick="selectEdUC('uc_str_experience')">Improve employee &amp; customer Experience</div><div class="ed-uc-item " data-id="uc_str_revenue" onclick="selectEdUC('uc_str_revenue')">Increase Revenue</div><div class="ed-uc-item " data-id="uc_str_data" onclick="selectEdUC('uc_str_data')">Become Data Driven</div><div class="ed-uc-item " data-id="uc_str_talent" onclick="selectEdUC('uc_str_talent')">Attract &amp; Retain Talent</div><div class="ed-uc-item " data-id="uc_str_xla" onclick="selectEdUC('uc_str_xla')">XLA Methodology</div><div class="ed-vc" style="color:#3B82F6">Change &amp; Transformation</div>
-        <div class="ed-uc-item " data-id="uc_ct_budget" onclick="selectEdUC('uc_ct_budget')">Budgeting and planning</div><div class="ed-uc-item " data-id="uc_ct_transform" onclick="selectEdUC('uc_ct_transform')">Accelerate Transformation</div><div class="ed-uc-item " data-id="uc_ct_ai_adopt" onclick="selectEdUC('uc_ct_ai_adopt')">AI &amp; Digital Adoption</div><div class="ed-uc-item " data-id="uc_ct_mna" onclick="selectEdUC('uc_ct_mna')">M&amp;A Activity</div>
+        <div class="ed-uc-item active" data-id="uc_ct_budget" onclick="selectEdUC('uc_ct_budget')">Budgeting and planning</div><div class="ed-uc-item " data-id="uc_ct_transform" onclick="selectEdUC('uc_ct_transform')">Accelerate Transformation</div><div class="ed-uc-item " data-id="uc_ct_ai_adopt" onclick="selectEdUC('uc_ct_ai_adopt')">AI &amp; Digital Adoption</div><div class="ed-uc-item " data-id="uc_ct_mna" onclick="selectEdUC('uc_ct_mna')">M&amp;A Activity</div>
     <div style="padding:10px 14px;margin-top:6px">
       <button class="ed-add-btn" onclick="addNewUC()">+ New use case</button>
     </div>
@@ -840,122 +1114,101 @@
     <div style="flex:1;min-width:0">
       <div class="ed-field-group">
         <label class="ed-label">Name</label>
-        <input class="ed-input ed-input-lg" value="Reduce reactive workload" oninput="updateUCField('uc_sm_reactive','name',this.value)">
+        <input class="ed-input ed-input-lg" value="Budgeting and planning" oninput="updateUCField('uc_ct_budget','name',this.value)">
       </div>
       <div class="ed-field-group" style="margin-top:10px">
         <label class="ed-label">Value category</label>
-        <select class="ed-input" onchange="updateUCField('uc_sm_reactive','valueCategoryId',this.value)">
-    <option value="vc_service_mgmt" selected="">
+        <select class="ed-input" onchange="updateUCField('uc_ct_budget','valueCategoryId',this.value)">
+    <option value="vc_service_mgmt">
       Service Management</option><option value="vc_security">
       Compliance</option><option value="vc_workplace">
       Asset Management</option><option value="vc_sustain">
       Sustainability</option><option value="vc_dex">
-      Strategy</option><option value="vc_change">
+      Strategy</option><option value="vc_change" selected="">
       Change &amp; Transformation</option>
   </select>
       </div>
     </div>
-    <button class="ed-del-btn" style="margin-top:20px" onclick="deleteUC('uc_sm_reactive')">Delete UC</button>
+    <button class="ed-del-btn" style="margin-top:20px" onclick="deleteUC('uc_ct_budget')">Delete UC</button>
   </div>
   <div class="ed-section">
     <div class="ed-sec-title">Short pitch</div>
-    <input class="ed-input" value="Shift from firefighting to prevention with AI-powered issue detection and auto-remediation." oninput="updateUCField('uc_sm_reactive','shortPitch',this.value)" placeholder="One-line positioning statement">
+    <input class="ed-input" value="Use real device and usage data to plan IT budgets with confidence." oninput="updateUCField('uc_ct_budget','shortPitch',this.value)" placeholder="One-line positioning statement">
   </div>
   <div class="ed-section">
     <div class="ed-sec-title">Value description</div>
-    <textarea class="ed-textarea" rows="5" oninput="updateUCField('uc_sm_reactive','valueDescription',this.value)" placeholder="Detailed description of the value delivered...">Nexthink gives IT full visibility to see, diagnose and fix issues before employees even notice them. By detecting recurring problems across the fleet — from crashes and connectivity drops to application freezes — IT can shift from reactive firefighting to proactive resolution, reducing inbound ticket volumes and shortening mean time to resolution.</textarea>
+    <textarea class="ed-textarea" rows="5" oninput="updateUCField('uc_ct_budget','valueDescription',this.value)" placeholder="Detailed description of the value delivered...">Nexthink provides IT leaders with the endpoint data they need to build credible, evidence-based IT budgets. Hardware age, performance degradation curves, application usage trends and support cost patterns all feed into more accurate refresh planning, license forecasting and infrastructure investment decisions — reducing variance and improving stakeholder confidence in IT spending.</textarea>
   </div>
   <div class="ed-section">
     <div class="ed-sec-title">Foundation features</div>
     <div style="margin-bottom:10px">
       <div class="ed-group-label" style="color:var(--c-collect)">Collect</div>
-      <div class="ed-chips"><div class="ed-chip feat-chip on" data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_collect_endpoint',this)">Endpoint telemetry</div><div class="ed-chip feat-chip on" data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_network',this)">Network data</div><div class="ed-chip feat-chip on" data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_collabex',this)">Collaboration Experience</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_collect_sentiment',this)">Employee sentiment surveys</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_collect_external',this)">External connectors</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_mobile',this)">Mobile Experience</div><div class="ed-chip feat-chip on" data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_appex',this)">Application Experience</div><div class="ed-chip feat-chip on" data-group="collect" onclick="toggleFeat('uc_sm_reactive','f_vdi',this)">VDI Experience</div></div></div><div style="margin-bottom:10px">
+      <div class="ed-chips"><div class="ed-chip feat-chip on" data-group="collect" onclick="toggleFeat('uc_ct_budget','f_collect_endpoint',this)">Endpoint telemetry</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_network',this)">Network data</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_collabex',this)">Collaboration Experience</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_collect_sentiment',this)">Employee sentiment surveys</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_collect_external',this)">External connectors</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_mobile',this)">Mobile Experience</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_appex',this)">Application Experience</div><div class="ed-chip feat-chip " data-group="collect" onclick="toggleFeat('uc_ct_budget','f_vdi',this)">VDI Experience</div></div></div><div style="margin-bottom:10px">
       <div class="ed-group-label" style="color:var(--c-correlate)">Correlate</div>
-      <div class="ed-chips"><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_sm_reactive','f_corr_ai',this)">AI insights &amp; anomaly</div><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_sm_reactive','f_act_dashboards',this)">Live dashboards</div><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_sm_reactive','f_investigations',this)">Investigations</div><div class="ed-chip feat-chip " data-group="correlate" onclick="toggleFeat('uc_sm_reactive','f_library',this)">Content library</div><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_sm_reactive','f_alert',this)">Real-time alerts</div><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_sm_reactive','f_diagnostic',this)">Automated diagnostics</div></div></div><div style="margin-bottom:10px">
+      <div class="ed-chips"><div class="ed-chip feat-chip " data-group="correlate" onclick="toggleFeat('uc_ct_budget','f_corr_ai',this)">AI insights &amp; anomaly</div><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_ct_budget','f_act_dashboards',this)">Live dashboards</div><div class="ed-chip feat-chip on" data-group="correlate" onclick="toggleFeat('uc_ct_budget','f_investigations',this)">Investigations</div><div class="ed-chip feat-chip " data-group="correlate" onclick="toggleFeat('uc_ct_budget','f_library',this)">Content library</div><div class="ed-chip feat-chip " data-group="correlate" onclick="toggleFeat('uc_ct_budget','f_alert',this)">Real-time alerts</div><div class="ed-chip feat-chip " data-group="correlate" onclick="toggleFeat('uc_ct_budget','f_diagnostic',this)">Automated diagnostics</div></div></div><div style="margin-bottom:10px">
       <div class="ed-group-label" style="color:var(--c-act)">Act</div>
-      <div class="ed-chips"><div class="ed-chip feat-chip on" data-group="act" onclick="toggleFeat('uc_sm_reactive','f_act_remediation',this)">Remote Actions &amp; Workflows</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_sm_reactive','f_act_campaign',this)">In-App guidance</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_sm_reactive','f_spark',this)">Spark</div><div class="ed-chip feat-chip on" data-group="act" onclick="toggleFeat('uc_sm_reactive','f_amplify',this)">Amplify</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_sm_reactive','f_opwgrz',this)">Employee notifications &amp; self-help</div></div></div><div style="margin-bottom:10px">
+      <div class="ed-chips"><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_ct_budget','f_act_remediation',this)">Remote Actions &amp; Workflows</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_ct_budget','f_act_campaign',this)">In-App guidance</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_ct_budget','f_spark',this)">Spark</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_ct_budget','f_amplify',this)">Amplify</div><div class="ed-chip feat-chip " data-group="act" onclick="toggleFeat('uc_ct_budget','f_opwgrz',this)">Employee notifications &amp; self-help</div></div></div><div style="margin-bottom:10px">
       <div class="ed-group-label" style="color:var(--c-govern)">Govern</div>
-      <div class="ed-chips"><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_sm_reactive','f_corr_dex_score',this)">DEX score</div><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_sm_reactive','f_act_api',this)">APIs, Data Exporter &amp; webhooks</div><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_sm_reactive','f_gov_rbac',this)">RBAC &amp; data residency</div><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_sm_reactive','f_ai_tools',this)">AI tools</div><div class="ed-chip feat-chip on" data-group="govern" onclick="toggleFeat('uc_sm_reactive','f_workspace',this)">Workspace</div><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_sm_reactive','f_exp_central',this)">Experience Central</div></div></div>
+      <div class="ed-chips"><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_ct_budget','f_corr_dex_score',this)">DEX score</div><div class="ed-chip feat-chip on" data-group="govern" onclick="toggleFeat('uc_ct_budget','f_act_api',this)">APIs, Data Exporter &amp; webhooks</div><div class="ed-chip feat-chip on" data-group="govern" onclick="toggleFeat('uc_ct_budget','f_gov_rbac',this)">RBAC &amp; data residency</div><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_ct_budget','f_ai_tools',this)">AI tools</div><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_ct_budget','f_workspace',this)">Workspace</div><div class="ed-chip feat-chip " data-group="govern" onclick="toggleFeat('uc_ct_budget','f_exp_central',this)">Experience Central</div></div></div>
   </div>
   <div class="ed-section">
     <div class="ed-sec-title">Personas</div>
-    <div class="ed-chips"><div class="ed-chip per-chip " onclick="togglePer('uc_sm_reactive','p_cio',this)">CIO / IT leadership</div><div class="ed-chip per-chip on" onclick="togglePer('uc_sm_reactive','p_workplace',this)">Workplace engineering</div><div class="ed-chip per-chip on" onclick="togglePer('uc_sm_reactive','p_servicedesk',this)">Service desk</div><div class="ed-chip per-chip " onclick="togglePer('uc_sm_reactive','p_security',this)">Security &amp; risk</div><div class="ed-chip per-chip " onclick="togglePer('uc_sm_reactive','p_hr',this)">HR &amp; People</div><div class="ed-chip per-chip " onclick="togglePer('uc_sm_reactive','p_finance',this)">Finance &amp; procurement</div></div>
+    <div class="ed-chips"><div class="ed-chip per-chip on" onclick="togglePer('uc_ct_budget','p_cio',this)">CIO / IT leadership</div><div class="ed-chip per-chip " onclick="togglePer('uc_ct_budget','p_workplace',this)">Workplace engineering</div><div class="ed-chip per-chip " onclick="togglePer('uc_ct_budget','p_servicedesk',this)">Service desk</div><div class="ed-chip per-chip " onclick="togglePer('uc_ct_budget','p_security',this)">Security &amp; risk</div><div class="ed-chip per-chip " onclick="togglePer('uc_ct_budget','p_hr',this)">HR &amp; People</div><div class="ed-chip per-chip on" onclick="togglePer('uc_ct_budget','p_finance',this)">Finance &amp; procurement</div></div>
   </div>
   <div class="ed-section">
     <div class="ed-sec-title">IT &amp; business benefits</div>
-    <div class="ed-chips"><div class="ed-chip ben-chip " onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="Business costs saved">Business costs saved</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="Business productivity">Business productivity</div><div class="ed-chip ben-chip on" onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="Business time saved">Business time saved</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="Company reputation">Company reputation</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="IT cost avoided">IT cost avoided</div><div class="ed-chip ben-chip on" onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="IT costs saved">IT costs saved</div><div class="ed-chip ben-chip on" onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="IT time saved">IT time saved</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="Overall employee experience">Overall employee experience</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_sm_reactive',this.dataset.b,this)" data-b="Risk avoidance">Risk avoidance</div></div>
+    <div class="ed-chips"><div class="ed-chip ben-chip on" onclick="toggleBen('uc_ct_budget',this.dataset.b,this)" data-b="Business costs saved">Business costs saved</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_ct_budget',this.dataset.b,this)" data-b="Business productivity">Business productivity</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_ct_budget',this.dataset.b,this)" data-b="Business time saved">Business time saved</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_ct_budget',this.dataset.b,this)" data-b="Company reputation">Company reputation</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_ct_budget',this.dataset.b,this)" data-b="IT cost avoided">IT cost avoided</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_ct_budget',this.dataset.b,this)" data-b="IT costs saved">IT costs saved</div><div class="ed-chip ben-chip on" onclick="toggleBen('uc_ct_budget',this.dataset.b,this)" data-b="IT time saved">IT time saved</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_ct_budget',this.dataset.b,this)" data-b="Overall employee experience">Overall employee experience</div><div class="ed-chip ben-chip " onclick="toggleBen('uc_ct_budget',this.dataset.b,this)" data-b="Risk avoidance">Risk avoidance</div></div>
     <div class="ed-benefit-add" style="margin-top:10px">
-      <input id="benefitInput" placeholder="New benefit type..." onkeydown="if(event.key==='Enter'){event.preventDefault();addBenefit('uc_sm_reactive')}">
-      <button onclick="addBenefit('uc_sm_reactive')">Add</button>
+      <input id="benefitInput" placeholder="New benefit type..." onkeydown="if(event.key==='Enter'){event.preventDefault();addBenefit('uc_ct_budget')}">
+      <button onclick="addBenefit('uc_ct_budget')">Add</button>
     </div>
   </div>
   <div class="ed-section">
     <div class="ed-sec-title" style="display:flex;justify-content:space-between;align-items:center">
       Customer stories
-      <button class="ed-add-btn" style="width:auto;padding:5px 12px" onclick="addStory('uc_sm_reactive')">+ Add story</button>
+      <button class="ed-add-btn" style="width:auto;padding:5px 12px" onclick="addStory('uc_ct_budget')">+ Add story</button>
     </div>
     
     <div class="ed-story">
       <div class="ed-story-row">
         <div class="ed-field-group" style="flex:2">
           <label class="ed-label">Title</label>
-          <input class="ed-input" value="Western Union: From Reactive to Proactive" oninput="updateStory('uc_sm_reactive',0,'title',this.value)" placeholder="Story title">
+          <input class="ed-input" value="Honeywell: Running a Cost-Efficient Workplace" oninput="updateStory('uc_ct_budget',0,'title',this.value)" placeholder="Story title">
         </div>
         <div class="ed-field-group" style="flex:1">
           <label class="ed-label">Customer</label>
-          <input class="ed-input" value="Western Union" oninput="updateStory('uc_sm_reactive',0,'customer',this.value)" placeholder="Customer name">
+          <input class="ed-input" value="Honeywell" oninput="updateStory('uc_ct_budget',0,'customer',this.value)" placeholder="Customer name">
         </div>
         <div class="ed-field-group" style="flex:1">
           <label class="ed-label">Industry</label>
-          <input class="ed-input" value="Financial Services" oninput="updateStory('uc_sm_reactive',0,'industry',this.value)" placeholder="Industry">
+          <input class="ed-input" value="Manufacturing" oninput="updateStory('uc_ct_budget',0,'industry',this.value)" placeholder="Industry">
         </div>
-        <button class="ed-del-btn" onclick="deleteStory('uc_sm_reactive',0)" style="margin-bottom:1px">✕</button>
+        <button class="ed-del-btn" onclick="deleteStory('uc_ct_budget',0)" style="margin-bottom:1px">✕</button>
       </div>
       <div class="ed-field-group" style="margin-top:8px">
         <label class="ed-label">URL</label>
-        <input class="ed-input" value="https://nexthink.com/en/resource/western-union-testimonial" oninput="updateStory('uc_sm_reactive',0,'url',this.value)" placeholder="https://nexthink.com/customers/...">
+        <input class="ed-input" value="https://nexthink.com/resource/honeywell-cost-efficient-workplace" oninput="updateStory('uc_ct_budget',0,'url',this.value)" placeholder="https://nexthink.com/customers/...">
       </div>
     </div>
     <div class="ed-story">
       <div class="ed-story-row">
         <div class="ed-field-group" style="flex:2">
           <label class="ed-label">Title</label>
-          <input class="ed-input" value="Fortune 500 Healthcare Cracks Their IT Problems Once and For All" oninput="updateStory('uc_sm_reactive',1,'title',this.value)" placeholder="Story title">
+          <input class="ed-input" value="German Manufacturer Saves $1.6M on Windows Migration" oninput="updateStory('uc_ct_budget',1,'title',this.value)" placeholder="Story title">
         </div>
         <div class="ed-field-group" style="flex:1">
           <label class="ed-label">Customer</label>
-          <input class="ed-input" value="Anonymous" oninput="updateStory('uc_sm_reactive',1,'customer',this.value)" placeholder="Customer name">
+          <input class="ed-input" value="Anonymous" oninput="updateStory('uc_ct_budget',1,'customer',this.value)" placeholder="Customer name">
         </div>
         <div class="ed-field-group" style="flex:1">
           <label class="ed-label">Industry</label>
-          <input class="ed-input" value="Healthcare" oninput="updateStory('uc_sm_reactive',1,'industry',this.value)" placeholder="Industry">
+          <input class="ed-input" value="Manufacturing" oninput="updateStory('uc_ct_budget',1,'industry',this.value)" placeholder="Industry">
         </div>
-        <button class="ed-del-btn" onclick="deleteStory('uc_sm_reactive',1)" style="margin-bottom:1px">✕</button>
+        <button class="ed-del-btn" onclick="deleteStory('uc_ct_budget',1)" style="margin-bottom:1px">✕</button>
       </div>
       <div class="ed-field-group" style="margin-top:8px">
         <label class="ed-label">URL</label>
-        <input class="ed-input" value="https://nexthink.com/resource/fortune-500-healthcare-case-study" oninput="updateStory('uc_sm_reactive',1,'url',this.value)" placeholder="https://nexthink.com/customers/...">
-      </div>
-    </div>
-    <div class="ed-story">
-      <div class="ed-story-row">
-        <div class="ed-field-group" style="flex:2">
-          <label class="ed-label">Title</label>
-          <input class="ed-input" value="How Leidos Is Building a Proactive, AI-Enabled IT Organization" oninput="updateStory('uc_sm_reactive',2,'title',this.value)" placeholder="Story title">
-        </div>
-        <div class="ed-field-group" style="flex:1">
-          <label class="ed-label">Customer</label>
-          <input class="ed-input" value="Leidos" oninput="updateStory('uc_sm_reactive',2,'customer',this.value)" placeholder="Customer name">
-        </div>
-        <div class="ed-field-group" style="flex:1">
-          <label class="ed-label">Industry</label>
-          <input class="ed-input" value="Defense &amp; Technology" oninput="updateStory('uc_sm_reactive',2,'industry',this.value)" placeholder="Industry">
-        </div>
-        <button class="ed-del-btn" onclick="deleteStory('uc_sm_reactive',2)" style="margin-bottom:1px">✕</button>
-      </div>
-      <div class="ed-field-group" style="margin-top:8px">
-        <label class="ed-label">URL</label>
-        <input class="ed-input" value="https://nexthink.com/resource/how-leidos-is-building-a-proactive-ai-enabled-it-organization" oninput="updateStory('uc_sm_reactive',2,'url',this.value)" placeholder="https://nexthink.com/customers/...">
+        <input class="ed-input" value="https://nexthink.com/blog/migration-savings/" oninput="updateStory('uc_ct_budget',1,'url',this.value)" placeholder="https://nexthink.com/customers/...">
       </div>
     </div>
   </div></div></div></div>
@@ -1312,7 +1565,8 @@
         "f_collect_endpoint",
         "f_act_dashboards",
         "f_act_api",
-        "f_investigations"
+        "f_investigations",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_cio",
@@ -1328,7 +1582,8 @@
       "valueDescription": "When rolling out new technology — whether a cloud migration, desktop OS upgrade or collaboration platform switch — Nexthink provides real-time visibility into adoption velocity, experience impact and support demand. IT can run controlled pilots, measure the actual experience delta, and course-correct before full deployment, de-risking transformation programmes.",
       "benefitTypes": [
         "IT time saved",
-        "Business productivity"
+        "Business productivity",
+        "Overall employee experience"
       ],
       "customerStories": [
         {
@@ -1351,7 +1606,8 @@
         "f_corr_ai",
         "f_act_campaign",
         "f_act_dashboards",
-        "f_library"
+        "f_library",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_cio",
@@ -1389,7 +1645,8 @@
         "f_ai_tools",
         "f_collect_endpoint",
         "f_act_campaign",
-        "f_act_dashboards"
+        "f_act_dashboards",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_cio",
@@ -1406,7 +1663,8 @@
       "benefitTypes": [
         "IT time saved",
         "Business productivity",
-        "IT costs saved"
+        "IT costs saved",
+        "Risk avoidance"
       ],
       "customerStories": [
         {
@@ -1431,7 +1689,8 @@
         "f_act_api",
         "f_appex",
         "f_investigations",
-        "f_workspace"
+        "f_workspace",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_cio",
@@ -1481,7 +1740,8 @@
         "f_act_dashboards",
         "f_appex",
         "f_collabex",
-        "f_investigations"
+        "f_investigations",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_cio",
@@ -1521,7 +1781,9 @@
         "f_act_dashboards",
         "f_act_api",
         "f_collect_sentiment",
-        "f_ai_tools"
+        "f_ai_tools",
+        "f_gov_rbac",
+        "f_act_remediation"
       ],
       "personaIds": [
         "p_cio",
@@ -1559,7 +1821,9 @@
         "f_collect_endpoint",
         "f_act_dashboards",
         "f_act_api",
-        "f_investigations"
+        "f_investigations",
+        "f_collect_external",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_cio",
@@ -1597,7 +1861,8 @@
         "f_collect_sentiment",
         "f_corr_dex_score",
         "f_exp_central",
-        "f_act_campaign"
+        "f_act_campaign",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_hr",
@@ -1636,7 +1901,8 @@
         "f_collect_sentiment",
         "f_corr_dex_score",
         "f_exp_central",
-        "f_act_dashboards"
+        "f_act_dashboards",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_cio",
@@ -1693,7 +1959,8 @@
         "f_ai_tools",
         "f_act_api",
         "f_opwgrz",
-        "f_act_campaign"
+        "f_act_campaign",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_security",
@@ -1772,10 +2039,11 @@
         "f_collect_endpoint",
         "f_corr_ai",
         "f_act_dashboards",
-        "f_collect_sentiment",
         "f_act_campaign",
         "f_ai_tools",
-        "f_appex"
+        "f_appex",
+        "f_opwgrz",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_security",
@@ -1816,10 +2084,7 @@
         "f_gov_rbac",
         "f_act_dashboards",
         "f_network",
-        "f_collabex",
-        "f_mobile",
         "f_appex",
-        "f_vdi",
         "f_investigations"
       ],
       "personaIds": [
@@ -1917,7 +2182,8 @@
         "f_investigations",
         "f_act_remediation",
         "f_amplify",
-        "f_workspace"
+        "f_workspace",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_servicedesk",
@@ -1969,7 +2235,8 @@
         "f_appex",
         "f_vdi",
         "f_alert",
-        "f_opwgrz"
+        "f_opwgrz",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_servicedesk",
@@ -2018,10 +2285,10 @@
         "f_collect_sentiment",
         "f_vdi",
         "f_appex",
-        "f_mobile",
         "f_act_remediation",
         "f_opwgrz",
-        "f_workspace"
+        "f_workspace",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_servicedesk",
@@ -2070,14 +2337,14 @@
         "f_act_dashboards",
         "f_alert",
         "f_act_remediation",
-        "f_mobile",
         "f_vdi",
         "f_network",
         "f_collabex",
         "f_appex",
         "f_investigations",
         "f_diagnostic",
-        "f_workspace"
+        "f_workspace",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_workplace",
@@ -2116,12 +2383,12 @@
         "f_collect_endpoint",
         "f_act_campaign",
         "f_collect_sentiment",
-        "f_mobile",
         "f_vdi",
         "f_act_dashboards",
         "f_act_remediation",
         "f_opwgrz",
-        "f_corr_dex_score"
+        "f_corr_dex_score",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_servicedesk",
@@ -2168,15 +2435,12 @@
       "featureIds": [
         "f_spark",
         "f_collect_endpoint",
-        "f_corr_ai",
         "f_act_remediation",
         "f_network",
-        "f_collabex",
-        "f_mobile",
         "f_appex",
-        "f_vdi",
-        "f_library",
-        "f_gov_rbac"
+        "f_gov_rbac",
+        "f_diagnostic",
+        "f_corr_ai"
       ],
       "personaIds": [
         "p_servicedesk",
@@ -2209,7 +2473,8 @@
         "f_act_dashboards",
         "f_act_api",
         "f_act_remediation",
-        "f_opwgrz"
+        "f_opwgrz",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_cio",
@@ -2247,7 +2512,8 @@
         "f_collect_endpoint",
         "f_act_remediation",
         "f_act_dashboards",
-        "f_investigations"
+        "f_investigations",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_finance",
@@ -2285,7 +2551,8 @@
       "featureIds": [
         "f_collect_endpoint",
         "f_act_dashboards",
-        "f_act_api"
+        "f_act_api",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_finance",
@@ -2332,7 +2599,9 @@
         "f_investigations",
         "f_alert",
         "f_opwgrz",
-        "f_workspace"
+        "f_workspace",
+        "f_gov_rbac",
+        "f_collect_external"
       ],
       "personaIds": [
         "p_finance",
@@ -2371,7 +2640,8 @@
         "f_act_dashboards",
         "f_act_api",
         "f_investigations",
-        "f_workspace"
+        "f_workspace",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_finance",
@@ -2421,7 +2691,8 @@
         "f_investigations",
         "f_workspace",
         "f_act_remediation",
-        "f_opwgrz"
+        "f_opwgrz",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_finance",
@@ -2462,7 +2733,8 @@
         "f_act_api",
         "f_investigations",
         "f_appex",
-        "f_opwgrz"
+        "f_opwgrz",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_finance",
@@ -2501,7 +2773,9 @@
         "f_diagnostic",
         "f_act_remediation",
         "f_opwgrz",
-        "f_workspace"
+        "f_workspace",
+        "f_gov_rbac",
+        "f_collect_external"
       ],
       "personaIds": [
         "p_workplace",
@@ -2525,7 +2799,8 @@
         "f_collect_endpoint",
         "f_act_dashboards",
         "f_investigations",
-        "f_workspace"
+        "f_workspace",
+        "f_gov_rbac"
       ],
       "personaIds": [
         "p_workplace",
@@ -2536,6 +2811,32 @@
   ]
 }
 /*BUNDLED_DATA_END*/
+</script>
+
+<!-- ROADMAP DATA. Keep the markers intact. -->
+<script id="roadmap-data" type="application/json">
+/*ROADMAP_DATA_START*/
+{
+  "uc_sm_reactive": "now",
+  "uc_sm_automation": "now",
+  "uc_sm_prevention": "now",
+  "uc_spark": "midterm",
+  "uc_comp_standards": "now",
+  "uc_comp_ai": "midterm",
+  "uc_am_ai_optim": "midterm",
+  "uc_am_vdi": "longterm",
+  "uc_am_mobile": "longterm",
+  "uc_am_hw_sizing": "outofscope",
+  "uc_am_hw_refresh": "midterm",
+  "uc_am_sw_spend": "now",
+  "uc_sus_carbon": "outofscope",
+  "uc_sus_energy": "outofscope",
+  "uc_sus_hw_proc": "midterm",
+  "uc_ct_transform": "longterm",
+  "uc_ct_ai_adopt": "midterm",
+  "uc_ct_mna": "longterm"
+}
+/*ROADMAP_DATA_END*/
 </script>
 
 <script>
@@ -2565,6 +2866,8 @@ const FEAT_ICON = {
 };
 
 let DATA = null;
+let ROADMAP_PHASES = {}; // ucId -> "now"|"midterm"|"longterm"|"outofscope"
+let ROADMAP_MODE = false;
 let SELECTED_UC = null;
 let SHOW_LINKS = true;
 let SELECTED_BENEFIT = null;
@@ -2580,7 +2883,14 @@ async function boot(){
     const raw = document.getElementById('bundled-data').textContent
       .replace('/*BUNDLED_DATA_START*/','').replace('/*BUNDLED_DATA_END*/','').trim();
     const parsed = JSON.parse(raw);
-    if(parsed && parsed.useCases && parsed.useCases.length){ DATA = parsed; render(); return; }
+    if(parsed && parsed.useCases && parsed.useCases.length){ DATA = parsed;
+      try{
+        const rr = document.getElementById('roadmap-data').textContent
+          .replace('/*ROADMAP_DATA_START*/','').replace('/*ROADMAP_DATA_END*/','').trim();
+        const rp = JSON.parse(rr);
+        if(rp && typeof rp === 'object') ROADMAP_PHASES = rp;
+      }catch(e){}
+      render(); return; }
   }catch(e){ /* fall through to fetch */ }
   // 2) Fallback: fetch data.json next to the HTML (needs a local server)
   try{
@@ -2808,6 +3118,7 @@ function selectPersona(id){
 }
 
 function selectUseCase(id){
+  if(ROADMAP_MODE) return; // tagging mode intercepts clicks instead
   if(SELECTED_UC === id){ clearSelection(); return; }
   SELECTED_BENEFIT = null;
   SELECTED_PERSONA = null;
@@ -3704,13 +4015,331 @@ function deleteSrc(id){
 
 function exportHTML(){
   const json=JSON.stringify(DATA,null,2).replace(/<\//g,'<\\/');
-  const html=document.documentElement.outerHTML.replace(
+  const rjson=JSON.stringify(ROADMAP_PHASES,null,2);
+  let out=document.documentElement.outerHTML;
+  // Strip transient open/active classes so the saved file always opens on the infographic
+  out=out.replace(/(<div id="editorOverlay"[^>]*?)(\s+open)([^>]*>)/,'$1$3');
+  out=out.replace(/(<body[^>]*?)\s+tagging-mode/,'$1');
+  out=out.replace(/(<body[^>]*?)\s+roadmap-view-active/,'$1');
+  out=out.replace(/(<body[^>]*?)\s+drawer-open/,'$1');
+  out=out.replace(
     /\/\*BUNDLED_DATA_START\*\/[\s\S]*?\/\*BUNDLED_DATA_END\*\//,
     `/*BUNDLED_DATA_START*/\n${json}\n/*BUNDLED_DATA_END*/`
   );
-  const blob=new Blob([html],{type:'text/html'});
+  out=out.replace(
+    /\/\*ROADMAP_DATA_START\*\/[\s\S]*?\/\*ROADMAP_DATA_END\*\//,
+    `/*ROADMAP_DATA_START*/\n${rjson}\n/*ROADMAP_DATA_END*/`
+  );
+  const blob=new Blob([out],{type:'text/html'});
   Object.assign(document.createElement('a'),
     {href:URL.createObjectURL(blob),download:'platform_infographic.html'}).click();
+}
+
+
+// ============================================================
+// ROADMAP
+// ============================================================
+
+const PHASE_ORDER = ['now','midterm','longterm','outofscope'];
+const PHASE_LABEL = {now:'Now', midterm:'Mid-term', longterm:'Long-term', outofscope:'Out of scope'};
+const PHASE_COLOR = {now:'#34D399', midterm:'#FBBF24', longterm:'#A78BFA', outofscope:'rgba(255,255,255,0.3)'};
+
+// ── Tagging mode ────────────────────────────────────────────
+
+function enterTaggingMode(){
+  ROADMAP_MODE = true;
+  document.body.classList.add('tagging-mode');
+  clearSelection();
+  $$('#uccols .uc').forEach(el => {
+    // Always remove existing roadmap handler before adding a new one
+    // (prevents double-registration if enterTaggingMode is called more than once)
+    if(el._rmClickHandler) el.removeEventListener('click', el._rmClickHandler);
+    const phase = ROADMAP_PHASES[el.dataset.id] || null;
+    _applyPhaseBadge(el, phase);
+    el._rmClickHandler = () => _cyclePhase(el.dataset.id);
+    el.addEventListener('click', el._rmClickHandler);
+  });
+  _updateTaggingBar();
+  _updateViewBtn();
+}
+
+function exitTaggingMode(){
+  ROADMAP_MODE = false;
+  document.body.classList.remove('tagging-mode');
+  document.body.classList.remove('roadmap-view-active');
+  // remove badges and restore UC click handlers
+  $$('#uccols .uc').forEach(el => {
+    if(el._rmClickHandler) el.removeEventListener('click', el._rmClickHandler);
+    const badge = el.querySelector('.phase-badge');
+    if(badge) badge.remove();
+    el.classList.remove('phase-now','phase-midterm','phase-longterm','phase-outofscope');
+  });
+  // Existing selectUseCase handlers already attached — ROADMAP_MODE=false re-enables them
+}
+
+function _cyclePhase(ucId){
+  const current = ROADMAP_PHASES[ucId] || null;
+  const idx = current ? PHASE_ORDER.indexOf(current) : -1;
+  const next = PHASE_ORDER[(idx + 1) % PHASE_ORDER.length];
+  ROADMAP_PHASES[ucId] = next;
+  const el = document.querySelector(`#uccols .uc[data-id="${ucId}"]`);
+  if(el) _applyPhaseBadge(el, next);
+  _updateTaggingBar();
+  _updateViewBtn();
+}
+
+function _applyPhaseBadge(el, phase){
+  let badge = el.querySelector('.phase-badge');
+  if(!badge){ badge = document.createElement('div'); badge.className='phase-badge'; el.appendChild(badge); }
+  PHASE_ORDER.forEach(p => el.classList.remove('phase-'+p));
+  if(phase){
+    badge.textContent = PHASE_LABEL[phase];
+    badge.className = 'phase-badge ' + phase;
+    el.classList.add('phase-'+phase);
+  } else {
+    badge.textContent = '— unset';
+    badge.className = 'phase-badge';
+    el.classList.remove(...PHASE_ORDER.map(p=>'phase-'+p));
+  }
+}
+
+function _updateTaggingBar(){
+  const counts = {now:0, midterm:0, longterm:0, outofscope:0, unset:0};
+  DATA.useCases.forEach(u => {
+    const p = ROADMAP_PHASES[u.id];
+    if(p && counts[p] !== undefined) counts[p]++;
+    else counts.unset++;
+  });
+  $('#tbar-now').textContent = 'Now: '+counts.now;
+  $('#tbar-mid').textContent = 'Mid-term: '+counts.midterm;
+  $('#tbar-long').textContent = 'Long-term: '+counts.longterm;
+  $('#tbar-oos').textContent  = 'Out of scope: '+counts.outofscope;
+  $('#tbar-unset').textContent = 'Unset: '+counts.unset;
+}
+
+function _updateViewBtn(){
+  const btn = $('#viewRoadmapBtn');
+  const assigned = Object.keys(ROADMAP_PHASES).length;
+  const allAssigned = DATA.useCases.every(u => ROADMAP_PHASES[u.id]);
+  if(assigned > 0){
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+    btn.textContent = allAssigned ? 'View roadmap →' : 'View roadmap (with unset) →';
+  } else {
+    btn.style.opacity = '.4';
+    btn.style.pointerEvents = 'none';
+    btn.textContent = 'View roadmap →';
+  }
+}
+
+function clearRoadmap(){
+  if(!confirm('Clear all phase assignments?')) return;
+  ROADMAP_PHASES = {};
+  $$('#uccols .uc').forEach(el => _applyPhaseBadge(el, null));
+  _updateTaggingBar();
+  _updateViewBtn();
+}
+
+// ── Roadmap view ────────────────────────────────────────────
+
+function showRoadmapView(){
+  document.body.classList.add('roadmap-view-active');
+  $('#roadmapView').innerHTML = _buildRoadmapHTML();
+  // wire OOS toggle
+  const oosToggle = $('#oosToggle');
+  const oosContent = $('#oosContent');
+  if(oosToggle && oosContent){
+    oosToggle.addEventListener('click', () => {
+      const open = oosContent.style.display !== 'none';
+      oosContent.style.display = open ? 'none' : 'flex';
+      oosToggle.querySelector('.oos-arrow').textContent = open ? '▸' : '▾';
+    });
+  }
+}
+
+function hideRoadmapView(){
+  document.body.classList.remove('roadmap-view-active');
+}
+
+function _ucsByPhase(phase){
+  return DATA.useCases.filter(u => ROADMAP_PHASES[u.id] === phase);
+}
+
+function _featuresForUCs(ucs){
+  return new Set(ucs.flatMap(u => u.featureIds || []));
+}
+
+function _personasForUCs(ucs){
+  return new Set(ucs.flatMap(u => u.personaIds || []));
+}
+
+// Group order for features
+const FEAT_GROUP_ORDER = ['collect','correlate','act','govern'];
+const FEAT_GROUP_COLOR = {collect:'#22D3EE', correlate:'#A78BFA', act:'#34D399', govern:'#FBBF24'};
+
+function _benefitsForUCs(ucs){
+  return new Set(ucs.flatMap(u => u.benefitTypes || []));
+}
+
+function _sortFeatsByGroup(featIds){
+  return featIds.slice().sort((a,b) => {
+    const fa = DATA.foundationFeatures.find(x=>x.id===a);
+    const fb = DATA.foundationFeatures.find(x=>x.id===b);
+    const oa = FEAT_GROUP_ORDER.indexOf(fa?.group||'collect');
+    const ob = FEAT_GROUP_ORDER.indexOf(fb?.group||'collect');
+    return oa !== ob ? oa - ob : (fa?.name||'').localeCompare(fb?.name||'');
+  });
+}
+
+function _renderFeatChips(featIds){
+  return _sortFeatsByGroup(featIds).map(fid => {
+    const f = DATA.foundationFeatures.find(x=>x.id===fid);
+    if(!f) return '';
+    const gc = FEAT_GROUP_COLOR[f.group||'collect'] || '#9CA3AF';
+    // Use rgba() directly so the transparent border renders correctly
+    const r = parseInt(gc.slice(1,3),16), g2 = parseInt(gc.slice(3,5),16), b = parseInt(gc.slice(5,7),16);
+    return `<span class="rm-feat-chip" style="border-color:rgba(${r},${g2},${b},0.45);color:${gc};background:rgba(${r},${g2},${b},0.10)">${escapeHtml(f.name)}</span>`;
+  }).join('');
+}
+
+function _buildRoadmapHTML(){
+  const nowUCs      = _ucsByPhase('now');
+  const midUCs      = _ucsByPhase('midterm');
+  const longUCs     = _ucsByPhase('longterm');
+  const oosUCs      = _ucsByPhase('outofscope');
+
+  const nowFeats    = _featuresForUCs(nowUCs);
+  const midFeats    = _featuresForUCs(midUCs);
+  const longFeats   = _featuresForUCs(longUCs);
+
+  const nowPers     = _personasForUCs(nowUCs);
+  const midPers     = _personasForUCs(midUCs);
+  const longPers    = _personasForUCs(longUCs);
+
+  const nowBens     = _benefitsForUCs(nowUCs);
+  const midBens     = _benefitsForUCs(midUCs);
+  const longBens    = _benefitsForUCs(longUCs);
+
+  // Net-new per phase
+  const midNewFeats  = [...midFeats].filter(f => !nowFeats.has(f));
+  const longNewFeats = [...longFeats].filter(f => !nowFeats.has(f) && !midFeats.has(f));
+  const midNewPers   = [...midPers].filter(p => !nowPers.has(p));
+  const longNewPers  = [...longPers].filter(p => !nowPers.has(p) && !midPers.has(p));
+  const midNewBens   = [...midBens].filter(b => !nowBens.has(b));
+  const longNewBens  = [...longBens].filter(b => !nowBens.has(b) && !midBens.has(b));
+
+  const cols = [
+    { phase:'now',      label:'Now',       ucs:nowUCs,  newFeats:[...nowFeats],  newPers:[...nowPers],  newBens:[...nowBens],  baseline:true },
+    { phase:'midterm',  label:'Mid-term',  ucs:midUCs,  newFeats:midNewFeats,    newPers:midNewPers,    newBens:midNewBens,    baseline:false },
+    { phase:'longterm', label:'Long-term', ucs:longUCs, newFeats:longNewFeats,   newPers:longNewPers,   newBens:longNewBens,   baseline:false },
+  ];
+
+  const colsHTML = cols.map(col => `
+    <div class="rm-col">
+      <div class="rm-col-header">
+        <div class="rm-phase-label ${col.phase}">${col.label}</div>
+        <div style="font-size:11px;color:var(--ink-3);margin-top:4px">${col.ucs.length} use case${col.ucs.length!==1?'s':''}</div>
+      </div>
+      <div class="rm-col-body">
+
+        <!-- Use cases grouped by VC -->
+        <div class="rm-section">
+          <div class="rm-section-title">Use cases</div>
+          ${_buildUCGroupsHTML(col.ucs)}
+        </div>
+
+        <!-- Features (sorted by category) -->
+        <div class="rm-section">
+          <div class="rm-section-title">${col.baseline ? 'Features required' : 'Net-new features'}</div>
+          ${col.newFeats.length === 0
+            ? '<div class="rm-empty">None</div>'
+            : `<div style="line-height:2">${_renderFeatChips(col.newFeats)}</div>`
+          }
+          ${col.baseline ? '' : `<div class="rm-delta" style="margin-top:6px">+${col.newFeats.length} feature${col.newFeats.length!==1?'s':''}</div>`}
+        </div>
+
+        <!-- Personas -->
+        <div class="rm-section">
+          <div class="rm-section-title">${col.baseline ? 'Personas involved' : 'Net-new personas'}</div>
+          ${col.newPers.length === 0
+            ? '<div class="rm-empty">None</div>'
+            : `<div style="line-height:2">${col.newPers.map(pid => {
+                const p = DATA.personas.find(x=>x.id===pid);
+                return p ? `<span class="rm-per-chip">${escapeHtml(p.name)}</span>` : '';
+              }).join('')}</div>`
+          }
+          ${col.baseline ? '' : `<div class="rm-delta" style="margin-top:6px">+${col.newPers.length} persona${col.newPers.length!==1?'s':''}</div>`}
+        </div>
+
+        <!-- Benefits -->
+        <div class="rm-section">
+          <div class="rm-section-title">${col.baseline ? 'IT & business benefits' : 'Net-new benefits'}</div>
+          ${col.newBens.length === 0
+            ? '<div class="rm-empty">None</div>'
+            : `<div style="line-height:2">${col.newBens.map(b =>
+                `<span class="rm-ben-chip">${escapeHtml(b)}</span>`
+              ).join('')}</div>`
+          }
+          ${col.baseline ? '' : `<div class="rm-delta" style="margin-top:6px">+${col.newBens.length} benefit${col.newBens.length!==1?'s':''}</div>`}
+        </div>
+
+      </div>
+    </div>
+  `).join('');
+
+  // Out of scope
+  const oosHTML = oosUCs.length === 0 ? '' : `
+    <div class="rm-oos">
+      <button class="rm-oos-toggle" id="oosToggle">
+        <span class="oos-arrow">▸</span>
+        Out of scope (${oosUCs.length} use case${oosUCs.length!==1?'s':''})
+      </button>
+      <div class="rm-oos-grid" id="oosContent" style="display:none">
+        ${oosUCs.map(u => `<div class="rm-oos-card">${escapeHtml(u.name)}</div>`).join('')}
+      </div>
+    </div>`;
+
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px">Roadmap view</div>
+        <h2 style="margin:0;font-size:20px;font-weight:700">Value delivery over time</h2>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="exportHTML()" style="display:flex;align-items:center;gap:6px">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>Save HTML
+        </button>
+        <button class="btn" onclick="hideRoadmapView()">← Back to tagging</button>
+        <button class="btn" onclick="exitTaggingMode()">✕ Exit roadmap</button>
+      </div>
+    </div>
+    <div class="rm-grid">${colsHTML}</div>
+    ${oosHTML}
+  `;
+}
+
+function _buildUCGroupsHTML(ucs){
+  if(!ucs.length) return '<div class="rm-empty">None assigned</div>';
+  const byVC = {};
+  DATA.valueCategories.forEach(vc => { byVC[vc.id] = {vc, ucs:[]}; });
+  ucs.forEach(u => {
+    if(byVC[u.valueCategoryId]) byVC[u.valueCategoryId].ucs.push(u);
+    else {
+      const key = u.valueCategoryId || '__none';
+      if(!byVC[key]) byVC[key] = {vc:{id:key, name:'Other', color:'9CA3AF'}, ucs:[]};
+      byVC[key].ucs.push(u);
+    }
+  });
+  return Object.values(byVC).filter(g=>g.ucs.length).map(g => `
+    <div class="rm-vc-group">
+      <div class="rm-vc-label" style="color:#${g.vc.color||'9CA3AF'}">${escapeHtml(g.vc.name)}</div>
+      ${g.ucs.map(u => `<div class="rm-uc-card" style="border-color:rgba(${_hexToRgb(g.vc.color||'9CA3AF')},0.3)">${escapeHtml(u.name)}</div>`).join('')}
+    </div>`).join('');
+}
+
+function _hexToRgb(hex){
+  const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16);
+  return `${r},${g},${b}`;
 }
 
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
