@@ -242,6 +242,14 @@
   .phase-badge.outofscope{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.15);color:var(--ink-4);}
   body.tagging-mode .uc.phase-outofscope{opacity:.4;}
 
+
+  /* VC clickable states */
+  .vc{cursor:pointer; user-select:none; position:relative; transition:.2s;}
+  .vc:hover{border-color:rgba(255,255,255,0.22); transform:translateY(-1px);}
+  .vc.selected{box-shadow:0 0 0 2px rgba(255,255,255,0.45) inset, 0 0 24px rgba(255,255,255,0.12); transform:translateY(-1px);}
+  .vc.dim{opacity:.2; pointer-events:none;}
+  .vc.hi{opacity:1;}
+
   /* Tagging progress bar */
   #taggingBar{position:sticky;top:0;z-index:40;display:none;align-items:center;
     justify-content:space-between;gap:16px;flex-wrap:wrap;
@@ -1458,42 +1466,74 @@
       "name": "Service Management",
       "color": "5B7FFF",
       "tagline": "Reduce reactive workload and prevent disruptions",
-      "order": 10
+      "order": 10,
+      "valueCalcExamples": [
+        "Reduce disruptions to critical business applications (proactivity)",
+        "Reduce L1 ticket volume (proactivity)",
+        "Reduce L2 ticket volume (proactivity)",
+        "Reduce L3 ticket volume (proactivity)",
+        "Reduce travel time costs (on-site support)",
+        "Reduce L1 ticket volume via Spark",
+        "Reduce MTTR (Mean Time To Resolution)"
+      ]
     },
     {
       "id": "vc_security",
       "name": "Compliance",
       "color": "0EA5E9",
       "tagline": "Maintain posture, enforce standards, manage risk",
-      "order": 20
+      "order": 20,
+      "valueCalcExamples": [
+        "Reduce costs related to non-compliant devices (e.g. lost and unencrypted devices)",
+        "Keep Microsoft Intune or SCCM in operational condition (proactive remediation)",
+        "Keep OneDrive in operational condition (proactive remediation)",
+        "Reduce Shadow AI and associated risks"
+      ]
     },
     {
       "id": "vc_workplace",
       "name": "Asset Management",
       "color": "F97316",
       "tagline": "Right-size, optimize and rationalize IT assets",
-      "order": 30
+      "order": 30,
+      "valueCalcExamples": [
+        "Rationalize software license costs",
+        "Optimize device refresh cycles based on factual data"
+      ]
     },
     {
       "id": "vc_sustain",
       "name": "Sustainability",
       "color": "34D399",
       "tagline": "Reduce carbon, energy and hardware procurement",
-      "order": 40
+      "order": 40,
+      "valueCalcExamples": [
+        "Energy and CO2 savings from always-on devices",
+        "Optimize new device procurement and its carbon footprint impact"
+      ]
     },
     {
       "id": "vc_dex",
       "name": "Strategy",
       "color": "A855F7",
       "tagline": "Improve experience, revenue and talent retention",
-      "order": 50
+      "order": 50,
+      "valueCalcExamples": [
+        "Improve company NPS/CSAT",
+        "Reduce employee churn costs",
+        "Impact of reputation on hiring, retention and employee productivity"
+      ]
     },
     {
       "id": "vc_change",
       "name": "Change & Transformation",
       "color": "3B82F6",
       "tagline": "De-risk migrations, adoptions and M&A activity",
-      "order": 60
+      "order": 60,
+      "valueCalcExamples": [
+        "Improve AI tool adoption by factually targeting the right people and the right use cases",
+        "Accelerate transformation projects based on factual data"
+      ]
     }
   ],
   "personas": [
@@ -2875,6 +2915,7 @@ let DATA = null;
 let ROADMAP_PHASES = {}; // ucId -> "now"|"midterm"|"longterm"|"outofscope"
 let ROADMAP_MODE = false;
 let SELECTED_UC = null;
+let SELECTED_VC = null;
 let SHOW_LINKS = true;
 let SELECTED_BENEFIT = null;
 let SELECTED_PERSONA = null;
@@ -3002,6 +3043,9 @@ function renderValueCategories(){
       <div class="tg">${escapeHtml(v.tagline||'')}</div>
       <div class="bar" style="background:#${v.color}"></div>
     </div>`).join('');
+  $$('#vcrow .vc').forEach(el =>
+    el.addEventListener('click', () => selectVC(el.dataset.id))
+  );
 }
 
 function renderUseCases(){
@@ -3034,6 +3078,7 @@ function selectFeature(id){
   SELECTED_UC      = null;
   SELECTED_BENEFIT = null;
   SELECTED_PERSONA = null;
+  SELECTED_VC      = null;
   SELECTED_FEATURE = id;
 
   // Feature states
@@ -3073,6 +3118,7 @@ function selectBenefit(benefit){
   SELECTED_UC      = null;
   SELECTED_FEATURE = null;
   SELECTED_PERSONA = null;
+  SELECTED_VC      = null;
   SELECTED_BENEFIT = benefit;
   closeDrawer();
 
@@ -3109,6 +3155,7 @@ function selectPersona(id){
   SELECTED_UC      = null;
   SELECTED_BENEFIT = null;
   SELECTED_FEATURE = null;
+  SELECTED_VC      = null;
   SELECTED_PERSONA = id;
   closeDrawer();
 
@@ -3146,6 +3193,7 @@ function selectUseCase(id){
   SELECTED_BENEFIT = null;
   SELECTED_PERSONA = null;
   SELECTED_FEATURE = null;
+  SELECTED_VC      = null;
   SELECTED_UC = id;
   const uc = DATA.useCases.find(u => u.id===id);
   $$('#uccols .uc').forEach(el => {
@@ -3178,15 +3226,77 @@ function selectUseCase(id){
   drawLinks();
 }
 
+function selectVC(id){
+  if(SELECTED_VC === id){ clearSelection(); return; }
+  SELECTED_UC = null; SELECTED_BENEFIT = null; SELECTED_PERSONA = null; SELECTED_FEATURE = null;
+  SELECTED_VC = id;
+
+  // VC card states
+  $$('#vcrow .vc').forEach(el => {
+    const m = el.dataset.id === id;
+    el.classList.toggle('selected', m);
+    el.classList.toggle('dim', !m);
+    el.classList.remove('hi');
+  });
+
+  // UC states — highlight those in this VC
+  $$('#uccols .uc').forEach(el => {
+    const hit = el.dataset.vc === id;
+    el.classList.toggle('hi', hit);
+    el.classList.toggle('dim', !hit);
+    el.classList.remove('selected');
+  });
+
+  // Features, personas, benefits — dim all
+  $$('.feat').forEach(el => { el.classList.remove('selected','hi'); el.classList.add('dim'); });
+  $$('.per').forEach(el => { el.classList.remove('selected','hi'); el.classList.add('dim'); });
+  $$('.benefit-pill').forEach(el => { el.classList.remove('selected','hi'); el.classList.add('dim'); });
+
+  drawLinks();
+
+  const vc = DATA.valueCategories.find(v => v.id === id);
+  if(vc) openVCDrawer(vc);
+}
+
+function openVCDrawer(vc){
+  const ucs = DATA.useCases.filter(u => u.valueCategoryId === vc.id);
+  const examples = vc.valueCalcExamples || [];
+  $('#drawerContent').innerHTML = `
+    <div class="vcat" style="color:#${vc.color||'9CA3AF'}">Value Category</div>
+    <h2 style="color:#${vc.color||'9CA3AF'}">${escapeHtml(vc.name)}</h2>
+    <div class="pitch">${escapeHtml(vc.tagline||'')}</div>
+
+    <div class="section">
+      <h3 style="color:#${vc.color||'9CA3AF'}"><span class="dot"></span>Use cases (${ucs.length})</h3>
+      <div class="chips">${ucs.map(u => `<span class="chip">${escapeHtml(u.name)}</span>`).join('') || '<span style="color:var(--ink-3);font-size:13px">—</span>'}</div>
+    </div>
+
+    <div class="section">
+      <h3 style="color:#${vc.color||'9CA3AF'}"><span class="dot"></span>Value calculation examples</h3>
+      ${examples.length
+        ? `<ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px">
+            ${examples.map(e => `<li style="color:var(--ink-2);font-size:13px;line-height:1.5">${escapeHtml(e)}</li>`).join('')}
+           </ul>`
+        : '<div style="color:var(--ink-3);font-size:13px">No examples added yet.</div>'}
+    </div>
+  `;
+  $('#drawer').classList.add('open');
+  $('#drawer').setAttribute('aria-hidden','false');
+  document.body.classList.add('drawer-open');
+  document.querySelector('.app').addEventListener('transitionend', drawLinks, {once:true});
+}
+
 function clearSelection(){
   SELECTED_UC      = null;
   SELECTED_BENEFIT = null;
   SELECTED_PERSONA = null;
   SELECTED_FEATURE = null;
+  SELECTED_VC      = null;
   $$('#uccols .uc').forEach(el => el.classList.remove('selected','hi','dim'));
   $$('.feat').forEach(el => el.classList.remove('selected','hi','dim'));
   $$('.per').forEach(el => el.classList.remove('selected','hi','dim'));
   $$('.benefit-pill').forEach(el => el.classList.remove('selected','hi','dim'));
+  $$('#vcrow .vc').forEach(el => el.classList.remove('selected','hi','dim'));
   closeDrawer();
   drawLinks();
 }
@@ -3304,6 +3414,22 @@ function drawLinks(){
     'url(#gA)', 1.8);
 
   // Hub → uc columns + VC → first UC: only when no filter is active
+  if(SELECTED_VC){
+    const vcEl = $(`#vcrow .vc[data-id="${SELECTED_VC}"]`);
+    const matchingUCEls = $$(`#uccols .uc[data-vc="${SELECTED_VC}"]`);
+    if(vcEl && matchingUCEls.length){
+      const vb = vcEl.getBoundingClientRect();
+      matchingUCEls.forEach(ucEl => {
+        const ub = ucEl.getBoundingClientRect();
+        appendCurveV(svgEl,
+          vb.left-r.left+vb.width/2, vb.bottom-r.top+2,
+          ub.left-r.left+ub.width/2, ub.top-r.top-2,
+          'url(#gB)', 1.2);
+      });
+    }
+    return;
+  }
+
   if(!SELECTED_UC && !SELECTED_BENEFIT && !SELECTED_PERSONA && !SELECTED_FEATURE){
     // Hub (below uc-cols) → first UC of each column
     $$('#uccols .uc-stack').forEach(stack => {
